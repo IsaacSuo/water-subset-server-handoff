@@ -1,0 +1,30 @@
+{
+  "schema_version": "0.1.0",
+  "events": {
+    "R03": {
+      "group": "rigid",
+      "object_count": 2,
+      "contract_status": "m4_development"
+    }
+  },
+  "physics_materials": {
+    "rigid_bouncy": {
+      "kind": "rigid",
+      "density_kg_m3": 1000.0,
+      "static_friction": 0.4,
+      "dynamic_friction": 0.3,
+      "restitution": 0.8,
+      "linear_damping": 0.0,
+      "angular_damping": 0.0
+    },
+    "rigid_heavy": {
+      "kind": "rigid",
+      "density_kg_m3": 2000.0,
+      "static_friction": 0.4,
+      "dynamic_friction": 0.3,
+      "restitution": 0.1,
+      "linear_damping": 0.0,
+      "angular_damping": 0.0
+    }
+  }
+}

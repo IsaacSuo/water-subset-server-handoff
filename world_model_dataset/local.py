@@ -42,7 +42,9 @@ def main():
     parser.add_argument('spec');parser.add_argument('output',type=Path);parser.add_argument('--render',action='store_true')
     args=parser.parse_args();idle();prepare(args.spec,args.output)
     validate_episode(args.output/'episode.prepared.json',check_source=True)
-    invoke('native.py',args.output,'simulation.log')
+    prepared=read_json(args.output/'episode.prepared.json')
+    backend='native_rigid_multi.py' if prepared['spec']['event_id']=='R03' else 'native.py'
+    invoke(backend,args.output,'simulation.log')
     if not (args.output/'native_report.json').exists():raise RuntimeError('No completion report')
     result=audit(args.output)
     print('PHYSICS_AUDIT',result['passed'],flush=True)

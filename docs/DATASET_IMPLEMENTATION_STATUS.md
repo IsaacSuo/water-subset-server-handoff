@@ -1,6 +1,6 @@
-# M1–M3 implementation status
+# Dataset implementation status
 
-Updated: 2026-09-14. Branch: `dataset/interaction-world-model-v0.1`.
+Updated: 2026-09-14. Branch: `dataset/interaction-world-model-m4`.
 Local-only work. No GitHub push or server submission. Fluid baseline unchanged.
 
 ## Milestones
@@ -10,6 +10,31 @@ Local-only work. No GitHub push or server submission. Fluid baseline unchanged.
 | M1 | Complete and frozen as v0.1 | Separate registries, JSON schema, strict JSON/path/hash/time checks, source snapshots, prepared examples, unified loader and single-variable checker. Release hashes are recorded in `contract_v0_1_release.json`. |
 | M2 | Core framework complete | Four native action types, five fixture families, six diagnostic meshes, shared R01/V02 runner, state/contact caches and post-physics inspection. Legacy 14-environment/42-object fixed-topology data has a truthful read-only bridge; formal resimulation is deferred to M4 event migration. |
 | M3 | Complete in declared physics scope | 20 R01 and 15 V02 physics episodes completed and reviewed. R01 is accepted. V02 is accepted for compression/recovery/topology; weak modulus/speed families and soft impulse are explicitly excluded from those benchmark claims. Bulk rendering is deliberately deferred. |
+| M4 | In progress; R03 initial matrix complete | Reusable multi-rigid backend and R03 two-body collision event are implemented. Eleven physics-only episodes cover three geometries and eight strict single-variable pairs. V01 is next. |
+
+## Current M4 result
+
+`output/world_model_dataset/v0_1/m4_r03_physics_v02/` contains the first completed R03
+matrix: 11/11 physics runs, with sphere, rounded cube and cylinder pairs. Each geometry has
+a reference collision plus a right-body restitution and density counterfactual. The sphere
+family also includes a deliberate lateral miss and a moving-body-versus-stationary-target
+case. No rendering was generated.
+
+The canonical R03 fixture is a symmetric finite low-friction collision lane. Both fixture
+and body friction use the `min` combination rule, so floor support contributes no horizontal
+friction while object-object friction remains active. Speculative CCD is disabled inside the
+bounded R03 speed/time-step domain: its anticipatory positive-separation constraint had
+suppressed restitution in an earlier diagnostic. At 240 Hz and the current 5 m/s upper speed,
+the maximum single-step travel is well below the 0.1 m diagnostic body radius.
+
+The sphere results agree with the one-dimensional analytic solutions: reference, effective
+0.45-restitution, and 2:1 right-mass runs have kinetic-energy ratios 0.01000001, 0.20250065,
+and 0.12000004. The stationary-target result gives post-collision speeds 0.675 and 0.825 m/s.
+The lateral-offset case has zero interbody contacts, as intended. Rounded-cube and cylinder
+energy ratios remain close to the corresponding sphere controls while retaining their native
+small rotations and off-axis contact response. Contact absence is therefore an outcome
+measurement, not a failure gate; cache integrity, finite state, action delivery, topology and
+ground containment remain hard checks.
 
 `physics_completed`, manifest `lifecycle=completed`, and `validation.passed=true` mean
 different things. Completing simulation or packaging never implies dataset acceptance.
@@ -85,6 +110,8 @@ All paths below are relative to `output/world_model_dataset/v0_1/`.
 | `m2_action_probe02.json` | Native probe passed all four action types and all five fixture families. |
 | `legacy_bridge01.json` | Read-only inventory passed for 14 legacy environments, 42 objects and their fixed-topology caches. |
 | `m3_physics_v01` | Current reviewed physics matrix: 35/35 complete, 20 R01 plus 15 V02, no bulk rendering. This is the primary M3 physics evidence. |
+| `m4_r03_physics_v01` | Partial diagnostic using the inherited one-sided R01 floor; the high-restitution sphere left the finite negative-X edge. Superseded, retained as scene-design evidence. |
+| `m4_r03_physics_v02` | Current R03 physics matrix: 11/11 complete, three geometries and eight strict single-variable pairs; manually reviewed from native state/contact caches. |
 
 The first rigid render launcher was stopped during its CPU audit/restart attempt;
 the native renderer had already started and finished independently. All output hashes,
@@ -137,6 +164,6 @@ before publishing force–displacement or momentum-balance labels.
 - R01/V02 physics matrix, R01 two-camera output and cache-only Cycles smoke checks are
   described above.
 
-M1--M3 are now closed in the declared scope. The next implementation milestone is M4,
-starting with R03 rigid two-body collision. Material identification remains assigned to a
-future force-observable or high-rate free-response event, not V02.
+M1--M3 are closed in the declared scope. M4 R03 is now implemented and its initial physics
+matrix is complete; V01 soft-body drop/rebound is next. Material identification remains
+assigned to a future force-observable or high-rate free-response event, not V02.

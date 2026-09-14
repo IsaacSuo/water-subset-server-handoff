@@ -1,0 +1,26 @@
+{
+  "schema_version": "0.1.0",
+  "id": "R03",
+  "name": "two_body_collision",
+  "allowed_physics": ["rigid"],
+  "fixture": "flat_collision_lane",
+  "actions": ["initial_velocity"],
+  "object_count": 2,
+  "fixture_parameters": ["separation_D", "lateral_offset_D"],
+  "action_parameters": ["start_time_s", "left_speed_m_s", "right_speed_m_s"],
+  "parameters": {
+    "separation_D": [2.0, 8.0],
+    "lateral_offset_D": [0.0, 2.0],
+    "start_time_s": [0.0, 2.0],
+    "left_speed_m_s": [0.0, 5.0],
+    "right_speed_m_s": [0.0, 5.0]
+  },
+  "metrics": [
+    "first_interbody_contact_time_s",
+    "contact_duration_s",
+    "linear_momentum_error_kg_m_s",
+    "kinetic_energy_ratio",
+    "angular_momentum_change_kg_m2_s",
+    "final_poses"
+  ]
+}

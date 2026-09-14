@@ -1,0 +1,15 @@
+{
+  "schema_version": "0.1.0",
+  "seed": 20260914,
+  "geometries": ["sphere", "rounded_cube", "cylinder"],
+  "baseline_speed_m_s": 1.5,
+  "separation_D": 4.0,
+  "lateral_offset_D": 0.0,
+  "right_body_profiles": ["rigid_reference", "rigid_bouncy", "rigid_heavy"],
+  "sphere_extra_variants": {
+    "miss_lateral_offset_D": 1.25,
+    "stationary_right_speed_m_s": 0.0
+  },
+  "episodes": 11,
+  "pairs": 8
+}

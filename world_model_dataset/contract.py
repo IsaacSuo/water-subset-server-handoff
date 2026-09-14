@@ -17,6 +17,11 @@ CONFIG = ROOT / "configs/dataset"
 def _validator(kind):
     import jsonschema
     schema = read_json(CONFIG / "schema.json")
+    extension_path=CONFIG/'m4_extensions.json'
+    if extension_path.exists():
+        additions=read_json(extension_path).get('events',{})
+        allowed=schema['$defs']['spec']['properties']['event_id']['enum']
+        allowed.extend(event for event in additions if event not in allowed)
     jsonschema.Draft202012Validator.check_schema(schema)
     return jsonschema.Draft202012Validator(dict(schema, **{"$ref": f"#/$defs/{kind}"}))
 
@@ -28,20 +33,27 @@ def validate_schema(value, kind):
 
 def _lookup(registry, key):
     data = read_json(CONFIG / f"{registry}.json")
-    if data["schema_version"] != "0.1.0" or key not in data["entries"]:
-        raise ValueError(f"Unknown {registry} reference: {key}")
-    return data["entries"][key]
+    if data["schema_version"] != "0.1.0":raise ValueError(f"Invalid {registry} registry")
+    if key in data["entries"]:return data["entries"][key]
+    extension_path=CONFIG/'m4_extensions.json'
+    extension=read_json(extension_path).get(registry,{}) if extension_path.exists() else {}
+    if key in extension:return extension[key]
+    raise ValueError(f"Unknown {registry} reference: {key}")
 
 
 def resolve(spec):
     validate_schema(spec, "spec")
     if len({o["instance_id"] for o in spec["objects"]}) != len(spec["objects"]):
         raise ValueError("Duplicate instance ID")
-    # v0.1 prototypes are deliberately single-subject; future multi-body events
-    # extend the schema/adapter explicitly rather than ignoring extra objects.
-    if len(spec["objects"]) != 1:
-        raise ValueError("R01/V02 require exactly one subject")
-    group = "rigid" if spec["event_id"] == "R01" else "volumetric"
+    builtins={'R01':('rigid',1),'V02':('volumetric',1)}
+    if spec['event_id'] in builtins:
+        group,object_count=builtins[spec['event_id']]
+    else:
+        extension=read_json(CONFIG/'m4_extensions.json')['events'].get(spec['event_id'])
+        if extension is None:raise ValueError(f"Unknown event: {spec['event_id']}")
+        group,object_count=extension['group'],extension['object_count']
+    if len(spec['objects'])!=object_count:
+        raise ValueError(f"{spec['event_id']} requires exactly {object_count} objects")
     event = read_json(CONFIG / "events" / group / f"{spec['event_id']}.json")
     resolved = {"event": event, "environment": _lookup("environments", spec["environment_id"]),
                 "cameras": _lookup("cameras", spec["camera_set_id"]),
@@ -60,8 +72,11 @@ def resolve(spec):
             raise ValueError("Static friction must not be below dynamic friction")
         resolved["objects"].append(dict(o, geometry=geometry, physics=physics, appearance=appearance))
     fp, ap = spec["fixture_parameters"], spec["action_parameters"]
-    expected_fixture = {"angle_deg", "length_D"} if group == "rigid" else {"compression_fraction"}
-    expected_action = set(event["parameters"]) - expected_fixture
+    if 'fixture_parameters' in event:
+        expected_fixture=set(event['fixture_parameters']);expected_action=set(event['action_parameters'])
+    else:
+        expected_fixture = {"angle_deg", "length_D"} if group == "rigid" else {"compression_fraction"}
+        expected_action = set(event["parameters"]) - expected_fixture
     if set(fp) != expected_fixture or set(ap) != expected_action:
         raise ValueError("Unexpected or missing event parameter")
     for name, value in {**fp, **ap}.items():
@@ -74,11 +89,13 @@ def resolve(spec):
     for rate in (t["physics_hz"], t["capture_hz"]):
         if abs(t["duration_s"] * rate - round(t["duration_s"] * rate)) > 1e-8:
             raise ValueError("Duration must land on both time grids")
-    ends = ap["release_time_s"] if group == "rigid" else sum(ap.values())
+    if spec['event_id']=='R01':ends=ap['release_time_s']
+    elif spec['event_id']=='V02':ends=sum(ap.values())
+    else:ends=ap['start_time_s']
     if ends >= t["duration_s"]:
         raise ValueError("Episode must include post-action observation")
     for name, value in ap.items():
-        if abs(value * t["physics_hz"] - round(value * t["physics_hz"])) > 1e-8:
+        if (name.endswith('_time_s') or name.endswith('_duration_s')) and abs(value * t["physics_hz"] - round(value * t["physics_hz"])) > 1e-8:
             raise ValueError(f"Action time not on physics grid: {name}")
     cf = spec["counterfactual"]
     if (cf["baseline_episode_id"] is None) != (cf["changed_pointer"] is None):
@@ -118,8 +135,12 @@ def prepare(spec_path, output):
     from .fixtures import build_fixture
     import numpy as np
     geometry=save_geometry(output,inputs)
-    with np.load(output/geometry[spec['objects'][0]['instance_id']]['path'],allow_pickle=False) as data:
-        fixture=build_fixture(spec,inputs,data['vertices'])
+    vertices={}
+    for object_spec in spec['objects']:
+        instance=object_spec['instance_id']
+        with np.load(output/geometry[instance]['path'],allow_pickle=False) as data:
+            vertices[instance]=data['vertices'].copy()
+    fixture=build_fixture(spec,inputs,vertices if len(vertices)>1 else next(iter(vertices.values())))
     write_json(output/'fixture.json',fixture)
     actions=compile_actions(spec,inputs,fixture)
     validate_schema(actions,'action');write_json(output/'action.json',actions)

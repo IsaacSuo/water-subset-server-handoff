@@ -43,9 +43,22 @@ class Episode:
                 if artifact(self.root,body['geometry']['path'])!=body['geometry']:raise ValueError('Geometry hash mismatch')
             yield state
 
-    def geometry(self,index):
+    def geometry(self,index,instance_id=None):
         frame=self.index['frames'][index]
-        with np.load(inside(self.root,frame['geometry']),allow_pickle=False) as data:
+        if 'geometries' in frame:
+            if instance_id is None:
+                if len(frame['geometries'])!=1:
+                    raise ValueError('instance_id is required for a multi-object frame')
+                instance_id=next(iter(frame['geometries']))
+            if instance_id not in frame['geometries']:
+                raise KeyError(f'No geometry for instance {instance_id}')
+            path=frame['geometries'][instance_id]
+        else:
+            if instance_id is not None:
+                state=read_json(inside(self.root,frame['state']))
+                if instance_id not in state['objects']:raise KeyError(f'No geometry for instance {instance_id}')
+            path=frame['geometry']
+        with np.load(inside(self.root,path),allow_pickle=False) as data:
             return {key:data[key].copy() for key in data.files}
 
     def observations(self):

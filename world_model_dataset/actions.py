@@ -26,6 +26,15 @@ def compile_actions(spec, inputs, fixture=None):
     if spec["event_id"] == "R01":
         commands.append(dict(kind="release", target="gate", start_time_s=ap["release_time_s"],
                              end_time_s=ap["release_time_s"], parameters={"method": "disable_collision"}))
+    elif spec["event_id"] == "R03":
+        t=ap['start_time_s']
+        left_id,right_id=(o['instance_id'] for o in inputs['objects'])
+        commands.extend([
+            dict(kind='initial_velocity',target=left_id,start_time_s=t,end_time_s=t,
+                 parameters={'linear_m_s':[ap['left_speed_m_s'],0.,0.], 'angular_rad_s':[0.,0.,0.]}),
+            dict(kind='initial_velocity',target=right_id,start_time_s=t,end_time_s=t,
+                 parameters={'linear_m_s':[-ap['right_speed_m_s'],0.,0.], 'angular_rad_s':[0.,0.,0.]}),
+        ])
     elif spec["event_id"] == "V02":
         if fixture is None:
             raise ValueError('V02 action compilation requires its measured fixture')

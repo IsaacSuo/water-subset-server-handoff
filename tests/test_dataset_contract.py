@@ -105,6 +105,25 @@ class ContractTests(unittest.TestCase):
         command=compile_actions(self.spec,resolve(self.spec),{})['commands'][0]
         self.assertEqual([s for s in range(241) if due(command,s,240)],[120])
 
+    def test_r03_two_body_extension(self):
+        spec=read_json(CONFIG/'examples/r03_equal_spheres.json')
+        resolved=resolve(spec)
+        self.assertEqual(resolved['event']['id'],'R03')
+        self.assertEqual(len(resolved['objects']),2)
+        from world_model_dataset.geometry import make_geometry
+        from world_model_dataset.fixtures import build_fixture
+        vertices={o['instance_id']:make_geometry(o['geometry']).vertices for o in resolved['objects']}
+        fixture=build_fixture(spec,resolved,vertices)
+        self.assertEqual(fixture['subject_positions_m']['left'][0],-.4)
+        self.assertEqual(fixture['subject_positions_m']['right'][0],.4)
+        actions=compile_actions(spec,resolved,fixture)
+        validate_schema(actions,'action')
+        self.assertEqual([c['target'] for c in actions['commands']],['left','right'])
+        self.assertEqual(actions['commands'][0]['parameters']['linear_m_s'],[1.5,0.,0.])
+        self.assertEqual(actions['commands'][1]['parameters']['linear_m_s'],[-1.5,0.,0.])
+        invalid=copy.deepcopy(spec);invalid['objects']=invalid['objects'][:1]
+        with self.assertRaisesRegex(ValueError,'requires exactly 2'):resolve(invalid)
+
     def test_numerics_separate_from_material(self):
         a=read_json(CONFIG/'examples/v02_cube.json');b=copy.deepcopy(a)
         b['numerics_profile_id']='contact_convergence_128'

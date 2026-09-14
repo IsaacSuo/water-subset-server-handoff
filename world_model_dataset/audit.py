@@ -10,6 +10,9 @@ from .metrics import nonrigid_residual,recovery_time,box_penetration,triangle_bo
 
 def audit(output):
     out=Path(output);ep=read_json(out/'episode.prepared.json');spec=ep['spec']
+    if spec['event_id']=='R03':
+        from .audit_r03 import audit_r03
+        return audit_r03(out)
     report=read_json(out/'native_report.json');index=read_json(out/'state/index.json')
     fixture=read_json(out/'fixture.json');oid=spec['objects'][0]['instance_id']
     times=[];bodies=[];residuals=[];depths=[];surface_reference=None;topology=None

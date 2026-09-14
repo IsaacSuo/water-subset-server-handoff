@@ -16,6 +16,11 @@ def flat_ground(d):
     return [box('floor',[36*d,0,-.1*d],[80*d,8*d,.2*d])]
 
 
+def collision_ground(d):
+    """Symmetric finite lane with room for rebound in either X direction."""
+    return [box('floor',[0,0,-.1*d],[24*d,8*d,.2*d])]
+
+
 def ramp(d,angle_deg,length_D=4):
     a=math.radians(angle_deg);length=length_D*d;thickness=.1*d
     n=np.array([math.sin(a),0,math.cos(a)]);u=np.array([math.cos(a),0,-math.sin(a)])
@@ -41,6 +46,19 @@ def compression_plates(d,height):
 
 def build_fixture(spec,inputs,vertices):
     from scipy.spatial.transform import Rotation
+    if spec['event_id']=='R03':
+        if not isinstance(vertices,dict):raise ValueError('R03 requires per-instance geometry')
+        d=max(o['geometry']['characteristic_size_m'] for o in inputs['objects'])
+        separation=spec['fixture_parameters']['separation_D']*d
+        offset=spec['fixture_parameters']['lateral_offset_D']*d
+        positions={}
+        for index,o in enumerate(inputs['objects']):
+            rotated=Rotation.from_quat(o['orientation_xyzw']).apply(vertices[o['instance_id']])
+            positions[o['instance_id']]=[-separation/2 if index==0 else separation/2,
+                                         -offset/2 if index==0 else offset/2,
+                                         -float(rotated[:,2].min())+.0002]
+        return {'boxes':collision_ground(d),'subject_positions_m':positions,'D_m':d,
+                'collision_axis_world':[1.,0.,0.],'lateral_axis_world':[0.,1.,0.]}
     o=inputs['objects'][0];d=o['geometry']['characteristic_size_m']
     rotated=Rotation.from_quat(o['orientation_xyzw']).apply(vertices)
     height=float(np.ptp(rotated[:,2]));bottom=float(rotated[:,2].min())
