@@ -151,8 +151,8 @@ def prepare(spec_path, output):
                   action=artifact(output, "action.json"), artifacts=[artifact(output,p) for p in
                       ['fixture.json','geometry/index.json',*[g['path'] for g in geometry.values()],
                        *['source/'+p for p in sources]]], capabilities={
-                      "rigid_contacts": dict(status="not_probed", source="PhysX contact report", reason="Runtime probe required"),
-                      "deformable_contacts": dict(status="not_probed", source="PhysX contact report", reason="Runtime probe required")})
+                      "rigid_contact_impulse": dict(status="not_probed", source="PhysX contact report", reason="Runtime probe required"),
+                      "soft_contact_impulse": dict(status="not_probed", source="PhysX contact report", reason="Runtime probe required")})
     validate_schema(result, "episode")
     write_json(output / "episode.prepared.json", result)
     return result

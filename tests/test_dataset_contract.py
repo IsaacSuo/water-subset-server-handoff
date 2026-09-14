@@ -21,7 +21,8 @@ class ContractTests(unittest.TestCase):
             out = Path(temp)/"episode"
             prepare(CONFIG/"examples/r01_sphere.json",out)
             before = {p.name:p.stat().st_mtime_ns for p in out.iterdir()}
-            validate_episode(out/"episode.prepared.json",check_source=True)
+            episode=validate_episode(out/"episode.prepared.json",check_source=True)
+            self.assertEqual(set(episode['capabilities']),{'rigid_contact_impulse','soft_contact_impulse'})
             self.assertEqual(before,{p.name:p.stat().st_mtime_ns for p in out.iterdir()})
             with self.assertRaises(ValueError):
                 validate_episode(out/"episode.prepared.json",require_complete=True)

@@ -130,7 +130,13 @@ def main():
             bodypx=PhysxSchema.PhysxRigidBodyAPI.Apply(xf.GetPrim())
             bodypx.CreateSolverPositionIterationCountAttr(numerics['rigid_position_iterations']);bodypx.CreateSolverVelocityIterationCountAttr(numerics['rigid_velocity_iterations'])
             bodypx.CreateLinearDampingAttr(profile['linear_damping']);bodypx.CreateAngularDampingAttr(profile['angular_damping'])
-            bodypx.CreateEnableSpeculativeCCDAttr(True)
+            # R02's bounded 240 Hz stair regime moves far less than one body
+            # radius per step. Speculative CCD creates anticipatory contacts in
+            # this regime and suppresses the restitution counterfactual, as the
+            # R03 capability probe already demonstrated. R01 retains its
+            # accepted historical setting.
+            speculative_ccd=spec['event_id']=='R01'
+            bodypx.CreateEnableSpeculativeCCDAttr(speculative_ccd)
             ma=UsdPhysics.MassAPI.Apply(xf.GetPrim());ma.CreateMassAttr(mass);ma.CreateCenterOfMassAttr(Gf.Vec3f(0))
             eigenvalues,eigenvectors=np.linalg.eigh(inertia)
             if np.linalg.det(eigenvectors)<0:eigenvectors[:,0]*=-1
@@ -346,6 +352,7 @@ def main():
                     contact_actor_pairs=[list(p) for p in contacts_seen],physical_representation=kind,
                     runtime='Isaac Sim 6.0.1 / PhysX 110.1.13',dt_s=dt,numerics=numerics,
                     deformable_material_tensor_readback=material_readback,
+                    speculative_ccd_enabled=speculative_ccd if kind=='rigid' else True,
                     action_applications=[dict(command_index=i,kind=command['kind'],target=command['target'],applications=action_applications[i]) for i,command in enumerate(actions)],
                     deformable_material_attributes={a.GetName():str(a.Get()) for a in stage.GetPrimAtPath(physical).GetAttributes()},
                     substep_tet_audit=None if kind=='rigid' else dict(checked_steps=substep_checked,minimum_j=substep_min_j,inverted_tets=substep_inverted))

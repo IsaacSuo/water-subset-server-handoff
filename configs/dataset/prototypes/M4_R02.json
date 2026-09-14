@@ -1,0 +1,13 @@
+{
+  "schema_version": "0.1.0",
+  "seed": 20260915,
+  "geometries": ["rounded_cube", "sphere", "capsule"],
+  "step_count": 5,
+  "baseline_step_height_D": 0.3,
+  "tread_depth_D": 1.5,
+  "baseline_push_speed_m_s": 1.4,
+  "rounded_cube_height_variants_D": [0.2, 0.5],
+  "duration_s": 4.0,
+  "episodes": 11,
+  "pairs": 8
+}

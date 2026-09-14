@@ -10,6 +10,11 @@
       "group": "volumetric",
       "object_count": 1,
       "contract_status": "m4_development"
+    },
+    "R02": {
+      "group": "rigid",
+      "object_count": 1,
+      "contract_status": "m4_development"
     }
   },
   "physics_materials": {

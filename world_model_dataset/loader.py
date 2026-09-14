@@ -10,6 +10,7 @@ from .io import read_json,inside
 class Episode:
     def __init__(self,path,require_complete=True):
         self.root=Path(path)
+        self.require_complete=require_complete
         manifest=self.root/'episode.json'
         if not manifest.exists():manifest=self.root/'episode.prepared.json'
         self.manifest=validate_episode(manifest,require_complete=require_complete)
@@ -27,6 +28,18 @@ class Episode:
         rigid=self.manifest['capabilities'].get('rigid_contact_impulse',{})
         if rigid.get('status')=='native':
             self.capability('rigid_contact_impulse',('native',))
+        elif not getattr(self,'require_complete',True) and (self.root/'native_report.json').is_file():
+            # Physics-only development caches intentionally retain a prepared
+            # lifecycle until observations exist. Permit their already-audited
+            # native rigid stream without pretending the episode is complete.
+            report=read_json(self.root/'native_report.json')
+            validation=read_json(self.root/'physics_validation.json')
+            kind=report.get('physical_representation','')
+            if not kind.startswith('rigid') or not validation['passed'] or not (self.root/'contacts.jsonl').is_file():
+                if kind=='volumetric':
+                    probe=read_json(self.root/'capability_probes/soft_contact_impulse.json')
+                    raise RuntimeError(f"Capability soft_contact_impulse is {probe['status']}: {probe['reason']}")
+                raise RuntimeError('Native rigid contact stream is not available in this development cache')
         else:
             # Select the capability that matches the episode representation so
             # callers receive the real exclusion reason instead of an empty set.

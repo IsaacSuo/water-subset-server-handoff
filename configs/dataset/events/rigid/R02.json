@@ -1,0 +1,28 @@
+{
+  "schema_version": "0.1.0",
+  "id": "R02",
+  "name": "stair_drop",
+  "allowed_physics": ["rigid"],
+  "fixture": "standard_stairs",
+  "actions": ["initial_velocity"],
+  "object_count": 1,
+  "fixture_parameters": ["step_count", "step_height_D", "tread_depth_D"],
+  "action_parameters": ["start_time_s", "push_speed_m_s"],
+  "parameters": {
+    "step_count": [4, 6],
+    "step_height_D": [0.2, 0.5],
+    "tread_depth_D": [1.0, 2.0],
+    "start_time_s": [0.0, 2.0],
+    "push_speed_m_s": [0.0, 2.0]
+  },
+  "metrics": [
+    "contacted_fixture_ids",
+    "first_contact_time_by_fixture_s",
+    "contact_impulse_by_fixture_ns",
+    "maximum_speed_m_s",
+    "maximum_angular_speed_rad_s",
+    "maximum_orientation_change_rad",
+    "final_pose",
+    "final_speed_m_s"
+  ]
+}

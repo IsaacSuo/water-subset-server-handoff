@@ -2,7 +2,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from world_model_dataset.m4 import ensure_r03_specs,generate_r03,ensure_v01_specs,generate_v01
+from world_model_dataset.m4 import (ensure_r02_specs,ensure_r03_specs,ensure_v01_specs,
+                                    generate_r02,generate_r03,generate_v01)
 from world_model_dataset.contract import CONFIG,resolve
 from world_model_dataset.actions import compile_actions
 from world_model_dataset.fixtures import build_fixture
@@ -34,6 +35,22 @@ class M4Tests(unittest.TestCase):
         self.assertEqual({row['objects'][0]['object_id'] for row in rows},{'rounded_cube','sphere','capsule'})
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp)/'v01';self.assertEqual(ensure_v01_specs(root),ensure_v01_specs(root))
+
+    def test_r02_stair_smoke_contract(self):
+        spec=read_json(CONFIG/'examples/r02_rounded_cube_stairs.json');resolved=resolve(spec)
+        vertices=make_geometry(resolved['objects'][0]['geometry']).vertices
+        fixture=build_fixture(spec,resolved,vertices);actions=compile_actions(spec,resolved,fixture)
+        self.assertEqual(resolved['event']['id'],'R02');self.assertEqual(len(fixture['step_ids']),5)
+        self.assertAlmostEqual(fixture['top_surface_z_m'],.3)
+        self.assertAlmostEqual(fixture['start_edge_clearance_m'],.01)
+        self.assertEqual(actions['commands'][0]['kind'],'initial_velocity')
+        self.assertEqual(actions['commands'][0]['parameters']['linear_m_s'],[1.4,0.,0.])
+
+    def test_r02_matrix(self):
+        rows,pairs=generate_r02();self.assertEqual(len(rows),11);self.assertEqual(len(pairs),8)
+        self.assertEqual({row['objects'][0]['object_id'] for row in rows},{'rounded_cube','sphere','capsule'})
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp)/'r02';self.assertEqual(ensure_r02_specs(root),ensure_r02_specs(root))
 
 
 if __name__=='__main__':unittest.main()

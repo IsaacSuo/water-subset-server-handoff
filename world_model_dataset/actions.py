@@ -56,6 +56,11 @@ def compile_actions(spec, inputs, fixture=None):
         # Initial elevation plus the declared environment gravity fully defines
         # free fall. No synthetic release impulse or hidden support is authored.
         pass
+    elif spec["event_id"] == "R02":
+        t=ap["start_time_s"]
+        commands.append(dict(kind="initial_velocity",target=inputs["objects"][0]["instance_id"],
+            start_time_s=t,end_time_s=t,
+            parameters={"linear_m_s":[ap["push_speed_m_s"],0.,0.],"angular_rad_s":[0.,0.,0.]}))
     else:
         raise ValueError("Unimplemented event")
     return dict(schema_version="0.1.0", time_units="s", sample_semantics="command_at_step_start_state_after_step",

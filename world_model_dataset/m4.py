@@ -97,6 +97,43 @@ def ensure_v01_specs(root):
     return _ensure_specs(root,'V01',*generate_v01())
 
 
+def generate_r02(config_path=CONFIG/'prototypes/M4_R02.json'):
+    cfg=read_json(config_path);rows=[];pairs=[]
+    for geometry in cfg['geometries']:
+        base_id=f'r02_{geometry}_reference';family=f'r02_{geometry}'
+        base=dict(schema_version='0.1.0',episode_id=base_id,event_id='R02',environment_id='canonical_studio',
+            camera_set_id='two_fixed',numerics_profile_id='reference',
+            objects=[dict(instance_id='subject',object_id=geometry,physics_profile_id='rigid_reference',
+                          appearance_profile_id='neutral_blue',orientation_xyzw=_orientation(geometry))],
+            fixture_parameters={'step_count':cfg['step_count'],'step_height_D':cfg['baseline_step_height_D'],
+                                'tread_depth_D':cfg['tread_depth_D']},
+            action_parameters={'start_time_s':.5,'push_speed_m_s':cfg['baseline_push_speed_m_s']},
+            timing={'physics_hz':240,'capture_hz':60,'duration_s':cfg['duration_s']},seed=cfg['seed'],
+            counterfactual={'family_id':family,'baseline_episode_id':None,'changed_pointer':None},split='development')
+        rows.append(base)
+        for profile,pointer in (('rigid_low_friction','/objects/0/physics/dynamic_friction'),
+                                ('rigid_bouncy','/objects/0/physics/restitution')):
+            variant=copy.deepcopy(base);suffix=profile.removeprefix('rigid_');variant['episode_id']=f'r02_{geometry}_{suffix}'
+            variant['objects'][0]['physics_profile_id']=profile
+            variant['counterfactual'].update(baseline_episode_id=base_id,changed_pointer=pointer)
+            rows.append(variant);pairs.append((base_id,variant['episode_id']))
+        if geometry=='rounded_cube':
+            for height in cfg['rounded_cube_height_variants_D']:
+                variant=copy.deepcopy(base);suffix=str(height).replace('.','p');variant['episode_id']=f'r02_rounded_cube_height_{suffix}D'
+                variant['fixture_parameters']['step_height_D']=height
+                variant['counterfactual'].update(baseline_episode_id=base_id,changed_pointer='/fixture_parameters/step_height_D')
+                rows.append(variant);pairs.append((base_id,variant['episode_id']))
+    if len(rows)!=cfg['episodes'] or len(pairs)!=cfg['pairs']:raise AssertionError('R02 matrix size mismatch')
+    by_id={row['episode_id']:row for row in rows}
+    for base,variant in pairs:validate_pair(by_id[base],by_id[variant])
+    for row in rows:resolve(row)
+    return rows,pairs
+
+
+def ensure_r02_specs(root):
+    return _ensure_specs(root,'R02',*generate_r02())
+
+
 def _ensure_specs(root,event_id,rows,pairs):
     root=Path(root);definition={'schema_version':'0.1.0','event_id':event_id,
         'episodes':[row['episode_id'] for row in rows],'pairs':[list(pair) for pair in pairs]}
@@ -113,9 +150,10 @@ def _ensure_specs(root,event_id,rows,pairs):
 def main():
     import argparse
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('output',type=Path)
-    parser.add_argument('--event',choices=('R03','V01'),default='R03');parser.add_argument('--limit',type=int,default=0);args=parser.parse_args()
-    generator=generate_r03 if args.event=='R03' else generate_v01
-    ensure=ensure_r03_specs if args.event=='R03' else ensure_v01_specs
+    parser.add_argument('--event',choices=('R03','V01','R02'),default='R03');parser.add_argument('--limit',type=int,default=0);args=parser.parse_args()
+    generators={'R03':generate_r03,'V01':generate_v01,'R02':generate_r02}
+    ensure_functions={'R03':ensure_r03_specs,'V01':ensure_v01_specs,'R02':ensure_r02_specs}
+    generator=generators[args.event];ensure=ensure_functions[args.event]
     rows,pairs=ensure(args.output)
     if args.limit:rows=rows[:args.limit]
     results=args.output/'results';results.mkdir(exist_ok=True);outcomes=[]

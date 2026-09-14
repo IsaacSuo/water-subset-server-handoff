@@ -28,10 +28,12 @@ def ramp(d,angle_deg,length_D=4):
     return flat_ground(d)+[box('ramp',centre,[length,2*d,thickness],a)]
 
 
-def stairs(d,count=5,height_D=.3):
-    if not 4<=count<=6 or not .2<=height_D<=.5:raise ValueError('Outside stair domain')
-    return flat_ground(d)+[box(f'step_{i}',[(i-count/2)*d,0,(count-i)*height_D*d/2],
-                              [d,2*d,(count-i)*height_D*d]) for i in range(count)]
+def stairs(d,count=5,height_D=.3,tread_D=1.5):
+    if int(count)!=count or not 4<=count<=6 or not .2<=height_D<=.5 or not 1.<=tread_D<=2.:
+        raise ValueError('Outside stair domain')
+    count=int(count);tread=tread_D*d
+    return flat_ground(d)+[box(f'step_{i}',[(i-(count-1)/2)*tread,0,(count-i)*height_D*d/2],
+                              [tread,3*d,(count-i)*height_D*d]) for i in range(count)]
 
 
 def obstacles(d):
@@ -71,6 +73,17 @@ def build_fixture(spec,inputs,vertices):
     if spec['event_id']=='V02':
         return {'boxes':compression_plates(d,height),'subject_position_m':[0,0,-bottom+.0002],
                 'rest_height_m':height,'D_m':d}
+    if spec['event_id']=='R02':
+        fp=spec['fixture_parameters'];boxes=stairs(d,fp['step_count'],fp['step_height_D'],fp['tread_depth_D'])
+        top=next(item for item in boxes if item['id']=='step_0')
+        top_surface=top['position_m'][2]+top['size_m'][2]/2
+        front=float(rotated[:,0].max());top_front=top['position_m'][0]+top['size_m'][0]/2
+        edge_clearance=.05*d;start_x=top_front-front-edge_clearance
+        return {'boxes':boxes,'subject_position_m':[start_x,0,top_surface-bottom+.0002],
+                'rest_height_m':height,'D_m':d,'travel_axis_world':[1.,0.,0.],
+                'step_ids':[f"step_{i}" for i in range(int(fp['step_count']))],
+                'top_surface_z_m':top_surface,'bottom_surface_z_m':0.,
+                'start_edge_clearance_m':edge_clearance}
     a=math.radians(spec['fixture_parameters']['angle_deg'])
     n=np.array([math.sin(a),0,math.cos(a)]);u=np.array([math.cos(a),0,-math.sin(a)])
     start=-3.1*d*u

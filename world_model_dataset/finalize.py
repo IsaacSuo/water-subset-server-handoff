@@ -135,11 +135,11 @@ def finalize(out):
         if not motion_ok:missing.append('verified_motion_vectors')
     else:
         observations={};missing.append('observations')
-    kind=native['physical_representation'];count=native['contact_counts']['subject_points']
+    kind=native['physical_representation'];rigid_kind=kind.startswith('rigid')
     soft_evidence='capability_probes/soft_contact_impulse.json'
     ep['capabilities']={
-        'rigid_contact_impulse':dict(status='native' if kind=='rigid' and count else 'not_applicable',source='PhysX contact callback',reason=None,
-            backend_version='Isaac Sim 6.0.1 / PhysX extension 110.1.13',evidence_path='contacts.jsonl' if kind=='rigid' else ''),
+        'rigid_contact_impulse':dict(status='native' if rigid_kind else 'not_applicable',source='PhysX contact callback',reason=None,
+            backend_version='Isaac Sim 6.0.1 / PhysX extension 110.1.13',evidence_path='contacts.jsonl' if rigid_kind else ''),
         'soft_contact_impulse':dict(status='unavailable' if kind=='volumetric' else 'not_applicable',source='PhysX contact capability probe',
             reason='No reliable public deformable contact impulse output; no empty, zero or estimated impulse substituted' if kind=='volumetric' else None,
             backend_version='Isaac Sim 6.0.1 / PhysX extension 110.1.13',evidence_path=soft_evidence if kind=='volumetric' else ''),

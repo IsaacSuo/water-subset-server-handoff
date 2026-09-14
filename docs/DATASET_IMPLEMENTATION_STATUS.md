@@ -10,7 +10,7 @@ Local-only work. No GitHub push or server submission. Fluid baseline unchanged.
 | M1 | Complete and frozen as v0.1 | Separate registries, JSON schema, strict JSON/path/hash/time checks, source snapshots, prepared examples, unified loader and single-variable checker. Release hashes are recorded in `contract_v0_1_release.json`. |
 | M2 | Core framework complete | Four native action types, five fixture families, six diagnostic meshes, shared R01/V02 runner, state/contact caches and post-physics inspection. Legacy 14-environment/42-object fixed-topology data has a truthful read-only bridge; formal resimulation is deferred to M4 event migration. |
 | M3 | R01 complete; V02 cache mechanics retained but material runs superseded | A later M4 native tensor readback found that the old mixed rigid/deformable material prim was not registered by the PhysX deformable backend. The 15 V02 runs remain evidence for actions, topology and cache export under the backend default material, but not for their declared 30/100/300 kPa inputs. |
-| M4 | In progress; R03 and V01 initial matrices complete | R03 has 11 two-body collision episodes over three geometries and eight strict pairs. V01 has 11 free-drop episodes over three geometries and eight strict pairs, with native deformable-material readback. All were reviewed from physics caches without bulk rendering. |
+| M4 | In progress; R03, V01 and R02 initial matrices complete | Each event has 11 physics episodes over three geometries and eight strict pairs. V01 includes native deformable-material readback. All 33 episodes were reviewed from physics caches without bulk rendering. |
 
 ## Current M4 result
 
@@ -46,6 +46,8 @@ checks remain for corrupt/missing data, invalid time axes, non-finite state, top
 failure, missing actions and required rigid contact truth. Surface/proxy overlap is retained
 as an exact diagnostic measurement and interpreted together with native contact and motion;
 it no longer acts as a universal millimetre threshold for every geometry.
+The unified loader can inspect an audited physics-only rigid contact stream only when called
+with `require_complete=False`; this does not promote the prepared cache to a released episode.
 
 ## Current M3 physics result
 
@@ -126,6 +128,8 @@ All paths below are relative to `output/world_model_dataset/v0_1/`.
 | `v01_rounded_cube_drop_smoke04` | Last pre-fix V01 mechanics smoke: verified drop/rebound/topology and the zero-friction fixture, but used backend default deformable material. |
 | `v01_modulus_30k_probe01`, `v01_modulus_100k_probe01`, `v01_modulus_300k_probe01`, `v01_modulus_10mpa_probe04` | Corrected one-second V01 material probes. Native readback matches every declared material and deformation changes strongly with modulus. |
 | `m4_v01_physics_v02` | Current V01 matrix: 11/11 complete, three geometries and eight strict single-variable pairs. All 11 native material readbacks match the declared values; no sampled or substep Tet inversion occurred. |
+| `m4_r02_physics_v01` | Superseded R02 diagnostic matrix. It retained speculative CCD, which made the restitution counterfactual difficult to interpret in the bounded stair regime. |
+| `m4_r02_physics_v02` | Current R02 matrix: 11/11 complete, rounded cube/sphere/capsule and eight strict material or stair-height pairs. Speculative CCD is explicitly disabled for R02. |
 
 The reviewed V01 matrix shows a useful material signal without rendering. For rounded cube,
 sphere and capsule respectively, 30/100/300 kPa produce maximum compression of
@@ -133,6 +137,15 @@ sphere and capsule respectively, 30/100/300 kPa produce maximum compression of
 0.5D/1.5D/3.0D produces 7.50/13.54/17.34% compression. Maximum lateral COM drift is
 0.072 mm across the matrix; the minimum every-step Tet Jacobian is 0.441768 and remains
 positive. Soft-contact impulse remains explicitly unavailable and is not inferred.
+
+The reviewed R02 matrix uses five 0.3D-high, 1.5D-deep treads and a one-shot 1.4 m/s
+initial velocity after 0.5 s of rest. The sphere contacts all five steps and the floor, then
+continues rolling. The rounded-cube reference reaches `step_3`, while its low-friction and
+high-restitution variants settle on `step_2` through different orientation branches. The
+capsule reference and low-friction runs settle on `step_2`; the high-restitution run reaches
+`step_3`. The 0.2D and 0.5D height variants remain finite and stable. Sphere restitution is
+a deliberately difficult comparison in this geometry because the sphere rolls across tread
+edges with little normal closing velocity. No required outcome category is used as a gate.
 
 The first rigid render launcher was stopped during its CPU audit/restart attempt;
 the native renderer had already started and finished independently. All output hashes,
