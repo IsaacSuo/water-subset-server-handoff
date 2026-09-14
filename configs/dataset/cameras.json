@@ -1,0 +1,15 @@
+{
+  "schema_version": "0.1.0",
+  "entries": {
+    "two_fixed": {
+      "resolution": [640, 480],
+      "focal_length_mm": 28.0,
+      "horizontal_aperture_mm": 36.0,
+      "coordinate_convention": "world_Z_up_camera_USD_minusZ_forward_plusY_up",
+      "cameras": [
+        {"id": "front", "position_D": [5.0, -7.0, 5.0], "target_D": [0.0, 0.0, 0.5]},
+        {"id": "rear", "position_D": [-5.0, 6.0, 4.0], "target_D": [0.0, 0.0, 0.5]}
+      ]
+    }
+  }
+}

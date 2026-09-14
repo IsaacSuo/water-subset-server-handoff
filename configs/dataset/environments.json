@@ -1,0 +1,6 @@
+{
+  "schema_version": "0.1.0",
+  "entries": {
+    "canonical_studio": {"track": "canonical_fixture", "background_color": [0.16, 0.18, 0.22], "native_collision": false, "gravity_m_s2": [0.0, 0.0, -9.81]}
+  }
+}

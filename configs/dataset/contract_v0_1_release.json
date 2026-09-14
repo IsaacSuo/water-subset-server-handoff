@@ -1,0 +1,23 @@
+{
+  "contract_version": "0.1.0",
+  "status": "frozen",
+  "frozen_date": "2026-09-14",
+  "scope": ["rigid", "volumetric_deformable"],
+  "files": {
+    "schema.json": "2fb63dcec6392b00dff409e684df4fbe13962697e6b5facffed8a6fbe23b4318",
+    "objects.json": "ebaf91ec087dfd4e3e8b9a7e97557310fdb1c18105eac528342bff42446bc7df",
+    "physics_materials.json": "bdaa849735fba5053a3ea07da757062d02cab5b085dcaf45ecf57f09e48d6dd5",
+    "appearance_materials.json": "354b77025001308771eed1717acf8601221653961a036508da01f98b281c03d5",
+    "environments.json": "1e97a6d6a2d91900ebfb18da327ce07594bd6d6cd736bcd7da7831861289dbb1",
+    "cameras.json": "3a575ceaaa13332671538eb53926ef69980f86272d3d12acb630d020b9cc7ac8",
+    "numerics.json": "8d0ee23498b3b428e567263d519bc6426cfdbe2eff3c3b30c007c78be5d1a94a",
+    "events/rigid/R01.json": "87abd6095df7fb550645d98107960773f504f68fe502300494caa31aad33f733",
+    "events/volumetric/V02.json": "cd254957f77bd2f1884334a649d32500f7d0001eacaa11fbf4288a79524a1d01"
+  },
+  "capability_decisions": {
+    "rigid_contact_impulse": "required_native",
+    "soft_contact_impulse": "unavailable_exclude_dependent_tasks",
+    "geometric_contact": "derived_diagnostic_not_solver_contact",
+    "deformable_replay": "aggregate_repeatability_not_strict_node_trajectory"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "schema_version": "0.1.0",
+  "name": "prototype_only",
+  "assignment": "development",
+  "group_by": "counterfactual_family_id",
+  "release_approved": false,
+  "note": "M3 smoke and boundary episodes are development data, not an OOD benchmark or train/test split. All visual variants remain in the same family."
+}

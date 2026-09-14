@@ -1,0 +1,11 @@
+{
+  "schema_version": "0.1.0",
+  "entries": {
+    "sphere": {"generator": "sphere", "characteristic_size_m": 0.2, "normalization": "max_extent", "rigid_collision": "sphere", "deformable_resolution": 12},
+    "cylinder": {"generator": "cylinder", "characteristic_size_m": 0.2, "normalization": "max_extent", "rigid_collision": "convexHull", "deformable_resolution": 12},
+    "rounded_cube": {"generator": "rounded_cube", "characteristic_size_m": 0.2, "normalization": "max_extent", "rigid_collision": "convexHull", "deformable_resolution": 12},
+    "capsule": {"generator": "capsule", "characteristic_size_m": 0.2, "normalization": "max_extent", "rigid_collision": "convexHull", "deformable_resolution": 12},
+    "l_shape": {"generator": "l_shape", "characteristic_size_m": 0.2, "normalization": "max_extent", "rigid_collision": "convexDecomposition", "deformable_resolution": 12},
+    "ring": {"generator": "ring", "characteristic_size_m": 0.2, "normalization": "max_extent", "rigid_collision": "sdf", "deformable_resolution": 12}
+  }
+}

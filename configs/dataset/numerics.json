@@ -1,0 +1,8 @@
+{
+  "schema_version": "0.1.0",
+  "entries": {
+    "reference": {"rigid_position_iterations": 16, "rigid_velocity_iterations": 4, "deformable_position_iterations": 32, "contact_offset_m": 0.002, "rest_offset_m": 0.0, "external_forces_every_iteration": true},
+    "contact_convergence_128": {"rigid_position_iterations": 16, "rigid_velocity_iterations": 4, "deformable_position_iterations": 128, "contact_offset_m": 0.002, "rest_offset_m": 0.0, "external_forces_every_iteration": true},
+    "v02_contact_early_128": {"rigid_position_iterations": 16, "rigid_velocity_iterations": 4, "deformable_position_iterations": 128, "contact_offset_m": 0.004, "rest_offset_m": 0.0, "external_forces_every_iteration": true}
+  }
+}

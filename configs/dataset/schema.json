@@ -1,0 +1,698 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:interaction-world-model:0.1.0",
+  "$defs": {
+    "spec": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": "0.1.0"
+        },
+        "episode_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+        },
+        "event_id": {
+          "enum": [
+            "R01",
+            "V02"
+          ]
+        },
+        "environment_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+        },
+        "camera_set_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+        },
+        "numerics_profile_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+        },
+        "objects": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "instance_id": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+              },
+              "object_id": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+              },
+              "physics_profile_id": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+              },
+              "appearance_profile_id": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+              },
+              "orientation_xyzw": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 4,
+                "maxItems": 4
+              }
+            },
+            "required": [
+              "instance_id",
+              "object_id",
+              "physics_profile_id",
+              "appearance_profile_id",
+              "orientation_xyzw"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        },
+        "fixture_parameters": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        },
+        "action_parameters": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        },
+        "timing": {
+          "type": "object",
+          "properties": {
+            "physics_hz": {
+              "type": "integer",
+              "minimum": 30,
+              "maximum": 2000
+            },
+            "capture_hz": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 120
+            },
+            "duration_s": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 30
+            }
+          },
+          "required": [
+            "physics_hz",
+            "capture_hz",
+            "duration_s"
+          ],
+          "additionalProperties": false
+        },
+        "seed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "counterfactual": {
+          "type": "object",
+          "properties": {
+            "family_id": {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+            },
+            "baseline_episode_id": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "changed_pointer": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^/"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "family_id",
+            "baseline_episode_id",
+            "changed_pointer"
+          ],
+          "additionalProperties": false
+        },
+        "split": {
+          "const": "development"
+        }
+      },
+      "required": [
+        "schema_version",
+        "episode_id",
+        "event_id",
+        "environment_id",
+        "camera_set_id",
+        "objects",
+        "fixture_parameters",
+        "action_parameters",
+        "timing",
+        "seed",
+        "counterfactual",
+        "split"
+      ],
+      "additionalProperties": false
+    },
+    "artifact": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "path",
+        "sha256",
+        "bytes"
+      ],
+      "additionalProperties": false
+    },
+    "capability": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": [
+            "native",
+            "derived",
+            "unavailable",
+            "not_probed",
+            "not_applicable"
+          ]
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "backend_version": {
+          "type": "string"
+        },
+        "evidence_path": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "source",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "action": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": "0.1.0"
+        },
+        "time_units": {
+          "const": "s"
+        },
+        "sample_semantics": {
+          "const": "command_at_step_start_state_after_step"
+        },
+        "physics_dt_s": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "commands": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "enum": [
+                  "release",
+                  "initial_velocity",
+                  "kinematic_trajectory",
+                  "remove_support"
+                ]
+              },
+              "target": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+              },
+              "start_time_s": {
+                "type": "number",
+                "minimum": 0
+              },
+              "end_time_s": {
+                "type": "number",
+                "minimum": 0
+              },
+              "parameters": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "kind",
+              "target",
+              "start_time_s",
+              "end_time_s",
+              "parameters"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "schema_version",
+        "time_units",
+        "sample_semantics",
+        "physics_dt_s",
+        "commands"
+      ],
+      "additionalProperties": false
+    },
+    "state": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": "0.1.0"
+        },
+        "time_s": {
+          "type": "number",
+          "minimum": 0
+        },
+        "physics_step": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "objects": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "$ref": "#/$defs/object_state"
+          }
+        }
+      },
+      "required": [
+        "schema_version",
+        "time_s",
+        "physics_step",
+        "objects"
+      ],
+      "additionalProperties": false
+    },
+    "object_state": {
+      "type": "object",
+      "properties": {
+        "physics_kind": {
+          "enum": [
+            "rigid",
+            "volumetric"
+          ]
+        },
+        "position_m": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "orientation_xyzw": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "linear_velocity_m_s": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "angular_velocity_rad_s": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "mass_kg": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "inertia_kg_m2": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "kinetic_energy_j": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "potential_energy_j": {
+          "type": "number"
+        },
+        "geometry": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/artifact"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "metrics": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "physics_kind",
+        "position_m",
+        "orientation_xyzw",
+        "linear_velocity_m_s",
+        "angular_velocity_rad_s",
+        "mass_kg",
+        "inertia_kg_m2",
+        "kinetic_energy_j",
+        "potential_energy_j",
+        "geometry",
+        "metrics"
+      ],
+      "additionalProperties": false
+    },
+    "contact": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": "0.1.0"
+        },
+        "time_s": {
+          "type": "number",
+          "minimum": 0
+        },
+        "physics_step": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "dt_s": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "event_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "actor0": {
+          "type": "string"
+        },
+        "actor1": {
+          "type": "string"
+        },
+        "collider0": {
+          "type": "string"
+        },
+        "collider1": {
+          "type": "string"
+        },
+        "source": {
+          "const": "physx_native_contact_report"
+        },
+        "points": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "position_m": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "normal": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "impulse_ns": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "separation_m": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "position_m",
+              "normal",
+              "impulse_ns",
+              "separation_m"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "schema_version",
+        "time_s",
+        "physics_step",
+        "dt_s",
+        "event_type",
+        "actor0",
+        "actor1",
+        "collider0",
+        "collider1",
+        "source",
+        "points"
+      ],
+      "additionalProperties": false
+    },
+    "validation": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": "0.1.0"
+        },
+        "passed": {
+          "type": "boolean"
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "status": {
+                "enum": [
+                  "pass",
+                  "fail",
+                  "unavailable"
+                ]
+              },
+              "detail": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "name",
+              "status",
+              "detail"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        },
+        "missing_required": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "schema_version",
+        "passed",
+        "checks",
+        "missing_required"
+      ],
+      "additionalProperties": false
+    },
+    "episode": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": "0.1.0"
+        },
+        "episode_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+        },
+        "lifecycle": {
+          "enum": [
+            "prepared",
+            "completed",
+            "failed"
+          ]
+        },
+        "spec": {
+          "$ref": "#/$defs/spec"
+        },
+        "inputs": {
+          "type": "object"
+        },
+        "inputs_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "source_commit": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "source_files": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "units": {
+          "type": "object",
+          "properties": {
+            "length": {
+              "const": "m"
+            },
+            "mass": {
+              "const": "kg"
+            },
+            "time": {
+              "const": "s"
+            },
+            "angle": {
+              "const": "rad"
+            },
+            "world_up": {
+              "const": "Z"
+            },
+            "quaternion": {
+              "const": "xyzw"
+            }
+          },
+          "required": [
+            "length",
+            "mass",
+            "time",
+            "angle",
+            "world_up",
+            "quaternion"
+          ],
+          "additionalProperties": false
+        },
+        "action": {
+          "$ref": "#/$defs/artifact"
+        },
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/artifact"
+          },
+          "minItems": 0
+        },
+        "capabilities": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/capability"
+          }
+        }
+      },
+      "required": [
+        "schema_version",
+        "episode_id",
+        "lifecycle",
+        "spec",
+        "inputs",
+        "inputs_sha256",
+        "source_commit",
+        "source_files",
+        "units",
+        "action",
+        "artifacts",
+        "capabilities"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "schema_version": "0.1.0", "id": "R01", "name": "ramp_release",
+  "allowed_physics": ["rigid"], "fixture": "ramp", "actions": ["release"],
+  "parameters": {"angle_deg": [10.0, 30.0], "length_D": [4.0, 4.0], "release_time_s": [0.0, 2.0]},
+  "metrics": ["bottom_arrival_time_s", "max_speed_m_s", "max_angular_speed_rad_s", "horizontal_travel_m", "rolling_sliding_ratio", "final_pose"]
+}

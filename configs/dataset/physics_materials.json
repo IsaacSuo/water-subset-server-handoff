@@ -1,0 +1,10 @@
+{
+  "schema_version": "0.1.0",
+  "entries": {
+    "rigid_reference": {"kind": "rigid", "density_kg_m3": 1000.0, "static_friction": 0.4, "dynamic_friction": 0.3, "restitution": 0.1, "linear_damping": 0.0, "angular_damping": 0.0},
+    "rigid_low_friction": {"kind": "rigid", "density_kg_m3": 1000.0, "static_friction": 0.4, "dynamic_friction": 0.1, "restitution": 0.1, "linear_damping": 0.0, "angular_damping": 0.0},
+    "elastic_reference": {"kind": "volumetric", "density_kg_m3": 1000.0, "dynamic_friction": 0.3, "youngs_modulus_pa": 100000.0, "poissons_ratio": 0.35, "linear_damping": 0.1, "elasticity_damping": 0.005},
+    "elastic_soft": {"kind": "volumetric", "density_kg_m3": 1000.0, "dynamic_friction": 0.3, "youngs_modulus_pa": 30000.0, "poissons_ratio": 0.35, "linear_damping": 0.1, "elasticity_damping": 0.005},
+    "elastic_stiff": {"kind": "volumetric", "density_kg_m3": 1000.0, "dynamic_friction": 0.3, "youngs_modulus_pa": 300000.0, "poissons_ratio": 0.35, "linear_damping": 0.1, "elasticity_damping": 0.005}
+  }
+}

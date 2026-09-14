@@ -1,0 +1,21 @@
+{
+  "schema_version": "0.1.0",
+  "seed": 20260914,
+  "R01": {
+    "geometries": ["sphere", "cylinder", "rounded_cube", "capsule"],
+    "angle_family_deg": [20.0, 10.0, 30.0],
+    "friction_family_profiles": ["rigid_reference", "rigid_low_friction"],
+    "episodes": 20
+  },
+  "V02": {
+    "compression_fractions": [0.1, 0.25, 0.4],
+    "modulus_family_profiles": ["elastic_reference", "elastic_soft", "elastic_stiff"],
+    "compression_duration_family_s": [1.0, 0.5],
+    "numerics_profile_id": "contact_convergence_128",
+    "episodes": 15
+  },
+  "render_all": true,
+  "camera_set_id": "two_fixed",
+  "cycles_selected_episode_ids": ["r01_sphere_angle20", "r01_capsule_angle30", "v02_c0p25_modulus_reference"],
+  "split": "development"
+}

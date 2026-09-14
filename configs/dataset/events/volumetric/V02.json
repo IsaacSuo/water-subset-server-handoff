@@ -1,0 +1,6 @@
+{
+  "schema_version": "0.1.0", "id": "V02", "name": "plate_compress_release",
+  "allowed_physics": ["volumetric"], "fixture": "compression_plates", "actions": ["kinematic_trajectory"],
+  "parameters": {"compression_fraction": [0.1, 0.4], "start_time_s": [0.0, 3.0], "compression_duration_s": [0.1, 3.0], "hold_duration_s": [0.0, 3.0], "withdraw_duration_s": [0.1, 3.0]},
+  "metrics": ["max_compression_fraction", "volume_ratio", "nonrigid_rms_m", "recovery_time_s", "final_shape_residual_m", "inverted_tets", "penetration_m"]
+}

@@ -1,0 +1,11 @@
+{
+  "schema_version": "0.1.0", "episode_id": "r01_sphere_reference",
+  "event_id": "R01", "environment_id": "canonical_studio", "camera_set_id": "two_fixed",
+  "objects": [{"instance_id": "subject", "object_id": "sphere", "physics_profile_id": "rigid_reference", "appearance_profile_id": "neutral_blue", "orientation_xyzw": [0.0, 0.0, 0.0, 1.0]}],
+  "fixture_parameters": {"angle_deg": 20.0, "length_D": 4.0},
+  "action_parameters": {"release_time_s": 0.5},
+  "timing": {"physics_hz": 240, "capture_hz": 30, "duration_s": 4.0},
+  "seed": 20260914,
+  "counterfactual": {"family_id": "r01_sphere_friction", "baseline_episode_id": null, "changed_pointer": null},
+  "split": "development"
+}
