@@ -52,6 +52,10 @@ def compile_actions(spec, inputs, fixture=None):
                                      end_time_s=t+duration, parameters={"interpolation": "smoothstep",
                                          "from_m":location(start),"to_m":location(end)}))
             t += duration
+    elif spec["event_id"] == "V01":
+        # Initial elevation plus the declared environment gravity fully defines
+        # free fall. No synthetic release impulse or hidden support is authored.
+        pass
     else:
         raise ValueError("Unimplemented event")
     return dict(schema_version="0.1.0", time_units="s", sample_semantics="command_at_step_start_state_after_step",

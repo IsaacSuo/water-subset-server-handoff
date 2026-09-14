@@ -74,15 +74,22 @@ def main():
                 static_friction=.4,dynamic_friction=profile['dynamic_friction'],
                 youngs_modulus=profile['youngs_modulus_pa'],poissons_ratio=profile['poissons_ratio']):
                 raise RuntimeError('Deformable material creation failed')
-        mat=UsdPhysics.MaterialAPI.Apply(stage.GetPrimAtPath(physical))
-        mat.CreateStaticFrictionAttr(profile.get('static_friction',.4));mat.CreateDynamicFrictionAttr(profile['dynamic_friction'])
-        mat.CreateRestitutionAttr(profile.get('restitution',0.));mat.CreateDensityAttr(profile['density_kg_m3'])
-        pmat=PhysxSchema.PhysxMaterialAPI.Apply(stage.GetPrimAtPath(physical))
-        pmat.CreateFrictionCombineModeAttr('average');pmat.CreateRestitutionCombineModeAttr('average')
+        else:
+            mat=UsdPhysics.MaterialAPI.Apply(stage.GetPrimAtPath(physical))
+            mat.CreateStaticFrictionAttr(profile.get('static_friction',.4));mat.CreateDynamicFrictionAttr(profile['dynamic_friction'])
+            mat.CreateRestitutionAttr(profile.get('restitution',0.));mat.CreateDensityAttr(profile['density_kg_m3'])
+            pmat=PhysxSchema.PhysxMaterialAPI.Apply(stage.GetPrimAtPath(physical))
+            pmat.CreateFrictionCombineModeAttr('average');pmat.CreateRestitutionCombineModeAttr('average')
         fixture_material='/World/FixtureMaterial'
         UsdShade.Material.Define(stage,fixture_material)
         fm=UsdPhysics.MaterialAPI.Apply(stage.GetPrimAtPath(fixture_material))
-        fm.CreateStaticFrictionAttr(.4);fm.CreateDynamicFrictionAttr(.3);fm.CreateRestitutionAttr(.1)
+        fixture_profile=fixture.get('fixture_material',{})
+        fm.CreateStaticFrictionAttr(fixture_profile.get('static_friction',.4))
+        fm.CreateDynamicFrictionAttr(fixture_profile.get('dynamic_friction',.3))
+        fm.CreateRestitutionAttr(fixture_profile.get('restitution',.1))
+        fixture_pmat=PhysxSchema.PhysxMaterialAPI.Apply(stage.GetPrimAtPath(fixture_material))
+        fixture_pmat.CreateFrictionCombineModeAttr(fixture_profile.get('friction_combine_mode','average'))
+        fixture_pmat.CreateRestitutionCombineModeAttr(fixture_profile.get('restitution_combine_mode','average'))
         translations={};prims={}
 
         def contact_api(prim):
@@ -92,7 +99,7 @@ def main():
             UsdPhysics.CollisionAPI.Apply(prim)
             col=PhysxSchema.PhysxCollisionAPI.Apply(prim)
             col.CreateContactOffsetAttr(numerics['contact_offset_m']);col.CreateRestOffsetAttr(numerics['rest_offset_m'])
-            physicsUtils.add_physics_material_to_prim(stage,prim,Sdf.Path(material_path))
+            if material_path is not None:physicsUtils.add_physics_material_to_prim(stage,prim,Sdf.Path(material_path))
             contact_api(prim)
 
         for b in fixture['boxes']:
@@ -161,7 +168,10 @@ def main():
             elif profile.get('elasticity_damping',0):
                 raise RuntimeError('Configured elasticity damping not exposed by this runtime')
             physicsUtils.add_physics_material_to_prim(stage,prim,Sdf.Path(physical))
-            collision(stage.GetPrimAtPath(coll_path));contact_api(prim)
+            # The deformable material is inherited from the root binding. A
+            # second child binding prevented PhysX 110.1's material tensor view
+            # from registering the material and silently selected defaults.
+            collision(stage.GetPrimAtPath(coll_path),None);contact_api(prim)
 
         actions=read_json(out/'action.json')['commands'];action_applications=[0]*len(actions);state_dir=out/'state';state_dir.mkdir()
         step_index=0;counts={'headers':0,'points':0,'subject_points':0};contacts_seen=set()
@@ -189,7 +199,7 @@ def main():
         # sole physics clock is the explicit simulate/fetch loop below.
         for _ in range(3):app.update()
         simulation.attach_stage(stage_id);attached=True
-        frames=[];sample_rows=[];bind_tet=None;tet_indices=None;tensor_body=None;tensor_view=None
+        frames=[];sample_rows=[];bind_tet=None;tet_indices=None;tensor_body=None;tensor_view=None;material_readback=None
         substep_min_j=float('inf');substep_inverted=0;substep_checked=0
         start=time.monotonic()
 
@@ -282,6 +292,14 @@ def main():
             tensor_view=tensors.create_simulation_view('warp',stage_id)
             tensor_body=tensor_view.create_volume_deformable_body_view(root)
             if tensor_body.count!=1:raise RuntimeError('Expected exactly one native volume body')
+            material_view=tensor_view.create_deformable_material_view(physical+'*')
+            try:
+                material_readback=dict(status='native',count=material_view.count,
+                    youngs_modulus_pa=float(material_view.get_youngs_modulus().numpy()[0,0]),
+                    poissons_ratio=float(material_view.get_poissons_ratio().numpy()[0,0]),
+                    dynamic_friction=float(material_view.get_dynamic_friction().numpy()[0,0]))
+            except Exception as exc:
+                material_readback=dict(status='unavailable',count=0,reason=f'{type(exc).__name__}: {exc}')
         capture(0)
         for step in range(steps):
             t=step*dt
@@ -317,9 +335,9 @@ def main():
             evidence.parent.mkdir()
             write_json(evidence,dict(schema_version='0.1.0',status='unavailable',
                 backend_version='Isaac Sim 6.0.1 / PhysX extension 110.1.13',
-                probe='PhysxContactReportAPI on deformable root, collision tet mesh, floor and kinematic plate; threshold=0; callback subscribed before all explicit steps',
+                probe=f'PhysxContactReportAPI on deformable root, collision tet mesh and all {spec["event_id"]} fixture colliders; threshold=0; callback subscribed before all explicit steps',
                 callback_headers=counts['headers'],callback_points=counts['points'],
-                reason='Installed public contact-report path produced no deformable contact records during verified compression; no zero or estimated impulses substituted',
+                reason=f'Installed public contact-report path produced no deformable contact records during verified {spec["event_id"]} fixture interaction; no zero or estimated impulses substituted',
                 rigid_control_evidence='r01_native_probe02 reported 1051 subject contact points through the same callback family'))
         write_json(out/'state/index.json',dict(schema_version='0.1.0',complete=True,frames=frames))
         stage.GetRootLayer().Export(str(out/'native_final.usda'))
@@ -327,6 +345,7 @@ def main():
                     captured_frames=len(frames),simulated_seconds=duration,contact_counts=counts,
                     contact_actor_pairs=[list(p) for p in contacts_seen],physical_representation=kind,
                     runtime='Isaac Sim 6.0.1 / PhysX 110.1.13',dt_s=dt,numerics=numerics,
+                    deformable_material_tensor_readback=material_readback,
                     action_applications=[dict(command_index=i,kind=command['kind'],target=command['target'],applications=action_applications[i]) for i,command in enumerate(actions)],
                     deformable_material_attributes={a.GetName():str(a.Get()) for a in stage.GetPrimAtPath(physical).GetAttributes()},
                     substep_tet_audit=None if kind=='rigid' else dict(checked_steps=substep_checked,minimum_j=substep_min_j,inverted_tets=substep_inverted))

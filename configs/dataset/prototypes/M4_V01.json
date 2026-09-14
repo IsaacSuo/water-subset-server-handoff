@@ -1,0 +1,12 @@
+{
+  "schema_version": "0.1.0",
+  "seed": 20260914,
+  "geometries": ["rounded_cube", "sphere", "capsule"],
+  "baseline_drop_height_D": 1.5,
+  "physics_profiles": ["elastic_reference", "elastic_soft", "elastic_stiff"],
+  "rounded_cube_height_variants_D": [0.5, 3.0],
+  "numerics_profile_id": "contact_convergence_128",
+  "duration_s": 4.0,
+  "episodes": 11,
+  "pairs": 8
+}

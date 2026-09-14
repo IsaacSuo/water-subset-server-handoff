@@ -62,6 +62,12 @@ def build_fixture(spec,inputs,vertices):
     o=inputs['objects'][0];d=o['geometry']['characteristic_size_m']
     rotated=Rotation.from_quat(o['orientation_xyzw']).apply(vertices)
     height=float(np.ptp(rotated[:,2]));bottom=float(rotated[:,2].min())
+    if spec['event_id']=='V01':
+        clearance=spec['fixture_parameters']['drop_height_D']*d
+        return {'boxes':collision_ground(d),'subject_position_m':[0,0,clearance-bottom],
+                'rest_height_m':height,'drop_clearance_m':clearance,'D_m':d,
+                'fixture_material':{'static_friction':0.,'dynamic_friction':0.,'restitution':0.,
+                                    'friction_combine_mode':'min','restitution_combine_mode':'average'}}
     if spec['event_id']=='V02':
         return {'boxes':compression_plates(d,height),'subject_position_m':[0,0,-bottom+.0002],
                 'rest_height_m':height,'D_m':d}

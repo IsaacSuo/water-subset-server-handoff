@@ -1,0 +1,21 @@
+{
+  "schema_version": "0.1.0",
+  "id": "V01",
+  "name": "soft_body_drop_rebound",
+  "allowed_physics": ["volumetric"],
+  "fixture": "flat_drop_surface",
+  "actions": [],
+  "object_count": 1,
+  "fixture_parameters": ["drop_height_D"],
+  "action_parameters": [],
+  "parameters": {"drop_height_D": [0.5, 5.0]},
+  "metrics": [
+    "impact_time_s",
+    "max_compression_fraction",
+    "rebound_height_m",
+    "shape_recovery_time_s",
+    "final_shape_residual_m",
+    "inverted_tets",
+    "penetration_m"
+  ]
+}

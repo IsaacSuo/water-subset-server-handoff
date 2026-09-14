@@ -11,7 +11,7 @@ from .io import read_json,write_json
 
 
 def _orientation(geometry):
-    return [2**-.5,0.,0.,2**-.5] if geometry=='cylinder' else [0.,0.,0.,1.]
+    return [2**-.5,0.,0.,2**-.5] if geometry in ('cylinder','capsule') else [0.,0.,0.,1.]
 
 
 def generate_r03(config_path=CONFIG/'prototypes/M4_R03.json'):
@@ -63,11 +63,60 @@ def ensure_r03_specs(root):
     write_json(root/'matrix.json',definition);return rows,pairs
 
 
+def generate_v01(config_path=CONFIG/'prototypes/M4_V01.json'):
+    cfg=read_json(config_path);rows=[];pairs=[]
+    for geometry in cfg['geometries']:
+        base_id=f'v01_{geometry}_reference';family=f'v01_{geometry}'
+        base=dict(schema_version='0.1.0',episode_id=base_id,event_id='V01',environment_id='canonical_studio',
+            camera_set_id='two_fixed',numerics_profile_id=cfg['numerics_profile_id'],
+            objects=[dict(instance_id='subject',object_id=geometry,physics_profile_id='elastic_reference',
+                          appearance_profile_id='neutral_blue',orientation_xyzw=_orientation(geometry))],
+            fixture_parameters={'drop_height_D':cfg['baseline_drop_height_D']},action_parameters={},
+            timing={'physics_hz':240,'capture_hz':60,'duration_s':cfg['duration_s']},seed=cfg['seed'],
+            counterfactual={'family_id':family,'baseline_episode_id':None,'changed_pointer':None},split='development')
+        rows.append(base)
+        for profile in ('elastic_soft','elastic_stiff'):
+            variant=copy.deepcopy(base);suffix=profile.removeprefix('elastic_');variant['episode_id']=f'v01_{geometry}_{suffix}'
+            variant['objects'][0]['physics_profile_id']=profile
+            variant['counterfactual'].update(baseline_episode_id=base_id,changed_pointer='/objects/0/physics/youngs_modulus_pa')
+            rows.append(variant);pairs.append((base_id,variant['episode_id']))
+        if geometry=='rounded_cube':
+            for height in cfg['rounded_cube_height_variants_D']:
+                variant=copy.deepcopy(base);suffix=str(height).replace('.','p');variant['episode_id']=f'v01_rounded_cube_height_{suffix}D'
+                variant['fixture_parameters']['drop_height_D']=height
+                variant['counterfactual'].update(baseline_episode_id=base_id,changed_pointer='/fixture_parameters/drop_height_D')
+                rows.append(variant);pairs.append((base_id,variant['episode_id']))
+    if len(rows)!=cfg['episodes'] or len(pairs)!=cfg['pairs']:raise AssertionError('V01 matrix size mismatch')
+    by_id={row['episode_id']:row for row in rows}
+    for base,variant in pairs:validate_pair(by_id[base],by_id[variant])
+    for row in rows:resolve(row)
+    return rows,pairs
+
+
+def ensure_v01_specs(root):
+    return _ensure_specs(root,'V01',*generate_v01())
+
+
+def _ensure_specs(root,event_id,rows,pairs):
+    root=Path(root);definition={'schema_version':'0.1.0','event_id':event_id,
+        'episodes':[row['episode_id'] for row in rows],'pairs':[list(pair) for pair in pairs]}
+    if root.exists():
+        if read_json(root/'matrix.json')!=definition:raise ValueError(f'Existing {event_id} matrix definition differs')
+        for row in rows:
+            if read_json(root/'specs'/(row['episode_id']+'.json'))!=row:raise ValueError(f'Existing {event_id} spec differs: '+row['episode_id'])
+        return rows,pairs
+    (root/'specs').mkdir(parents=True)
+    for row in rows:write_json(root/'specs'/(row['episode_id']+'.json'),row)
+    write_json(root/'matrix.json',definition);return rows,pairs
+
+
 def main():
     import argparse
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('output',type=Path)
-    parser.add_argument('--limit',type=int,default=0);args=parser.parse_args()
-    rows,pairs=ensure_r03_specs(args.output)
+    parser.add_argument('--event',choices=('R03','V01'),default='R03');parser.add_argument('--limit',type=int,default=0);args=parser.parse_args()
+    generator=generate_r03 if args.event=='R03' else generate_v01
+    ensure=ensure_r03_specs if args.event=='R03' else ensure_v01_specs
+    rows,pairs=ensure(args.output)
     if args.limit:rows=rows[:args.limit]
     results=args.output/'results';results.mkdir(exist_ok=True);outcomes=[]
     for row in rows:
@@ -80,13 +129,13 @@ def main():
                 returncode=subprocess.run(command,cwd=ROOT).returncode
             else:returncode=0
             validation=read_json(episode/'physics_validation.json') if (episode/'physics_validation.json').exists() else None
-            if returncode or not validation:raise RuntimeError(f'R03 execution incomplete: {row["episode_id"]}')
+            if returncode or not validation:raise RuntimeError(f'{args.event} execution incomplete: {row["episode_id"]}')
             outcome={'episode_id':row['episode_id'],'physics_passed':validation['passed']}
             write_json(result_path,outcome)
         outcomes.append(outcome)
-        if not outcome['physics_passed']:raise RuntimeError('R03 numerical integrity failed: '+row['episode_id'])
-    complete=len(rows)==len(generate_r03()[0])
-    summary={'schema_version':'0.1.0','event_id':'R03','requested':len(rows),'accepted':len(outcomes),
+        if not outcome['physics_passed']:raise RuntimeError(f'{args.event} numerical integrity failed: '+row['episode_id'])
+    complete=len(rows)==len(generator()[0])
+    summary={'schema_version':'0.1.0','event_id':args.event,'requested':len(rows),'accepted':len(outcomes),
              'complete':complete,'outcomes':outcomes}
     write_json(args.output/('summary.json' if complete else f'progress_{len(rows):03d}.json'),summary)
 

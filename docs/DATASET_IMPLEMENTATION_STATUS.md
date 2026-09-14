@@ -1,6 +1,6 @@
 # Dataset implementation status
 
-Updated: 2026-09-14. Branch: `dataset/interaction-world-model-m4`.
+Updated: 2026-09-15. Branch: `dataset/interaction-world-model-m4`.
 Local-only work. No GitHub push or server submission. Fluid baseline unchanged.
 
 ## Milestones
@@ -9,8 +9,8 @@ Local-only work. No GitHub push or server submission. Fluid baseline unchanged.
 | --- | --- | --- |
 | M1 | Complete and frozen as v0.1 | Separate registries, JSON schema, strict JSON/path/hash/time checks, source snapshots, prepared examples, unified loader and single-variable checker. Release hashes are recorded in `contract_v0_1_release.json`. |
 | M2 | Core framework complete | Four native action types, five fixture families, six diagnostic meshes, shared R01/V02 runner, state/contact caches and post-physics inspection. Legacy 14-environment/42-object fixed-topology data has a truthful read-only bridge; formal resimulation is deferred to M4 event migration. |
-| M3 | Complete in declared physics scope | 20 R01 and 15 V02 physics episodes completed and reviewed. R01 is accepted. V02 is accepted for compression/recovery/topology; weak modulus/speed families and soft impulse are explicitly excluded from those benchmark claims. Bulk rendering is deliberately deferred. |
-| M4 | In progress; R03 initial matrix complete | Reusable multi-rigid backend and R03 two-body collision event are implemented. Eleven physics-only episodes cover three geometries and eight strict single-variable pairs. V01 is next. |
+| M3 | R01 complete; V02 cache mechanics retained but material runs superseded | A later M4 native tensor readback found that the old mixed rigid/deformable material prim was not registered by the PhysX deformable backend. The 15 V02 runs remain evidence for actions, topology and cache export under the backend default material, but not for their declared 30/100/300 kPa inputs. |
+| M4 | In progress; R03 and V01 initial matrices complete | R03 has 11 two-body collision episodes over three geometries and eight strict pairs. V01 has 11 free-drop episodes over three geometries and eight strict pairs, with native deformable-material readback. All were reviewed from physics caches without bulk rendering. |
 
 ## Current M4 result
 
@@ -66,11 +66,21 @@ it no longer acts as a universal millimetre threshold for every geometry.
 - Manual review is recorded in `manual_physics_review.json`; pair/replay scope is recorded
   in `physics_consistency_review.json`.
 
-The current V02 displacement-controlled trajectory does not produce a reliable monotonic
-Young's-modulus response: imposed shapes are nearly equal, and small differences are within
-GPU/contact variability. It must not be advertised as a modulus-identification subset. The
-completed rapid plate-removal probe activated free oscillation but did not recover a reliable
-30 Hz modulus ordering, so material identification is deferred beyond M3.
+The old V02 displacement-controlled runs appeared not to produce a reliable monotonic
+Young's-modulus response. That observation is no longer evidence about the prescribed
+moduli: the backend was using one default deformable material for every run. Those caches
+must not be advertised as a modulus-identification subset. V02 must be rerun through the
+corrected material path before any material or speed conclusion is restored.
+
+Correction discovered during M4: the former deformable material prim combined
+`UsdPhysics.MaterialAPI`, `PhysxMaterialAPI`, `OmniPhysicsDeformableMaterialAPI`, and a
+duplicate collision-child binding. PhysX simulated the body but its deformable-material
+tensor view matched zero materials, so the solver silently used backend defaults. The M3
+V02 modulus conclusion is therefore superseded. The corrected path follows the installed
+`VolumeDeformableDemo.py`: only the Omni deformable API plus PhysX deformable extras are
+placed on the material, and it is bound once at the body root. Native tensor readback is now
+required to match declared modulus, Poisson ratio and dynamic friction. Corrected V01 probes
+show a clear 30/100/300 kPa compression ordering (26.90%, 13.54%, 4.07%).
 
 ## Implemented entrypoints
 
@@ -109,9 +119,20 @@ All paths below are relative to `output/world_model_dataset/v0_1/`.
 | `v02_contact128_probe07` | Single numerical change: deformable position iterations 32→128 at unchanged 240 Hz. 5 s, 151 states; visible overlap 1.116 mm, collision-node overlap 1.399 mm; compression 24.52% of commanded 25%; zero sampled inversions. Geometric checks pass; zero native soft contact reports still prevent acceptance/rendering. Physics loop took 78.7 s. |
 | `m2_action_probe02.json` | Native probe passed all four action types and all five fixture families. |
 | `legacy_bridge01.json` | Read-only inventory passed for 14 legacy environments, 42 objects and their fixed-topology caches. |
-| `m3_physics_v01` | Current reviewed physics matrix: 35/35 complete, 20 R01 plus 15 V02, no bulk rendering. This is the primary M3 physics evidence. |
+| `m3_physics_v01` | Historical 35-run M3 matrix: 20 R01 runs remain valid; 15 V02 caches remain mechanics/topology evidence under the backend default material but are superseded for declared-material comparisons. |
 | `m4_r03_physics_v01` | Partial diagnostic using the inherited one-sided R01 floor; the high-restitution sphere left the finite negative-X edge. Superseded, retained as scene-design evidence. |
 | `m4_r03_physics_v02` | Current R03 physics matrix: 11/11 complete, three geometries and eight strict single-variable pairs; manually reviewed from native state/contact caches. |
+| `m4_v01_physics_v01` | Three-run diagnostic made before the material-registration bug was fixed; the authored modulus was not present in the native deformable-material view. Superseded and not dataset evidence. |
+| `v01_rounded_cube_drop_smoke04` | Last pre-fix V01 mechanics smoke: verified drop/rebound/topology and the zero-friction fixture, but used backend default deformable material. |
+| `v01_modulus_30k_probe01`, `v01_modulus_100k_probe01`, `v01_modulus_300k_probe01`, `v01_modulus_10mpa_probe04` | Corrected one-second V01 material probes. Native readback matches every declared material and deformation changes strongly with modulus. |
+| `m4_v01_physics_v02` | Current V01 matrix: 11/11 complete, three geometries and eight strict single-variable pairs. All 11 native material readbacks match the declared values; no sampled or substep Tet inversion occurred. |
+
+The reviewed V01 matrix shows a useful material signal without rendering. For rounded cube,
+sphere and capsule respectively, 30/100/300 kPa produce maximum compression of
+26.90/13.54/4.07%, 36.80/19.70/12.25%, and 22.12/4.42/3.48%. Rounded-cube drop height
+0.5D/1.5D/3.0D produces 7.50/13.54/17.34% compression. Maximum lateral COM drift is
+0.072 mm across the matrix; the minimum every-step Tet Jacobian is 0.441768 and remains
+positive. Soft-contact impulse remains explicitly unavailable and is not inferred.
 
 The first rigid render launcher was stopped during its CPU audit/restart attempt;
 the native renderer had already started and finished independently. All output hashes,

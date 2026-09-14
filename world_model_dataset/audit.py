@@ -13,6 +13,9 @@ def audit(output):
     if spec['event_id']=='R03':
         from .audit_r03 import audit_r03
         return audit_r03(out)
+    if spec['event_id']=='V01':
+        from .audit_v01 import audit_v01
+        return audit_v01(out)
     report=read_json(out/'native_report.json');index=read_json(out/'state/index.json')
     fixture=read_json(out/'fixture.json');oid=spec['objects'][0]['instance_id']
     times=[];bodies=[];residuals=[];depths=[];surface_reference=None;topology=None
@@ -87,6 +90,13 @@ def audit(output):
         unavailable=evidence['status']=='unavailable' and evidence['callback_headers']==0 and evidence['callback_points']==0
         checks.append(dict(name='soft_contact_impulse',status='unavailable' if unavailable else 'fail',
             detail=evidence['reason']))
+        material=report.get('deformable_material_tensor_readback') or {};expected_material=ep['inputs']['objects'][0]['physics']
+        material_ok=(material.get('status')=='native' and material.get('count')==1 and
+            abs(material.get('youngs_modulus_pa',-1)-expected_material['youngs_modulus_pa'])<=1e-5*expected_material['youngs_modulus_pa'] and
+            abs(material.get('poissons_ratio',-1)-expected_material['poissons_ratio'])<=1e-6 and
+            abs(material.get('dynamic_friction',-1)-expected_material['dynamic_friction'])<=1e-6)
+        check('deformable_material_native_readback',material_ok,
+              f"declared E={expected_material['youngs_modulus_pa']}, nu={expected_material['poissons_ratio']}, friction={expected_material['dynamic_friction']}; native={material}")
     if kind=='rigid' and contact_count:
         check('native_contact_separation',max_contact_depth<.003,f'Max native negative separation {max_contact_depth:.6g} m')
     else:

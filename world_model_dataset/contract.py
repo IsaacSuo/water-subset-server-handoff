@@ -91,6 +91,7 @@ def resolve(spec):
             raise ValueError("Duration must land on both time grids")
     if spec['event_id']=='R01':ends=ap['release_time_s']
     elif spec['event_id']=='V02':ends=sum(ap.values())
+    elif spec['event_id']=='V01':ends=0.
     else:ends=ap['start_time_s']
     if ends >= t["duration_s"]:
         raise ValueError("Episode must include post-action observation")
