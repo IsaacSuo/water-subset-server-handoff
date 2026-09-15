@@ -1,5 +1,6 @@
 """WSL serial local execution; explicit argv, logs, GPU check, no remote writes."""
 import argparse
+import os
 import subprocess
 import sys
 import time
@@ -26,14 +27,20 @@ def invoke(script,output,logname,extra=()):
 
 
 def idle(timeout_s=60):
-    """Wait through the previous Isaac process's short GPU teardown tail."""
+    """Capacity guard for small jobs; other GPU processes are allowed.
+
+    Utilization and nonzero allocation do not imply contention.  Wait only when
+    free VRAM is below the declared reserve needed to start another local Isaac
+    job.  Heavy jobs can raise the reserve with DATASET_MIN_FREE_GPU_MIB.
+    """
+    minimum_free=int(os.environ.get('DATASET_MIN_FREE_GPU_MIB','4096'))
     deadline=time.monotonic()+timeout_s
     while True:
-        lines=subprocess.check_output(['nvidia-smi','--query-gpu=memory.used,utilization.gpu','--format=csv,noheader,nounits'],text=True).splitlines()
-        if not any(int(m)>1024 or int(u)>15 for m,u in (line.split(',') for line in lines)):
+        lines=subprocess.check_output(['nvidia-smi','--query-gpu=memory.free','--format=csv,noheader,nounits'],text=True).splitlines()
+        if any(int(free)>=minimum_free for free in lines):
             return
         if time.monotonic()>=deadline:
-            raise RuntimeError('GPU remained busy; refusing to contend with another application')
+            raise RuntimeError(f'No GPU has the requested {minimum_free} MiB free; refusing likely OOM')
         time.sleep(1)
 
 

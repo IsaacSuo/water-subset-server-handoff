@@ -1,0 +1,28 @@
+{
+  "schema_version": "0.1.0",
+  "id": "R04",
+  "name": "kinematic_push_through_obstacles",
+  "allowed_physics": ["rigid"],
+  "fixture": "obstacle_lane_with_kinematic_pusher",
+  "actions": ["kinematic_trajectory"],
+  "object_count": 1,
+  "fixture_parameters": ["obstacle_offset_D", "subject_offset_D"],
+  "action_parameters": ["start_time_s", "push_distance_D", "push_duration_s"],
+  "parameters": {
+    "obstacle_offset_D": [-0.75, 0.75],
+    "subject_offset_D": [-0.75, 0.75],
+    "start_time_s": [0.0, 2.0],
+    "push_distance_D": [1.0, 8.0],
+    "push_duration_s": [0.25, 4.0]
+  },
+  "metrics": [
+    "contacted_fixture_ids",
+    "contact_order",
+    "pusher_tracking_error_m",
+    "maximum_lateral_displacement_D",
+    "forward_progress_D",
+    "cleared_obstacle",
+    "final_pose",
+    "final_speed_m_s"
+  ]
+}

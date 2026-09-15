@@ -5,7 +5,7 @@ from pathlib import Path
 from world_model_dataset.m4 import (ensure_r02_specs,ensure_r03_specs,ensure_v01_specs,
                                     generate_r02,generate_r03,generate_v01,
                                     generate_v02_corrected,ensure_v02_corrected_specs,
-                                    generate_v05,ensure_v05_specs)
+                                    generate_v05,ensure_v05_specs,generate_r04,ensure_r04_specs)
 from world_model_dataset.contract import CONFIG,resolve,validate_pair
 from world_model_dataset.actions import compile_actions
 from world_model_dataset.fixtures import build_fixture
@@ -91,6 +91,25 @@ class M4Tests(unittest.TestCase):
         self.assertEqual(sum(row['counterfactual']['baseline_episode_id'] is None for row in rows),3)
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp)/'v05';self.assertEqual(ensure_v05_specs(root),ensure_v05_specs(root))
+
+    def test_r04_obstacle_push_contract(self):
+        spec=read_json(CONFIG/'examples/r04_rounded_cube_obstacle_push.json');resolved=resolve(spec)
+        vertices=make_geometry(resolved['objects'][0]['geometry']).vertices
+        fixture=build_fixture(spec,resolved,vertices);actions=compile_actions(spec,resolved,fixture)
+        self.assertEqual(resolved['event']['id'],'R04');self.assertEqual(fixture['pusher_id'],'pusher')
+        self.assertTrue(next(b for b in fixture['boxes'] if b['id']=='pusher')['kinematic'])
+        command=actions['commands'][0];self.assertEqual(command['kind'],'kinematic_trajectory')
+        self.assertAlmostEqual(command['end_time_s'],3.5)
+        self.assertAlmostEqual(command['parameters']['to_m'][0]-command['parameters']['from_m'][0],1.2)
+        obstacle=next(b for b in fixture['boxes'] if b['id']=='obstacle')
+        self.assertNotEqual(obstacle['orientation_xyzw'],[0.,0.,0.,1.])
+
+    def test_r04_matrix(self):
+        rows,pairs=generate_r04();self.assertEqual(len(rows),11);self.assertEqual(len(pairs),8)
+        self.assertEqual({row['objects'][0]['object_id'] for row in rows},{'sphere','rounded_cube','capsule'})
+        self.assertEqual(sum(row['episode_id'].endswith('wide_miss') for row in rows),1)
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp)/'r04';self.assertEqual(ensure_r04_specs(root),ensure_r04_specs(root))
 
 
 if __name__=='__main__':unittest.main()

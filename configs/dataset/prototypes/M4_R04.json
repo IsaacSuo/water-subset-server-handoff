@@ -1,0 +1,15 @@
+{
+  "schema_version": "0.1.0",
+  "seed": 20260915,
+  "episodes": 11,
+  "pairs": 8,
+  "geometries": ["sphere", "rounded_cube", "capsule"],
+  "baseline_subject_offset_D": -0.15,
+  "baseline_obstacle_offset_D": 0.0,
+  "push_distance_D": 1.5,
+  "baseline_push_duration_s": 0.5,
+  "sphere_duration_variants_s": [0.8, 0.3],
+  "sphere_obstacle_offset_variants_D": [0.3],
+  "sphere_subject_offset_variants_D": [0.15, -0.6],
+  "duration_s": 5.0
+}

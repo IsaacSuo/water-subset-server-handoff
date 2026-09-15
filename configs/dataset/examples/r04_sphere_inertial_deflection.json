@@ -1,0 +1,21 @@
+{
+  "schema_version": "0.1.0",
+  "episode_id": "r04_sphere_inertial_deflection_smoke",
+  "event_id": "R04",
+  "environment_id": "canonical_studio",
+  "camera_set_id": "two_fixed",
+  "numerics_profile_id": "reference",
+  "objects": [{
+    "instance_id": "subject",
+    "object_id": "sphere",
+    "physics_profile_id": "rigid_reference",
+    "appearance_profile_id": "neutral_blue",
+    "orientation_xyzw": [0.0, 0.0, 0.0, 1.0]
+  }],
+  "fixture_parameters": {"obstacle_offset_D": 0.0, "subject_offset_D": -0.15},
+  "action_parameters": {"start_time_s": 0.5, "push_distance_D": 1.5, "push_duration_s": 0.5},
+  "timing": {"physics_hz": 240, "capture_hz": 60, "duration_s": 5.0},
+  "seed": 20260915,
+  "counterfactual": {"family_id": "r04_sphere_inertial_deflection", "baseline_episode_id": null, "changed_pointer": null},
+  "split": "development"
+}

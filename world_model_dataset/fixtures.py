@@ -5,9 +5,10 @@ import math
 import numpy as np
 
 
-def box(name,position,size,angle_y=0.,kinematic=False):
+def box(name,position,size,angle_y=0.,kinematic=False,angle_z=0.):
+    sy,cy=math.sin(angle_y/2),math.cos(angle_y/2);sz,cz=math.sin(angle_z/2),math.cos(angle_z/2)
     return dict(id=name,position_m=list(map(float,position)),size_m=list(map(float,size)),
-                orientation_xyzw=[0.,math.sin(angle_y/2),0.,math.cos(angle_y/2)],kinematic=kinematic)
+                orientation_xyzw=[-sz*sy,cz*sy,sz*cy,cz*cy],kinematic=kinematic)
 
 
 def flat_ground(d):
@@ -108,6 +109,23 @@ def build_fixture(spec,inputs,vertices):
                 'step_ids':[f"step_{i}" for i in range(int(fp['step_count']))],
                 'top_surface_z_m':top_surface,'bottom_surface_z_m':0.,
                 'start_edge_clearance_m':edge_clearance}
+    if spec['event_id']=='R04':
+        fp=spec['fixture_parameters'];subject_x=-2*d;subject_y=fp['subject_offset_D']*d
+        subject_position=[subject_x,subject_y,-bottom+.0002]
+        pusher_thickness=.2*d;pusher_gap=.08*d
+        pusher_x=subject_x+float(rotated[:,0].min())-pusher_gap-pusher_thickness/2
+        obstacle_x=.5*d;obstacle_y=fp['obstacle_offset_D']*d
+        boxes=[box('floor',[2*d,0,-.1*d],[14*d,6*d,.2*d]),
+               box('rail_left',[2*d,-2.5*d,.6*d],[14*d,.2*d,1.2*d]),
+               box('rail_right',[2*d,2.5*d,.6*d],[14*d,.2*d,1.2*d]),
+               box('obstacle',[obstacle_x,obstacle_y,.6*d],[.8*d,.8*d,1.2*d],angle_z=math.pi/4),
+               box('pusher',[pusher_x,subject_y,.65*d],[pusher_thickness,1.35*d,1.3*d],kinematic=True)]
+        return {'boxes':boxes,'subject_position_m':subject_position,'rest_height_m':height,'D_m':d,
+                'travel_axis_world':[1.,0.,0.],'lateral_axis_world':[0.,1.,0.],
+                'pusher_id':'pusher','obstacle_id':'obstacle','pusher_start_position_m':boxes[-1]['position_m'],
+                'obstacle_forward_face_x_m':obstacle_x+math.sqrt(2)*.8*d/2,
+                'fixture_material':{'static_friction':.4,'dynamic_friction':.3,'restitution':0.,
+                                    'friction_combine_mode':'min','restitution_combine_mode':'average'}}
     a=math.radians(spec['fixture_parameters']['angle_deg'])
     n=np.array([math.sin(a),0,math.cos(a)]);u=np.array([math.cos(a),0,-math.sin(a)])
     start=-3.1*d*u

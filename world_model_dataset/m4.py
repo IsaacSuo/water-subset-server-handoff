@@ -196,6 +196,49 @@ def ensure_v05_specs(root):
     return _ensure_specs(root,'V05',*generate_v05())
 
 
+def generate_r04(config_path=CONFIG/'prototypes/M4_R04.json'):
+    cfg=read_json(config_path);rows=[];pairs=[]
+    for geometry in cfg['geometries']:
+        base_id=f'r04_{geometry}_reference';family=f'r04_{geometry}'
+        base=dict(schema_version='0.1.0',episode_id=base_id,event_id='R04',environment_id='canonical_studio',
+            camera_set_id='two_fixed',numerics_profile_id='reference',
+            objects=[dict(instance_id='subject',object_id=geometry,physics_profile_id='rigid_reference',
+                          appearance_profile_id='neutral_blue',orientation_xyzw=_orientation(geometry))],
+            fixture_parameters={'obstacle_offset_D':cfg['baseline_obstacle_offset_D'],
+                                'subject_offset_D':cfg['baseline_subject_offset_D']},
+            action_parameters={'start_time_s':.5,'push_distance_D':cfg['push_distance_D'],
+                               'push_duration_s':cfg['baseline_push_duration_s']},
+            timing={'physics_hz':240,'capture_hz':60,'duration_s':cfg['duration_s']},seed=cfg['seed'],
+            counterfactual={'family_id':family,'baseline_episode_id':None,'changed_pointer':None},split='development')
+        rows.append(base)
+        low=copy.deepcopy(base);low['episode_id']=f'r04_{geometry}_low_friction';low['objects'][0]['physics_profile_id']='rigid_low_friction'
+        low['counterfactual'].update(baseline_episode_id=base_id,changed_pointer='/objects/0/physics/dynamic_friction')
+        rows.append(low);pairs.append((base_id,low['episode_id']))
+        if geometry=='sphere':
+            for duration,label in zip(cfg['sphere_duration_variants_s'],('push_slow','push_fast')):
+                row=copy.deepcopy(base);row['episode_id']=f'r04_sphere_{label}';row['action_parameters']['push_duration_s']=duration
+                row['counterfactual'].update(baseline_episode_id=base_id,changed_pointer='/action_parameters/push_duration_s')
+                rows.append(row);pairs.append((base_id,row['episode_id']))
+            for offset in cfg['sphere_obstacle_offset_variants_D']:
+                label='negative' if offset<0 else 'positive';row=copy.deepcopy(base);row['episode_id']=f'r04_sphere_obstacle_{label}'
+                row['fixture_parameters']['obstacle_offset_D']=offset
+                row['counterfactual'].update(baseline_episode_id=base_id,changed_pointer='/fixture_parameters/obstacle_offset_D')
+                rows.append(row);pairs.append((base_id,row['episode_id']))
+            for offset,label in zip(cfg['sphere_subject_offset_variants_D'],('mirror_branch','wide_miss')):
+                row=copy.deepcopy(base);row['episode_id']=f'r04_sphere_{label}';row['fixture_parameters']['subject_offset_D']=offset
+                row['counterfactual'].update(baseline_episode_id=base_id,changed_pointer='/fixture_parameters/subject_offset_D')
+                rows.append(row);pairs.append((base_id,row['episode_id']))
+    if len(rows)!=cfg['episodes'] or len(pairs)!=cfg['pairs']:raise AssertionError('R04 matrix size mismatch')
+    by_id={row['episode_id']:row for row in rows}
+    for a,b in pairs:validate_pair(by_id[a],by_id[b])
+    for row in rows:resolve(row)
+    return rows,pairs
+
+
+def ensure_r04_specs(root):
+    return _ensure_specs(root,'R04',*generate_r04())
+
+
 def _ensure_specs(root,event_id,rows,pairs):
     root=Path(root);definition={'schema_version':'0.1.0','event_id':event_id,
         'episodes':[row['episode_id'] for row in rows],'pairs':[list(pair) for pair in pairs]}
@@ -212,9 +255,9 @@ def _ensure_specs(root,event_id,rows,pairs):
 def main():
     import argparse
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('output',type=Path)
-    parser.add_argument('--event',choices=('R03','V01','R02','V02','V05'),default='R03');parser.add_argument('--limit',type=int,default=0);args=parser.parse_args()
-    generators={'R03':generate_r03,'V01':generate_v01,'R02':generate_r02,'V02':generate_v02_corrected,'V05':generate_v05}
-    ensure_functions={'R03':ensure_r03_specs,'V01':ensure_v01_specs,'R02':ensure_r02_specs,'V02':ensure_v02_corrected_specs,'V05':ensure_v05_specs}
+    parser.add_argument('--event',choices=('R03','V01','R02','V02','V05','R04'),default='R03');parser.add_argument('--limit',type=int,default=0);args=parser.parse_args()
+    generators={'R03':generate_r03,'V01':generate_v01,'R02':generate_r02,'V02':generate_v02_corrected,'V05':generate_v05,'R04':generate_r04}
+    ensure_functions={'R03':ensure_r03_specs,'V01':ensure_v01_specs,'R02':ensure_r02_specs,'V02':ensure_v02_corrected_specs,'V05':ensure_v05_specs,'R04':ensure_r04_specs}
     generator=generators[args.event];ensure=ensure_functions[args.event]
     rows,pairs=ensure(args.output)
     if args.limit:rows=rows[:args.limit]

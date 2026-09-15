@@ -68,6 +68,12 @@ def compile_actions(spec, inputs, fixture=None):
         commands.append(dict(kind="initial_velocity",target=rigid[0]["instance_id"],
             start_time_s=t,end_time_s=t,
             parameters={"linear_m_s":[ap["impact_speed_m_s"],0.,0.],"angular_rad_s":[0.,0.,0.]}))
+    elif spec["event_id"] == "R04":
+        if fixture is None:raise ValueError('R04 action compilation requires its measured fixture')
+        start=fixture['pusher_start_position_m'];distance=ap['push_distance_D']*fixture['D_m'];t=ap['start_time_s']
+        commands.append(dict(kind='kinematic_trajectory',target=fixture['pusher_id'],start_time_s=t,
+            end_time_s=t+ap['push_duration_s'],parameters={'interpolation':'smoothstep',
+                'from_m':start,'to_m':[start[0]+distance,start[1],start[2]]}))
     else:
         raise ValueError("Unimplemented event")
     return dict(schema_version="0.1.0", time_units="s", sample_semantics="command_at_step_start_state_after_step",

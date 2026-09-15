@@ -22,6 +22,9 @@ def audit(output):
     if spec['event_id']=='V05':
         from .audit_v05 import audit_v05
         return audit_v05(out)
+    if spec['event_id']=='R04':
+        from .audit_r04 import audit_r04
+        return audit_r04(out)
     report=read_json(out/'native_report.json');index=read_json(out/'state/index.json')
     fixture=read_json(out/'fixture.json');oid=spec['objects'][0]['instance_id']
     times=[];bodies=[];residuals=[];depths=[];surface_reference=None;topology=None;surfaces=[]

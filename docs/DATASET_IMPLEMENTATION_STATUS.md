@@ -10,7 +10,7 @@ Local-only work. No GitHub push or server submission. Fluid baseline unchanged.
 | M1 | Complete and frozen as v0.1 | Separate registries, JSON schema, strict JSON/path/hash/time checks, source snapshots, prepared examples, unified loader and single-variable checker. Release hashes are recorded in `contract_v0_1_release.json`. |
 | M2 | Core framework complete | Four native action types, five fixture families, six diagnostic meshes, shared R01/V02 runner, state/contact caches and post-physics inspection. Legacy 14-environment/42-object fixed-topology data has a truthful read-only bridge; formal resimulation is deferred to M4 event migration. |
 | M3 | Corrected physical scope complete; observations deferred | R01 remains accepted. Corrected V02: 9 material-readback-matched runs, 6 strict pairs and one bounded repetition. Historical 15 default-material V02 comparisons remain withdrawn. Recovery/reference correction and penetration limits are documented in `DATASET_V02_CORRECTED_REVIEW.md`. |
-| M4 | In progress; R03, V01 and R02 initial matrices complete; V05 hit/miss smoke accepted | Each completed event has 11 physics episodes over three geometries and eight strict pairs. V05 mechanics controls are reviewed in `DATASET_V05_SMOKE_REVIEW.md`; its formal matrix is pending corrected V02. |
+| M4 | In progress; R03, V01, R02 and V05 initial matrices complete | Each event has 11 physics episodes, three or more diagnostic geometries/roles and eight strict pairs. V05 formal results are reviewed in `DATASET_V05_MATRIX_REVIEW.md`. R04 is next. |
 
 ## Current M4 result
 
@@ -96,7 +96,9 @@ python -m world_model_dataset.audit output/world_model_dataset/v0_1/<native_cach
 python -m world_model_dataset.finalize output/world_model_dataset/v0_1/<audited_cache>
 ```
 
-`local` refuses busy GPU, writes native logs, checks both process status and the failure
+`local` uses a free-VRAM capacity guard (4096 MiB by default, configurable with
+`DATASET_MIN_FREE_GPU_MIB`) and permits concurrent small GPU processes; it writes native
+logs, checks both process status and the failure
 report (SimulationApp can exit 0 after an exception), and only renders after physical
 audit passes. Native physics uses Windows Isaac Python; CPU dependencies are not installed
 into or assumed present in the Isaac environment. Output paths are never overwritten.
@@ -136,7 +138,13 @@ All paths below are relative to `output/world_model_dataset/v0_1/`.
 | `v05_sphere_soft_cube_impact_smoke04` | Accepted extended-floor hit baseline. Ground length uses the declared speed domain, not the selected action speed, to keep speed and hit/miss controls on the same fixture. |
 | `v05_sphere_soft_cube_miss_smoke01` | Accepted same-action/same-support lateral miss. Projectile retains 1.5 m/s; no sampled geometric target contact; target changes are settling-scale only. |
 | `m3_v02_material_corrected_v01` | Accepted corrected physical scope: 9 runs, 10/25/40% compression crossed with 30/100/300 kPa, 128 position iterations, 6 strict pairs. Supplemental equilibrium recovery and bounded 25% / 100 kPa repetition evidence preserve original metrics. |
-| `m4_v05_physics_v01` | Formal 11-run V05 definition: baseline, low/high speed, light/heavy projectile, soft/stiff target, eccentric/miss, capsule projectile and soft sphere. Eight strict leaf-level pairs; two extra geometry cases are standalone coverage, not falsely labeled leaf-level pairs. |
+| `m4_v05_physics_v01` | Accepted 11-run V05 physical matrix: baseline, low/high speed, light/heavy projectile, soft/stiff target, eccentric/miss, capsule projectile and soft sphere. Eight strict leaf-level pairs; two geometry cases are standalone coverage. Zero inversions in 7,920 steps; worst minimum J 0.5892 and maximum sampled penetration 1.959 mm occur in the high-speed boundary case. |
+| `r04_rounded_cube_obstacle_push_smoke01` | R04 layout diagnostic: a 6D continuing pusher traps the rounded cube against the obstacle. Retained as a stuck boundary, not the canonical deflection action. |
+| `r04_rounded_cube_deflection_smoke02` | Superseded R04 action diagnostic: angled obstacle added but 2D pusher travel still ends inside the blocked object; abnormal late velocity makes it unsuitable as a normal deflection sample. |
+| `r04_rounded_cube_inertial_deflection_smoke03` | Stable short-push diagnostic: no abnormal late velocity, but the reference-friction cube settles behind the obstacle. The original narrow side clearance is superseded before testing the pass branch. |
+| `r04_rounded_cube_low_friction_deflection_smoke04` | Wider-lane, low-friction test remains stably wedged at the angled obstacle. This is geometry-dependent stuck behavior, not a pass branch or numerical failure. |
+| `r04_sphere_inertial_deflection_smoke05` | Stable pass-branch smoke: pusher → angled obstacle → left rail, with 1.75D lateral displacement and no late velocity explosion. The first audit's X-only clear flag is superseded; formal R04 recognizes lateral clearance after passing the obstacle center. |
+| `m4_r04_physics_v01` | Prepared 11-run R04 definition: sphere, rounded cube and capsule; eight strict pairs over friction, push duration, obstacle offset and subject offset. Includes mirrored routing, wide miss and geometry-dependent stuck/pass outcomes. |
 
 The first completed V05 mechanics smoke identifies geometric contact at 0.633--0.692 s.
 The projectile changes from 1.5 m/s to approximately 0.054 m/s (a small reverse velocity),
