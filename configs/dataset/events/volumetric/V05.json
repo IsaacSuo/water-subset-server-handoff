@@ -1,0 +1,26 @@
+{
+  "schema_version": "0.1.0",
+  "id": "V05",
+  "name": "rigid_soft_impact",
+  "allowed_physics": ["rigid", "volumetric"],
+  "fixture": "flat_impact_lane",
+  "actions": ["initial_velocity"],
+  "object_count": 2,
+  "fixture_parameters": ["separation_D", "impact_offset_D"],
+  "action_parameters": ["start_time_s", "impact_speed_m_s"],
+  "parameters": {
+    "separation_D": [0.5, 4.0],
+    "impact_offset_D": [0.0, 2.0],
+    "start_time_s": [0.0, 2.0],
+    "impact_speed_m_s": [0.1, 5.0]
+  },
+  "metrics": [
+    "closest_surface_distance_m",
+    "projectile_speed_change_m_s",
+    "target_center_displacement_m",
+    "target_maximum_nonrigid_rms_m",
+    "target_final_shape_residual_m",
+    "target_minimum_tet_jacobian",
+    "inverted_tets"
+  ]
+}

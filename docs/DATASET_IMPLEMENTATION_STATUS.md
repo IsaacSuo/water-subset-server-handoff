@@ -10,7 +10,7 @@ Local-only work. No GitHub push or server submission. Fluid baseline unchanged.
 | M1 | Complete and frozen as v0.1 | Separate registries, JSON schema, strict JSON/path/hash/time checks, source snapshots, prepared examples, unified loader and single-variable checker. Release hashes are recorded in `contract_v0_1_release.json`. |
 | M2 | Core framework complete | Four native action types, five fixture families, six diagnostic meshes, shared R01/V02 runner, state/contact caches and post-physics inspection. Legacy 14-environment/42-object fixed-topology data has a truthful read-only bridge; formal resimulation is deferred to M4 event migration. |
 | M3 | R01 complete; V02 cache mechanics retained but material runs superseded | A later M4 native tensor readback found that the old mixed rigid/deformable material prim was not registered by the PhysX deformable backend. The 15 V02 runs remain evidence for actions, topology and cache export under the backend default material, but not for their declared 30/100/300 kPa inputs. |
-| M4 | In progress; R03, V01 and R02 initial matrices complete | Each event has 11 physics episodes over three geometries and eight strict pairs. V01 includes native deformable-material readback. All 33 episodes were reviewed from physics caches without bulk rendering. |
+| M4 | In progress; R03, V01 and R02 initial matrices complete; V05 hit/miss smoke accepted | Each completed event has 11 physics episodes over three geometries and eight strict pairs. V05 mechanics controls are reviewed in `DATASET_V05_SMOKE_REVIEW.md`; its formal matrix is pending corrected V02. |
 
 ## Current M4 result
 
@@ -130,6 +130,23 @@ All paths below are relative to `output/world_model_dataset/v0_1/`.
 | `m4_v01_physics_v02` | Current V01 matrix: 11/11 complete, three geometries and eight strict single-variable pairs. All 11 native material readbacks match the declared values; no sampled or substep Tet inversion occurred. |
 | `m4_r02_physics_v01` | Superseded R02 diagnostic matrix. It retained speculative CCD, which made the restitution counterfactual difficult to interpret in the bounded stair regime. |
 | `m4_r02_physics_v02` | Current R02 matrix: 11/11 complete, rounded cube/sphere/capsule and eight strict material or stair-height pairs. Speculative CCD is explicitly disabled for R02. |
+| `v05_sphere_soft_cube_impact_smoke01` | Initialization failure before first capture: missing Usd import. No usable physics result. |
+| `v05_sphere_soft_cube_impact_smoke02` | First-step diagnostic readback failure: stopped-timeline CPU tensor view lacks nodal-velocity getter. No usable completed physics result. |
+| `v05_sphere_soft_cube_impact_smoke03` | Completed mixed mechanics smoke using native USD nodal velocities, matching 100 kPa material readback, 181 shared captures, and 720 steps without Tet inversion. Retained initial shorter-floor diagnostic; a same-fixture hit/miss pair follows with extended support. |
+| `v05_sphere_soft_cube_impact_smoke04` | Accepted extended-floor hit baseline. Ground length uses the declared speed domain, not the selected action speed, to keep speed and hit/miss controls on the same fixture. |
+| `v05_sphere_soft_cube_miss_smoke01` | Accepted same-action/same-support lateral miss. Projectile retains 1.5 m/s; no sampled geometric target contact; target changes are settling-scale only. |
+| `m3_v02_material_corrected_v01` | Prepared corrected-material matrix: 9 runs, 10/25/40% compression crossed with 30/100/300 kPa, 128 position iterations, 6 strict modulus pairs. Not yet accepted. |
+
+The first completed V05 mechanics smoke identifies geometric contact at 0.633--0.692 s.
+The projectile changes from 1.5 m/s to approximately 0.054 m/s (a small reverse velocity),
+while the free soft target is translated. Every-step local nonrigid displacement peaks at
+21.11 mm; minimum Tet Jacobian is 0.7010 with no inversion. A cache-only preview at the
+shared 0.650 s / step 156 confirms both meshes occupy the same impact frame. Global X extent
+compression is almost zero in this run despite substantial local deformation; it is an
+extent diagnostic, not a substitute for local compression/strain. The collision-node/sphere
+penetration estimate (0.242 mm) is a sampled lower bound, not exact solver penetration.
+Native contact records here cover projectile/floor only. Rigid/soft force and impulse remain
+unavailable, and no impact impulse is estimated from the velocity change.
 
 The reviewed V01 matrix shows a useful material signal without rendering. For rounded cube,
 sphere and capsule respectively, 30/100/300 kPa produce maximum compression of

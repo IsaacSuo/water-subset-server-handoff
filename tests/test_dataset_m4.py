@@ -3,8 +3,9 @@ import unittest
 from pathlib import Path
 
 from world_model_dataset.m4 import (ensure_r02_specs,ensure_r03_specs,ensure_v01_specs,
-                                    generate_r02,generate_r03,generate_v01)
-from world_model_dataset.contract import CONFIG,resolve
+                                    generate_r02,generate_r03,generate_v01,
+                                    generate_v02_corrected,ensure_v02_corrected_specs)
+from world_model_dataset.contract import CONFIG,resolve,validate_pair
 from world_model_dataset.actions import compile_actions
 from world_model_dataset.fixtures import build_fixture
 from world_model_dataset.geometry import make_geometry
@@ -51,6 +52,37 @@ class M4Tests(unittest.TestCase):
         self.assertEqual({row['objects'][0]['object_id'] for row in rows},{'rounded_cube','sphere','capsule'})
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp)/'r02';self.assertEqual(ensure_r02_specs(root),ensure_r02_specs(root))
+
+    def test_v05_mixed_impact_contract(self):
+        spec=read_json(CONFIG/'examples/v05_sphere_soft_cube_impact.json');resolved=resolve(spec)
+        vertices={o['instance_id']:make_geometry(o['geometry']).vertices for o in resolved['objects']}
+        fixture=build_fixture(spec,resolved,vertices);actions=compile_actions(spec,resolved,fixture)
+        self.assertEqual(resolved['event']['id'],'V05')
+        self.assertEqual(fixture['target_id'],'target');self.assertEqual(fixture['projectile_id'],'projectile')
+        self.assertEqual(actions['commands'][0]['target'],'projectile')
+        self.assertEqual(actions['commands'][0]['parameters']['linear_m_s'],[1.5,0.,0.])
+        miss=read_json(CONFIG/'examples/v05_sphere_soft_cube_miss.json')
+        self.assertEqual(validate_pair(spec,miss),['/fixture_parameters/impact_offset_D'])
+        miss_fixture=build_fixture(miss,resolve(miss),vertices)
+        self.assertEqual(fixture['boxes'],miss_fixture['boxes'])
+        self.assertGreater(fixture['boxes'][0]['size_m'][0]/2,1.5*3.)
+
+    def test_corrected_v02_matrix(self):
+        rows,pairs=generate_v02_corrected()
+        self.assertEqual(len(rows),9);self.assertEqual(len(pairs),6)
+        self.assertEqual({r['fixture_parameters']['compression_fraction'] for r in rows},{.1,.25,.4})
+        self.assertEqual({r['objects'][0]['physics_profile_id'] for r in rows},
+                         {'elastic_reference','elastic_soft','elastic_stiff'})
+        self.assertTrue(all(r['numerics_profile_id']=='contact_convergence_128' for r in rows))
+        self.assertTrue(all(r['episode_id'].endswith('_material_corrected') for r in rows))
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp)/'v02';self.assertEqual(ensure_v02_corrected_specs(root),ensure_v02_corrected_specs(root))
+
+    def test_v05_miss_velocity_excludes_launch_from_rest(self):
+        from world_model_dataset.audit_v05 import velocity_comparison_indices
+        times=[0.,.25,.5,.75,1.,1.25]
+        self.assertEqual(velocity_comparison_indices(times,.5,None,None),(3,5))
+        self.assertEqual(velocity_comparison_indices(times,.5,.8,1.05),(3,5))
 
 
 if __name__=='__main__':unittest.main()

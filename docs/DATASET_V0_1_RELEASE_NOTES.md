@@ -3,13 +3,28 @@
 Frozen 2026-09-14 after the R01/V02 vertical prototypes. Release hashes are recorded in
 `configs/dataset/contract_v0_1_release.json`.
 
+## Erratum — 2026-09-15
+
+The Dataset Contract v0.1 schema and release hashes remain frozen. A later native tensor
+readback added during M4 found that the original V02 material prim was not registered by the
+PhysX deformable-material backend. All 15 historical V02 runs therefore used the backend
+default material despite declaring 30/100/300 kPa profiles.
+
+Consequently, the old V02 caches remain accepted only as evidence for action execution,
+fixed-topology surface/Tet export, nodal state export, per-step inversion checks, and stable
+compression under one unspecified backend-default material. Acceptance of their declared
+material comparisons, and all earlier conclusions about modulus sensitivity, is withdrawn.
+M3 physical scope is not closed again until a corrected V02 matrix records matching native
+material tensor readback. Historical caches and manifests are retained rather than rewritten.
+
 ## Accepted scope
 
 - R01 rigid ramp release: native pose, velocity, angular velocity and per-point PhysX
   contact position, normal and impulse. The 20-episode physics matrix is accepted.
 - V02 volume-deformable plate compression: visible surface, simulation Tet state, native
   nodal velocity, compression, volume, recovery, penetration diagnostics and per-substep
-  inversion evidence. The 15-episode matrix is accepted for these tasks.
+  inversion evidence. Subject to the erratum above, the 15-episode matrix is accepted only
+  for representation/action/topology stability under the backend default material.
 - Physics and observation generation are separate. Development can review a physics-only
   cache; a published completed episode still requires its declared observations and final
   manifest. Rendering an accepted cache never reruns PhysX.
@@ -22,10 +37,9 @@ Frozen 2026-09-14 after the R01/V02 vertical prototypes. Release hashes are reco
 - Geometric overlap/intersection is a derived diagnostic, not a solver contact report.
 - GPU deformable trajectories are not claimed bit-deterministic. Aggregate compression,
   recovery, volume and topology results are repeatable; individual transient nodes can differ.
-- The current V02 displacement-controlled modulus and compression-speed families are too
-  weak for a material-identification benchmark. A 0.1 s withdrawal probe activates free
-  oscillation but does not yield a robust monotonic 30 Hz modulus label. Material inference
-  must use a later high-rate free-response or force-observable event.
+- The historical V02 displacement-controlled modulus and compression-speed comparison is
+  invalid because its declared materials were not active in the solver. A corrected matrix
+  is required before judging whether this event is useful for material identification.
 
 ## Local review evidence
 

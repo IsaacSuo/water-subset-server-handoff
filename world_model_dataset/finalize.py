@@ -135,14 +135,15 @@ def finalize(out):
         if not motion_ok:missing.append('verified_motion_vectors')
     else:
         observations={};missing.append('observations')
-    kind=native['physical_representation'];rigid_kind=kind.startswith('rigid')
+    kind=native['physical_representation'];rigid_kind=kind.startswith('rigid');soft_kind='volumetric' in kind
     soft_evidence='capability_probes/soft_contact_impulse.json'
     ep['capabilities']={
-        'rigid_contact_impulse':dict(status='native' if rigid_kind else 'not_applicable',source='PhysX contact callback',reason=None,
+        'rigid_contact_impulse':dict(status='native' if rigid_kind else 'not_applicable',source='PhysX contact callback',
+            reason='Rigid/fixture contacts only; rigid/soft contact impulse remains unavailable' if rigid_kind and soft_kind else None,
             backend_version='Isaac Sim 6.0.1 / PhysX extension 110.1.13',evidence_path='contacts.jsonl' if rigid_kind else ''),
-        'soft_contact_impulse':dict(status='unavailable' if kind=='volumetric' else 'not_applicable',source='PhysX contact capability probe',
-            reason='No reliable public deformable contact impulse output; no empty, zero or estimated impulse substituted' if kind=='volumetric' else None,
-            backend_version='Isaac Sim 6.0.1 / PhysX extension 110.1.13',evidence_path=soft_evidence if kind=='volumetric' else ''),
+        'soft_contact_impulse':dict(status='unavailable' if soft_kind else 'not_applicable',source='PhysX contact capability probe',
+            reason='No reliable public deformable contact impulse output; no empty, zero or estimated impulse substituted' if soft_kind else None,
+            backend_version='Isaac Sim 6.0.1 / PhysX extension 110.1.13',evidence_path=soft_evidence if soft_kind else ''),
         'rgb_depth_segmentation':dict(status='native' if observations else 'unavailable',source='Isaac RTX annotators',reason=None if observations else 'Not rendered'),
         'surface_normals':dict(status='native' if observations and normals_ok else 'unavailable',source='Isaac RTX normals annotator plus analytical fixture check',reason=None if observations and normals_ok else 'Convention validation failed or not rendered'),
         'motion_vectors':dict(status='derived' if observations and motion_ok else 'unavailable',source='Fixed-topology native mesh material correspondence projected through calibrated cameras; RTX depth/segmentation visibility',reason=None if observations and motion_ok else 'Temporal convention validation failed or not rendered'),

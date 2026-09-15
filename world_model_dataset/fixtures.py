@@ -61,6 +61,30 @@ def build_fixture(spec,inputs,vertices):
                                          -float(rotated[:,2].min())+.0002]
         return {'boxes':collision_ground(d),'subject_positions_m':positions,'D_m':d,
                 'collision_axis_world':[1.,0.,0.],'lateral_axis_world':[0.,1.,0.]}
+    if spec['event_id']=='V05':
+        if not isinstance(vertices,dict):raise ValueError('V05 requires per-instance geometry')
+        soft=[o for o in inputs['objects'] if o['physics']['kind']=='volumetric']
+        rigid=[o for o in inputs['objects'] if o['physics']['kind']=='rigid']
+        if len(soft)!=1 or len(rigid)!=1:raise ValueError('V05 requires one volumetric target and one rigid projectile')
+        target,projectile=soft[0],rigid[0];d=target['geometry']['characteristic_size_m']
+        target_vertices=Rotation.from_quat(target['orientation_xyzw']).apply(vertices[target['instance_id']])
+        projectile_vertices=Rotation.from_quat(projectile['orientation_xyzw']).apply(vertices[projectile['instance_id']])
+        separation=spec['fixture_parameters']['separation_D']*d
+        target_position=np.array([0.,0.,-float(target_vertices[:,2].min())+.0002])
+        projectile_x=(float(target_vertices[:,0].min())-float(projectile_vertices[:,0].max())-separation)
+        projectile_position=np.array([projectile_x,spec['fixture_parameters']['impact_offset_D']*d,
+                                      -float(projectile_vertices[:,2].min())+.0002])
+        # Size from the declared speed domain, not the chosen action speed:
+        # speed pairs and hit/miss controls retain the same supporting fixture.
+        speed_limit=inputs['event']['parameters']['impact_speed_m_s'][1]
+        half_length=max(12*d,speed_limit*spec['timing']['duration_s']+4*d)
+        ground=collision_ground(d);ground[0]['size_m'][0]=2*half_length
+        return {'boxes':ground,'subject_positions_m':{
+                    target['instance_id']:target_position.tolist(),projectile['instance_id']:projectile_position.tolist()},
+                'target_id':target['instance_id'],'projectile_id':projectile['instance_id'],'D_m':d,
+                'impact_axis_world':[1.,0.,0.],
+                'fixture_material':{'static_friction':0.,'dynamic_friction':0.,'restitution':0.,
+                                    'friction_combine_mode':'min','restitution_combine_mode':'average'}}
     o=inputs['objects'][0];d=o['geometry']['characteristic_size_m']
     rotated=Rotation.from_quat(o['orientation_xyzw']).apply(vertices)
     height=float(np.ptp(rotated[:,2]));bottom=float(rotated[:,2].min())

@@ -134,6 +134,29 @@ def ensure_r02_specs(root):
     return _ensure_specs(root,'R02',*generate_r02())
 
 
+def generate_v02_corrected():
+    """Nine corrected-material runs; historical M3 specs/caches stay immutable."""
+    from .prototypes import generate
+    original,original_pairs=generate()
+    rows=[copy.deepcopy(row) for row in original
+          if row['event_id']=='V02' and '_modulus_' in row['episode_id']]
+    selected={row['episode_id'] for row in rows}
+    pairs=[pair for pair in original_pairs if set(pair)<=selected]
+    for row in rows:
+        row['episode_id']+='_material_corrected'
+        cf=row['counterfactual'];cf['family_id']+='_material_corrected'
+        if cf['baseline_episode_id']:cf['baseline_episode_id']+='_material_corrected'
+    pairs=[(a+'_material_corrected',b+'_material_corrected') for a,b in pairs]
+    by_id={row['episode_id']:row for row in rows}
+    for a,b in pairs:validate_pair(by_id[a],by_id[b])
+    for row in rows:resolve(row)
+    return rows,pairs
+
+
+def ensure_v02_corrected_specs(root):
+    return _ensure_specs(root,'V02',*generate_v02_corrected())
+
+
 def _ensure_specs(root,event_id,rows,pairs):
     root=Path(root);definition={'schema_version':'0.1.0','event_id':event_id,
         'episodes':[row['episode_id'] for row in rows],'pairs':[list(pair) for pair in pairs]}
@@ -150,9 +173,9 @@ def _ensure_specs(root,event_id,rows,pairs):
 def main():
     import argparse
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('output',type=Path)
-    parser.add_argument('--event',choices=('R03','V01','R02'),default='R03');parser.add_argument('--limit',type=int,default=0);args=parser.parse_args()
-    generators={'R03':generate_r03,'V01':generate_v01,'R02':generate_r02}
-    ensure_functions={'R03':ensure_r03_specs,'V01':ensure_v01_specs,'R02':ensure_r02_specs}
+    parser.add_argument('--event',choices=('R03','V01','R02','V02'),default='R03');parser.add_argument('--limit',type=int,default=0);args=parser.parse_args()
+    generators={'R03':generate_r03,'V01':generate_v01,'R02':generate_r02,'V02':generate_v02_corrected}
+    ensure_functions={'R03':ensure_r03_specs,'V01':ensure_v01_specs,'R02':ensure_r02_specs,'V02':ensure_v02_corrected_specs}
     generator=generators[args.event];ensure=ensure_functions[args.event]
     rows,pairs=ensure(args.output)
     if args.limit:rows=rows[:args.limit]

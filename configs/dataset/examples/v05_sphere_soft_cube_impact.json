@@ -1,0 +1,30 @@
+{
+  "schema_version": "0.1.0",
+  "episode_id": "v05_sphere_soft_cube_impact_smoke",
+  "event_id": "V05",
+  "environment_id": "canonical_studio",
+  "camera_set_id": "two_fixed",
+  "numerics_profile_id": "contact_convergence_128",
+  "objects": [
+    {
+      "instance_id": "target",
+      "object_id": "rounded_cube",
+      "physics_profile_id": "elastic_reference",
+      "appearance_profile_id": "neutral_blue",
+      "orientation_xyzw": [0.0, 0.0, 0.0, 1.0]
+    },
+    {
+      "instance_id": "projectile",
+      "object_id": "sphere",
+      "physics_profile_id": "rigid_reference",
+      "appearance_profile_id": "neutral_orange",
+      "orientation_xyzw": [0.0, 0.0, 0.0, 1.0]
+    }
+  ],
+  "fixture_parameters": {"separation_D": 1.0, "impact_offset_D": 0.0},
+  "action_parameters": {"start_time_s": 0.5, "impact_speed_m_s": 1.5},
+  "timing": {"physics_hz": 240, "capture_hz": 60, "duration_s": 3.0},
+  "seed": 20260915,
+  "counterfactual": {"family_id": "v05_sphere_soft_cube_impact", "baseline_episode_id": null, "changed_pointer": null},
+  "split": "development"
+}
