@@ -189,6 +189,13 @@ R04/R05 另有 4 条真实 STL 刚体补集，验证统一 runner 和凸包碰�
 
 ### M5：Dataset v0.1 与基准
 
+M5A 状态（2026-09-16）：首批观测与渲染切片完成。R01–R05、V01–V05 各选取一条已验收
+缓存，以统一的中性环境、固定事件级相机、统一灯光和 720p/30 fps 编码生成展示视频；优先
+交付香蕉、胡萝卜、椅子和象形物四条真实资产视频。该路径只回放缓存，不重跑物理，并已
+支持单物体与多物体 episode。完整规范与人工抽帧复核见
+[M5A observation review](DATASET_M5A_OBSERVATION_REVIEW.md)。全量多视角 RGB-D、分割、法线、
+运动向量和环境域扩展尚未完成，不能据此宣称整个 M5 完成。
+
 - 生成约 360 条物理 episode。
 - 固定 geometry、material、environment、action 和 compositional OOD 划分。
 - 提供下一状态、多步未来、最终状态、接触、形变和候选动作排序任务。
