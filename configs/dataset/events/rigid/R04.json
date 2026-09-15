@@ -10,7 +10,7 @@
   "action_parameters": ["start_time_s", "push_distance_D", "push_duration_s"],
   "parameters": {
     "obstacle_offset_D": [-0.75, 0.75],
-    "subject_offset_D": [-0.75, 0.75],
+    "subject_offset_D": [-1.5, 1.5],
     "start_time_s": [0.0, 2.0],
     "push_distance_D": [1.0, 8.0],
     "push_duration_s": [0.25, 4.0]

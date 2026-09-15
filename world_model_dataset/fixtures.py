@@ -115,9 +115,13 @@ def build_fixture(spec,inputs,vertices):
         pusher_thickness=.2*d;pusher_gap=.08*d
         pusher_x=subject_x+float(rotated[:,0].min())-pusher_gap-pusher_thickness/2
         obstacle_x=.5*d;obstacle_y=fp['obstacle_offset_D']*d
-        boxes=[box('floor',[2*d,0,-.1*d],[14*d,6*d,.2*d]),
-               box('rail_left',[2*d,-2.5*d,.6*d],[14*d,.2*d,1.2*d]),
-               box('rail_right',[2*d,2.5*d,.6*d],[14*d,.2*d,1.2*d]),
+        # The forward observation lane must also contain an unobstructed miss for
+        # the full episode.  A short lane silently turns that counterfactual into
+        # a table-edge drop instead of an obstacle-routing experiment.
+        lane_center_x=15*d;lane_length=40*d
+        boxes=[box('floor',[lane_center_x,0,-.1*d],[lane_length,6*d,.2*d]),
+               box('rail_left',[lane_center_x,-2.5*d,.6*d],[lane_length,.2*d,1.2*d]),
+               box('rail_right',[lane_center_x,2.5*d,.6*d],[lane_length,.2*d,1.2*d]),
                box('obstacle',[obstacle_x,obstacle_y,.6*d],[.8*d,.8*d,1.2*d],angle_z=math.pi/4),
                box('pusher',[pusher_x,subject_y,.65*d],[pusher_thickness,1.35*d,1.3*d],kinematic=True)]
         return {'boxes':boxes,'subject_position_m':subject_position,'rest_height_m':height,'D_m':d,

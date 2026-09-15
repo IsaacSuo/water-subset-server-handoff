@@ -103,11 +103,14 @@ class M4Tests(unittest.TestCase):
         self.assertAlmostEqual(command['parameters']['to_m'][0]-command['parameters']['from_m'][0],1.2)
         obstacle=next(b for b in fixture['boxes'] if b['id']=='obstacle')
         self.assertNotEqual(obstacle['orientation_xyzw'],[0.,0.,0.,1.])
+        floor=next(b for b in fixture['boxes'] if b['id']=='floor')
+        self.assertGreaterEqual(floor['position_m'][0]+floor['size_m'][0]/2,30*fixture['D_m'])
 
     def test_r04_matrix(self):
         rows,pairs=generate_r04();self.assertEqual(len(rows),11);self.assertEqual(len(pairs),8)
         self.assertEqual({row['objects'][0]['object_id'] for row in rows},{'sphere','rounded_cube','capsule'})
-        self.assertEqual(sum(row['episode_id'].endswith('wide_miss') for row in rows),1)
+        misses=[row for row in rows if row['episode_id'].endswith('wide_miss')]
+        self.assertEqual(len(misses),1);self.assertLessEqual(misses[0]['fixture_parameters']['subject_offset_D'],-1.3)
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp)/'r04';self.assertEqual(ensure_r04_specs(root),ensure_r04_specs(root))
 

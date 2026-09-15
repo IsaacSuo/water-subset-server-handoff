@@ -10,6 +10,6 @@
   "baseline_push_duration_s": 0.5,
   "sphere_duration_variants_s": [0.8, 0.3],
   "sphere_obstacle_offset_variants_D": [0.3],
-  "sphere_subject_offset_variants_D": [0.15, -0.6],
+  "sphere_subject_offset_variants_D": [0.15, -1.35],
   "duration_s": 5.0
 }
