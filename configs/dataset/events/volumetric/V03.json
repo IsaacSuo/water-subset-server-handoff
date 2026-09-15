@@ -1,0 +1,28 @@
+{
+  "schema_version": "0.1.0",
+  "id": "V03",
+  "name": "rigid_load_and_removal",
+  "allowed_physics": ["rigid", "volumetric"],
+  "fixture": "flat_load_support",
+  "actions": ["release", "remove_support"],
+  "object_count": 2,
+  "fixture_parameters": ["load_clearance_D", "load_offset_D"],
+  "action_parameters": ["load_start_time_s", "load_duration_s"],
+  "parameters": {
+    "load_clearance_D": [0.0, 0.1],
+    "load_offset_D": [0.0, 0.5],
+    "load_start_time_s": [0.25, 2.0],
+    "load_duration_s": [0.5, 3.0]
+  },
+  "metrics": [
+    "maximum_height_compression_fraction",
+    "maximum_nonrigid_rms_m",
+    "maximum_local_displacement_m",
+    "maximum_com_sag_m",
+    "hold_shape_change_m",
+    "recovery_time_s",
+    "final_shape_residual_m",
+    "minimum_tet_jacobian",
+    "inverted_tets"
+  ]
+}

@@ -86,6 +86,24 @@ def build_fixture(spec,inputs,vertices):
                 'impact_axis_world':[1.,0.,0.],
                 'fixture_material':{'static_friction':0.,'dynamic_friction':0.,'restitution':0.,
                                     'friction_combine_mode':'min','restitution_combine_mode':'average'}}
+    if spec['event_id']=='V03':
+        if not isinstance(vertices,dict):raise ValueError('V03 requires per-instance geometry')
+        soft=[o for o in inputs['objects'] if o['physics']['kind']=='volumetric']
+        rigid=[o for o in inputs['objects'] if o['physics']['kind']=='rigid']
+        if len(soft)!=1 or len(rigid)!=1:raise ValueError('V03 requires one volumetric target and one rigid load')
+        target,load=soft[0],rigid[0];d=target['geometry']['characteristic_size_m']
+        target_vertices=Rotation.from_quat(target['orientation_xyzw']).apply(vertices[target['instance_id']])
+        load_vertices=Rotation.from_quat(load['orientation_xyzw']).apply(vertices[load['instance_id']])
+        target_position=np.array([0.,0.,-float(target_vertices[:,2].min())+.0002])
+        target_top=target_position[2]+float(target_vertices[:,2].max())
+        load_position=np.array([spec['fixture_parameters']['load_offset_D']*d,0.,
+            target_top+spec['fixture_parameters']['load_clearance_D']*d-float(load_vertices[:,2].min())])
+        return {'boxes':collision_ground(d),'subject_positions_m':{
+                    target['instance_id']:target_position.tolist(),load['instance_id']:load_position.tolist()},
+                'target_id':target['instance_id'],'load_id':load['instance_id'],'D_m':d,
+                'load_axis_world':[0.,0.,-1.],'initially_kinematic_ids':[load['instance_id']],
+                'fixture_material':{'static_friction':.4,'dynamic_friction':.3,'restitution':0.,
+                                    'friction_combine_mode':'min','restitution_combine_mode':'average'}}
     o=inputs['objects'][0];d=o['geometry']['characteristic_size_m']
     rotated=Rotation.from_quat(o['orientation_xyzw']).apply(vertices)
     height=float(np.ptp(rotated[:,2]));bottom=float(rotated[:,2].min())

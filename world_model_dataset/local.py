@@ -50,7 +50,7 @@ def main():
     args=parser.parse_args();idle();prepare(args.spec,args.output)
     validate_episode(args.output/'episode.prepared.json',check_source=True)
     prepared=read_json(args.output/'episode.prepared.json')
-    backends={'R03':'native_rigid_multi.py','V05':'native_mixed.py'}
+    backends={'R03':'native_rigid_multi.py','V05':'native_mixed.py','V03':'native_mixed.py'}
     backend=backends.get(prepared['spec']['event_id'],'native.py')
     invoke(backend,args.output,'simulation.log')
     if not (args.output/'native_report.json').exists():raise RuntimeError('No completion report')

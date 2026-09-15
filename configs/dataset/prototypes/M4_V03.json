@@ -1,0 +1,19 @@
+{
+  "schema_version": "0.1.0",
+  "seed": 20260915,
+  "episodes": 11,
+  "pairs": 7,
+  "baseline_load_profile": "rigid_reference",
+  "load_mass_profiles": ["rigid_light", "rigid_heavy"],
+  "baseline_target_profile": "elastic_reference",
+  "target_modulus_profiles": ["elastic_soft", "elastic_stiff"],
+  "baseline_load_duration_s": 1.5,
+  "load_duration_variants_s": [1.0, 2.5],
+  "load_offset_variant_D": 0.25,
+  "load_geometry_variants": ["sphere", "cylinder"],
+  "target_geometry_variants": ["sphere"],
+  "load_clearance_D": 0.02,
+  "load_start_time_s": 0.5,
+  "duration_s": 5.0,
+  "numerics_profile_id": "contact_convergence_128"
+}

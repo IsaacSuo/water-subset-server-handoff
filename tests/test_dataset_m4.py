@@ -5,7 +5,8 @@ from pathlib import Path
 from world_model_dataset.m4 import (ensure_r02_specs,ensure_r03_specs,ensure_v01_specs,
                                     generate_r02,generate_r03,generate_v01,
                                     generate_v02_corrected,ensure_v02_corrected_specs,
-                                    generate_v05,ensure_v05_specs,generate_r04,ensure_r04_specs)
+                                    generate_v05,ensure_v05_specs,generate_r04,ensure_r04_specs,
+                                    generate_v03,ensure_v03_specs)
 from world_model_dataset.contract import CONFIG,resolve,validate_pair
 from world_model_dataset.actions import compile_actions
 from world_model_dataset.fixtures import build_fixture
@@ -113,6 +114,24 @@ class M4Tests(unittest.TestCase):
         self.assertEqual(len(misses),1);self.assertLessEqual(misses[0]['fixture_parameters']['subject_offset_D'],-1.3)
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp)/'r04';self.assertEqual(ensure_r04_specs(root),ensure_r04_specs(root))
+
+    def test_v03_dynamic_load_contract(self):
+        spec=read_json(CONFIG/'examples/v03_cube_load_smoke.json');resolved=resolve(spec)
+        vertices={obj['instance_id']:make_geometry(obj['geometry']).vertices for obj in resolved['objects']}
+        fixture=build_fixture(spec,resolved,vertices);commands=compile_actions(spec,resolved,fixture)['commands']
+        self.assertEqual(fixture['initially_kinematic_ids'],['load'])
+        self.assertEqual([command['kind'] for command in commands],['release','remove_support'])
+        self.assertEqual([command['parameters']['method'] for command in commands],['set_dynamic','deactivate_actor'])
+        self.assertAlmostEqual(commands[0]['start_time_s'],.5);self.assertAlmostEqual(commands[1]['start_time_s'],2.)
+        self.assertGreater(fixture['subject_positions_m']['load'][2],fixture['subject_positions_m']['target'][2])
+
+    def test_v03_matrix(self):
+        rows,pairs=generate_v03();self.assertEqual(len(rows),11);self.assertEqual(len(pairs),7)
+        self.assertEqual({row['objects'][1]['object_id'] for row in rows},{'rounded_cube','sphere','cylinder'})
+        self.assertEqual({row['objects'][0]['object_id'] for row in rows},{'rounded_cube','sphere'})
+        self.assertEqual(sum(row['counterfactual']['baseline_episode_id'] is None for row in rows),4)
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp)/'v03';self.assertEqual(ensure_v03_specs(root),ensure_v03_specs(root))
 
 
 if __name__=='__main__':unittest.main()

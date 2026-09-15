@@ -74,6 +74,15 @@ def compile_actions(spec, inputs, fixture=None):
         commands.append(dict(kind='kinematic_trajectory',target=fixture['pusher_id'],start_time_s=t,
             end_time_s=t+ap['push_duration_s'],parameters={'interpolation':'smoothstep',
                 'from_m':start,'to_m':[start[0]+distance,start[1],start[2]]}))
+    elif spec["event_id"] == "V03":
+        if fixture is None:raise ValueError('V03 action compilation requires its measured fixture')
+        t=ap['load_start_time_s'];target=fixture['load_id']
+        commands.extend([
+            dict(kind='release',target=target,start_time_s=t,end_time_s=t,
+                 parameters={'method':'set_dynamic'}),
+            dict(kind='remove_support',target=target,start_time_s=t+ap['load_duration_s'],
+                 end_time_s=t+ap['load_duration_s'],parameters={'method':'deactivate_actor'}),
+        ])
     else:
         raise ValueError("Unimplemented event")
     return dict(schema_version="0.1.0", time_units="s", sample_semantics="command_at_step_start_state_after_step",

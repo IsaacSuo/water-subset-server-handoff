@@ -239,6 +239,50 @@ def ensure_r04_specs(root):
     return _ensure_specs(root,'R04',*generate_r04())
 
 
+def generate_v03(config_path=CONFIG/'prototypes/M4_V03.json'):
+    cfg=read_json(config_path);rows=[];pairs=[]
+    base_id='v03_cube_load_reference';family='v03_cube_load'
+    base=dict(schema_version='0.1.0',episode_id=base_id,event_id='V03',environment_id='canonical_studio',
+        camera_set_id='two_fixed',numerics_profile_id=cfg['numerics_profile_id'],
+        objects=[
+            dict(instance_id='target',object_id='rounded_cube',physics_profile_id=cfg['baseline_target_profile'],
+                 appearance_profile_id='neutral_blue',orientation_xyzw=[0.,0.,0.,1.]),
+            dict(instance_id='load',object_id='rounded_cube',physics_profile_id=cfg['baseline_load_profile'],
+                 appearance_profile_id='neutral_orange',orientation_xyzw=[0.,0.,0.,1.]),
+        ],
+        fixture_parameters={'load_clearance_D':cfg['load_clearance_D'],'load_offset_D':0.},
+        action_parameters={'load_start_time_s':cfg['load_start_time_s'],'load_duration_s':cfg['baseline_load_duration_s']},
+        timing={'physics_hz':240,'capture_hz':60,'duration_s':cfg['duration_s']},seed=cfg['seed'],
+        counterfactual={'family_id':family,'baseline_episode_id':None,'changed_pointer':None},split='development')
+    rows.append(base)
+    def variant(label,pointer):
+        row=copy.deepcopy(base);row['episode_id']='v03_'+label
+        row['counterfactual'].update(baseline_episode_id=base_id,changed_pointer=pointer)
+        rows.append(row);pairs.append((base_id,row['episode_id']));return row
+    for profile,label in zip(cfg['load_mass_profiles'],('load_light','load_heavy')):
+        variant(label,'/objects/1/physics/density_kg_m3')['objects'][1]['physics_profile_id']=profile
+    for profile,label in zip(cfg['target_modulus_profiles'],('target_soft','target_stiff')):
+        variant(label,'/objects/0/physics/youngs_modulus_pa')['objects'][0]['physics_profile_id']=profile
+    for duration,label in zip(cfg['load_duration_variants_s'],('duration_short','duration_long')):
+        variant(label,'/action_parameters/load_duration_s')['action_parameters']['load_duration_s']=duration
+    variant('load_eccentric','/fixture_parameters/load_offset_D')['fixture_parameters']['load_offset_D']=cfg['load_offset_variant_D']
+    for geometry in cfg['load_geometry_variants']:
+        row=copy.deepcopy(base);row['episode_id']=f'v03_{geometry}_load_reference';row['objects'][1]['object_id']=geometry
+        row['counterfactual']={'family_id':f'v03_{geometry}_load','baseline_episode_id':None,'changed_pointer':None};rows.append(row)
+    for geometry in cfg['target_geometry_variants']:
+        row=copy.deepcopy(base);row['episode_id']=f'v03_cube_load_soft_{geometry}_reference';row['objects'][0]['object_id']=geometry
+        row['counterfactual']={'family_id':f'v03_soft_{geometry}_target','baseline_episode_id':None,'changed_pointer':None};rows.append(row)
+    if len(rows)!=cfg['episodes'] or len(pairs)!=cfg['pairs']:raise AssertionError('V03 matrix size mismatch')
+    by_id={row['episode_id']:row for row in rows}
+    for a,b in pairs:validate_pair(by_id[a],by_id[b])
+    for row in rows:resolve(row)
+    return rows,pairs
+
+
+def ensure_v03_specs(root):
+    return _ensure_specs(root,'V03',*generate_v03())
+
+
 def _ensure_specs(root,event_id,rows,pairs):
     root=Path(root);definition={'schema_version':'0.1.0','event_id':event_id,
         'episodes':[row['episode_id'] for row in rows],'pairs':[list(pair) for pair in pairs]}
@@ -255,9 +299,9 @@ def _ensure_specs(root,event_id,rows,pairs):
 def main():
     import argparse
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('output',type=Path)
-    parser.add_argument('--event',choices=('R03','V01','R02','V02','V05','R04'),default='R03');parser.add_argument('--limit',type=int,default=0);args=parser.parse_args()
-    generators={'R03':generate_r03,'V01':generate_v01,'R02':generate_r02,'V02':generate_v02_corrected,'V05':generate_v05,'R04':generate_r04}
-    ensure_functions={'R03':ensure_r03_specs,'V01':ensure_v01_specs,'R02':ensure_r02_specs,'V02':ensure_v02_corrected_specs,'V05':ensure_v05_specs,'R04':ensure_r04_specs}
+    parser.add_argument('--event',choices=('R03','V01','R02','V02','V05','R04','V03'),default='R03');parser.add_argument('--limit',type=int,default=0);args=parser.parse_args()
+    generators={'R03':generate_r03,'V01':generate_v01,'R02':generate_r02,'V02':generate_v02_corrected,'V05':generate_v05,'R04':generate_r04,'V03':generate_v03}
+    ensure_functions={'R03':ensure_r03_specs,'V01':ensure_v01_specs,'R02':ensure_r02_specs,'V02':ensure_v02_corrected_specs,'V05':ensure_v05_specs,'R04':ensure_r04_specs,'V03':ensure_v03_specs}
     generator=generators[args.event];ensure=ensure_functions[args.event]
     rows,pairs=ensure(args.output)
     if args.limit:rows=rows[:args.limit]

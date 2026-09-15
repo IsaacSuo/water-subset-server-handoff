@@ -1,4 +1,4 @@
-"""Isaac 6.0 backend for one rigid projectile and one volume-deformable target."""
+"""Isaac 6.0 backend for one rigid actor and one volume-deformable target."""
 from __future__ import annotations
 
 import argparse
@@ -42,7 +42,7 @@ def main():
         from world_model_dataset.metrics import convex_support_planes,convex_support_gap
 
         spec=ep['spec'];inputs=ep['inputs'];objects=inputs['objects']
-        if spec['event_id']!='V05':raise ValueError('Mixed backend currently implements V05 only')
+        if spec['event_id'] not in ('V05','V03'):raise ValueError('Unsupported mixed event')
         soft=[obj for obj in objects if obj['physics']['kind']=='volumetric']
         rigid=[obj for obj in objects if obj['physics']['kind']=='rigid']
         if len(soft)!=1 or len(rigid)!=1:raise ValueError('Expected one rigid and one volumetric object')
@@ -113,6 +113,7 @@ def main():
                 material_px=PhysxSchema.PhysxMaterialAPI.Apply(stage.GetPrimAtPath(material_path))
                 material_px.CreateFrictionCombineModeAttr('min');material_px.CreateRestitutionCombineModeAttr('average')
                 rb=UsdPhysics.RigidBodyAPI.Apply(xf.GetPrim());rb.CreateVelocityAttr(Gf.Vec3f(0));rb.CreateAngularVelocityAttr(Gf.Vec3f(0))
+                rb.CreateKinematicEnabledAttr(oid in fixture.get('initially_kinematic_ids',[]))
                 bodypx=PhysxSchema.PhysxRigidBodyAPI.Apply(xf.GetPrim())
                 bodypx.CreateSolverPositionIterationCountAttr(numerics['rigid_position_iterations'])
                 bodypx.CreateSolverVelocityIterationCountAttr(numerics['rigid_velocity_iterations'])
@@ -127,10 +128,13 @@ def main():
                 if obj['geometry']['rigid_collision']=='sphere':
                     collider=UsdGeom.Sphere.Define(stage,collision_path);collider.CreateRadiusAttr(obj['geometry']['characteristic_size_m']/2)
                     collider.CreateVisibilityAttr(UsdGeom.Tokens.invisible);collision(collider.GetPrim(),material_path)
+                    collision_prim_path=collision_path
                 else:
                     collision(visual.GetPrim(),material_path)
                     UsdPhysics.MeshCollisionAPI.Apply(visual.GetPrim()).CreateApproximationAttr(obj['geometry']['rigid_collision'])
-                contact_api(xf.GetPrim());actor.update(rb=rb,collision_path=collision_path);rigid_actor=actor
+                    collision_prim_path=str(visual.GetPath())
+                contact_api(xf.GetPrim());actor.update(rb=rb,collision_path=collision_path,
+                    collision_prim_path=collision_prim_path);rigid_actor=actor
             else:
                 if not deformableUtils.add_deformable_material(stage,material_path,density=profile['density_kg_m3'],
                     static_friction=.4,dynamic_friction=profile['dynamic_friction'],youngs_modulus=profile['youngs_modulus_pa'],
@@ -201,7 +205,7 @@ def main():
             'geometric_contact_last_time_s':None,
             'penetration_semantics':('analytic sphere signed distance at collision nodes' if rigid[0]['geometry']['rigid_collision']=='sphere'
                 else 'convex visual-mesh support-plane signed gap at collision nodes; positive distances are non-Euclidean lower bounds')+
-                '; sampled penetration lower bound, not solver penetration or exact cooked-hull intersection'}
+                '; sampled rigid/soft penetration lower bound, not solver penetration or exact cooked-hull intersection'}
 
         def capture(step):
             cache=UsdGeom.XformCache(Usd.TimeCode.Default());objects_state={};geometry_paths={}
@@ -261,7 +265,8 @@ def main():
 
         capture(0)
         bind_centered=soft_actor['bind_tet']-soft_actor['bind_tet'].mean(axis=0)
-        bind_axis_extent=float(np.ptp(soft_actor['bind_tet'][:,0]))
+        compression_axis=2 if spec['event_id']=='V03' else 0
+        bind_axis_extent=float(np.ptp(soft_actor['bind_tet'][:,compression_axis]))
         projectile_radius=rigid[0]['geometry']['characteristic_size_m']/2
         sphere_projectile=rigid[0]['geometry']['rigid_collision']=='sphere'
         projectile_planes=None if sphere_projectile else convex_support_planes(rigid_actor['vertices'],rigid_actor['triangles'])
@@ -269,6 +274,7 @@ def main():
         edges=np.unique(np.sort(edges,axis=1),axis=0)
         bind_lengths=np.linalg.norm(soft_actor['bind_tet'][edges[:,1]]-soft_actor['bind_tet'][edges[:,0]],axis=1)
         if np.any(bind_lengths<=1e-12):raise RuntimeError('Degenerate Tet edge in bind pose')
+        rigid_actor_active=True;actor_deactivations=[]
         for step in range(steps):
             for command_index,command in enumerate(actions):
                 if command['kind']=='initial_velocity' and due(command,step,hz):
@@ -276,7 +282,21 @@ def main():
                     body.GetVelocityAttr().Set(Gf.Vec3f(*parameters['linear_m_s']))
                     body.GetAngularVelocityAttr().Set(Gf.Vec3f(*np.degrees(parameters['angular_rad_s'])))
                     action_applications[command_index]+=1
-                elif command['kind']!='initial_velocity':raise ValueError('Unsupported mixed command '+command['kind'])
+                elif command['kind']=='release' and due(command,step,hz):
+                    actor=actors[command['target']]
+                    if command['parameters'].get('method')!='set_dynamic':raise ValueError('Unsupported mixed release method')
+                    actor['rb'].GetKinematicEnabledAttr().Set(False);action_applications[command_index]+=1
+                elif command['kind']=='remove_support' and due(command,step,hz):
+                    actor=actors[command['target']]
+                    if command['parameters'].get('method')!='deactivate_actor':raise ValueError('Unsupported mixed removal method')
+                    actor['rb'].GetVelocityAttr().Set(Gf.Vec3f(0));actor['rb'].GetAngularVelocityAttr().Set(Gf.Vec3f(0))
+                    actor['rb'].GetRigidBodyEnabledAttr().Set(False)
+                    UsdPhysics.CollisionAPI(stage.GetPrimAtPath(actor['collision_prim_path'])).GetCollisionEnabledAttr().Set(False)
+                    UsdGeom.Imageable(actor['xf'].GetPrim()).MakeInvisible()
+                    rigid_actor_active=False;actor_deactivations.append({'target':command['target'],'time_s':step*dt})
+                    action_applications[command_index]+=1
+                elif command['kind'] not in ('initial_velocity','release','remove_support'):
+                    raise ValueError('Unsupported mixed command '+command['kind'])
             step_index=step+1;simulation.simulate(dt,step*dt);simulation.fetch_results()
             mesh=UsdGeom.TetMesh.Get(stage,soft_actor['simulation_path']);current=np.asarray(mesh.GetPointsAttr().Get(),dtype=np.float64)
             ratios=signed_tetrahedron_volumes(current,soft_actor['tet_indices'])/signed_tetrahedron_volumes(soft_actor['bind_tet'],soft_actor['tet_indices'])
@@ -287,7 +307,7 @@ def main():
             local_displacements=current_centered-bind_centered@rotation
             shape_rms=float(np.sqrt(np.mean(np.sum(local_displacements**2,axis=1))))
             local_max=float(np.linalg.norm(local_displacements,axis=1).max())
-            axis_compression=max(0.,1-float(np.ptp((current_centered@rotation.T)[:,0]))/bind_axis_extent)
+            axis_compression=max(0.,1-float(np.ptp((current_centered@rotation.T)[:,compression_axis]))/bind_axis_extent)
             edge_shortening=max(0.,1-float((np.linalg.norm(current[edges[:,1]]-current[edges[:,0]],axis=1)/bind_lengths).min()))
             rigid_speed=float(np.linalg.norm(np.asarray(rigid_actor['rb'].GetVelocityAttr().Get(),dtype=float)))
             soft_velocities=native_nodal_velocities(mesh,len(current))
@@ -313,9 +333,10 @@ def main():
             impact_substeps['maximum_tet_edge_shortening_fraction']=max(impact_substeps['maximum_tet_edge_shortening_fraction'],edge_shortening)
             impact_substeps['maximum_rigid_speed_m_s']=max(impact_substeps['maximum_rigid_speed_m_s'],rigid_speed)
             impact_substeps['maximum_soft_nodal_speed_m_s']=max(impact_substeps['maximum_soft_nodal_speed_m_s'],soft_speed)
-            impact_substeps['minimum_sampled_surface_gap_m']=min(impact_substeps['minimum_sampled_surface_gap_m'],sampled_gap)
-            impact_substeps['maximum_sampled_penetration_m']=max(impact_substeps['maximum_sampled_penetration_m'],-sampled_gap)
-            if sampled_gap<=numerics['contact_offset_m']:
+            if rigid_actor_active:
+                impact_substeps['minimum_sampled_surface_gap_m']=min(impact_substeps['minimum_sampled_surface_gap_m'],sampled_gap)
+                impact_substeps['maximum_sampled_penetration_m']=max(impact_substeps['maximum_sampled_penetration_m'],-sampled_gap)
+            if rigid_actor_active and sampled_gap<=numerics['contact_offset_m']:
                 contact_time=step_index*dt
                 if impact_substeps['geometric_contact_first_time_s'] is None:impact_substeps['geometric_contact_first_time_s']=contact_time
                 impact_substeps['geometric_contact_last_time_s']=contact_time
@@ -336,6 +357,7 @@ def main():
             physical_representation='rigid_volumetric_mixed',runtime='Isaac Sim 6.0.1 / PhysX 110.1.13',dt_s=dt,numerics=numerics,
             object_ids=list(actors),deformable_material_tensor_readback=material_readback,
             soft_velocity_source='PhysX native USD velocity attribute; tensor getter fallback; no position differencing',
+            actor_deactivations=actor_deactivations,
             action_applications=[dict(command_index=i,kind=command['kind'],target=command['target'],applications=action_applications[i]) for i,command in enumerate(actions)],
             substep_tet_audit=dict(checked_steps=substep_checked,minimum_j=substep_min_j,inverted_tets=substep_inverted),
             substep_impact_audit=impact_substeps))
