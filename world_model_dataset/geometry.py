@@ -1,8 +1,15 @@
 """CPU-only diagnostic meshes. D=max rest extent; mass=density*closed volume."""
 from __future__ import annotations
 
+from pathlib import Path
+
 import numpy as np
 import trimesh
+
+from .io import file_hash,inside
+
+
+ROOT=Path(__file__).resolve().parents[1]
 
 
 def make_geometry(entry):
@@ -36,6 +43,13 @@ def make_geometry(entry):
                 k=i*m+j;l=((i+1)%n)*m+j;u=i*m+(j+1)%m;v=((i+1)%n)*m+(j+1)%m
                 faces.extend([[k,l,v],[k,v,u]])
         mesh=trimesh.Trimesh(vertices=points,faces=faces,process=True)
+    elif kind=='stl':
+        source=inside(ROOT,entry['source_path'])
+        if file_hash(source)!=entry['source_sha256']:
+            raise ValueError(f'STL source hash mismatch: {entry["source_path"]}')
+        mesh=trimesh.load_mesh(source,process=True)
+        if not isinstance(mesh,trimesh.Trimesh):
+            raise ValueError(f'STL did not resolve to one mesh: {entry["source_path"]}')
     else:
         raise ValueError(f'Unimplemented geometry: {kind}')
     mesh.fix_normals()

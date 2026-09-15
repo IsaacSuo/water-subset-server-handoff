@@ -323,6 +323,84 @@ def ensure_r05_specs(root):
     return _ensure_specs(root,'R05',*generate_r05())
 
 
+def generate_v04(config_path=CONFIG/'prototypes/M4_V04.json'):
+    cfg=read_json(config_path);base_id='v04_cube_aperture_reference';family='v04_cube_aperture'
+    base=dict(schema_version='0.1.0',episode_id=base_id,event_id='V04',environment_id='canonical_studio',
+        camera_set_id='two_fixed',numerics_profile_id=cfg['numerics_profile_id'],
+        objects=[dict(instance_id='subject',object_id='rounded_cube',physics_profile_id=cfg['baseline_target_profile'],
+                      appearance_profile_id='neutral_blue',orientation_xyzw=[0.,0.,0.,1.])],
+        fixture_parameters={'aperture_width_D':cfg['baseline_aperture_width_D']},
+        action_parameters={'start_time_s':cfg['start_time_s'],'push_distance_D':cfg['baseline_push_distance_D'],
+                           'push_duration_s':cfg['baseline_push_duration_s']},
+        timing={'physics_hz':240,'capture_hz':60,'duration_s':cfg['duration_s']},seed=cfg['seed'],
+        counterfactual={'family_id':family,'baseline_episode_id':None,'changed_pointer':None},split='development')
+    rows=[base];pairs=[]
+    def variant(label,pointer):
+        row=copy.deepcopy(base);row['episode_id']='v04_cube_aperture_'+label
+        row['counterfactual'].update(baseline_episode_id=base_id,changed_pointer=pointer)
+        rows.append(row);pairs.append((base_id,row['episode_id']));return row
+    for width,label in zip(cfg['aperture_width_variants_D'],('narrow','wide')):
+        variant(label,'/fixture_parameters/aperture_width_D')['fixture_parameters']['aperture_width_D']=width
+    for profile,label in zip(cfg['target_modulus_profiles'],('soft','stiff')):
+        variant(label,'/objects/0/physics/youngs_modulus_pa')['objects'][0]['physics_profile_id']=profile
+    for duration,label in zip(cfg['push_duration_variants_s'],('push_fast','push_slow')):
+        variant(label,'/action_parameters/push_duration_s')['action_parameters']['push_duration_s']=duration
+    for distance,label in zip(cfg['push_distance_variants_D'],('push_short','push_long')):
+        variant(label,'/action_parameters/push_distance_D')['action_parameters']['push_distance_D']=distance
+    for geometry in cfg['geometry_variants']:
+        row=copy.deepcopy(base);row['episode_id']=f'v04_{geometry}_aperture_reference';row['objects'][0]['object_id']=geometry
+        row['objects'][0]['orientation_xyzw']=_orientation(geometry)
+        row['counterfactual']={'family_id':f'v04_{geometry}_aperture','baseline_episode_id':None,'changed_pointer':None};rows.append(row)
+    if len(rows)!=cfg['episodes'] or len(pairs)!=cfg['pairs']:raise AssertionError('V04 matrix size mismatch')
+    by_id={row['episode_id']:row for row in rows}
+    for a,b in pairs:validate_pair(by_id[a],by_id[b])
+    for row in rows:resolve(row)
+    return rows,pairs
+
+
+def ensure_v04_specs(root):
+    return _ensure_specs(root,'V04',*generate_v04())
+
+
+def generate_real_rigid_supplement(config_path=CONFIG/'prototypes/M4_REAL_RIGID.json'):
+    cfg=read_json(config_path);common=dict(schema_version='0.1.0',environment_id='canonical_studio',
+        camera_set_id='two_fixed',numerics_profile_id='reference',seed=cfg['seed'],split='development')
+    def obj(instance,geometry,appearance='neutral_blue'):
+        return dict(instance_id=instance,object_id=geometry,physics_profile_id='rigid_reference',
+                    appearance_profile_id=appearance,orientation_xyzw=[0.,0.,0.,1.])
+    rows=[
+        dict(common,episode_id='r03_asset_banana_reference',event_id='R03',
+            objects=[obj('left','asset_banana'),obj('right','asset_banana','neutral_orange')],
+            fixture_parameters={'separation_D':4.,'lateral_offset_D':0.},
+            action_parameters={'start_time_s':.5,'left_speed_m_s':1.,'right_speed_m_s':1.},
+            timing={'physics_hz':240,'capture_hz':60,'duration_s':2.},
+            counterfactual={'family_id':'r03_asset_banana','baseline_episode_id':None,'changed_pointer':None}),
+        dict(common,episode_id='r02_asset_carrot_reference',event_id='R02',objects=[obj('subject','asset_carrot')],
+            fixture_parameters={'step_count':5,'step_height_D':.3,'tread_depth_D':1.5},
+            action_parameters={'start_time_s':.5,'push_speed_m_s':1.4},
+            timing={'physics_hz':240,'capture_hz':60,'duration_s':4.},
+            counterfactual={'family_id':'r02_asset_carrot','baseline_episode_id':None,'changed_pointer':None}),
+        dict(common,episode_id='r04_asset_chair_reference',event_id='R04',objects=[obj('subject','asset_chair')],
+            fixture_parameters={'obstacle_offset_D':0.,'subject_offset_D':-.15},
+            action_parameters={'start_time_s':.5,'push_distance_D':1.5,'push_duration_s':.3},
+            timing={'physics_hz':240,'capture_hz':60,'duration_s':5.},
+            counterfactual={'family_id':'r04_asset_chair','baseline_episode_id':None,'changed_pointer':None}),
+        dict(common,episode_id='r05_stack_asset_elephant_reference',event_id='R05',
+            objects=[obj(f'level_{i}','rounded_cube','neutral_blue' if i%2==0 else 'neutral_orange') for i in range(3)]+[
+                obj('level_3','asset_elephant','neutral_orange')],
+            fixture_parameters={'support_height_D':.6,'level_offset_D':.15},action_parameters={'remove_time_s':1.},
+            timing={'physics_hz':240,'capture_hz':60,'duration_s':4.},
+            counterfactual={'family_id':'r05_stack_asset_elephant','baseline_episode_id':None,'changed_pointer':None}),
+    ]
+    if len(rows)!=cfg['episodes']:raise AssertionError('Real-rigid supplement size mismatch')
+    for row in rows:resolve(row)
+    return rows,[]
+
+
+def ensure_real_rigid_specs(root):
+    return _ensure_specs(root,'REAL_RIGID',*generate_real_rigid_supplement())
+
+
 def _ensure_specs(root,event_id,rows,pairs):
     root=Path(root);definition={'schema_version':'0.1.0','event_id':event_id,
         'episodes':[row['episode_id'] for row in rows],'pairs':[list(pair) for pair in pairs]}
@@ -339,9 +417,9 @@ def _ensure_specs(root,event_id,rows,pairs):
 def main():
     import argparse
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('output',type=Path)
-    parser.add_argument('--event',choices=('R03','V01','R02','V02','V05','R04','V03','R05'),default='R03');parser.add_argument('--limit',type=int,default=0);args=parser.parse_args()
-    generators={'R03':generate_r03,'V01':generate_v01,'R02':generate_r02,'V02':generate_v02_corrected,'V05':generate_v05,'R04':generate_r04,'V03':generate_v03,'R05':generate_r05}
-    ensure_functions={'R03':ensure_r03_specs,'V01':ensure_v01_specs,'R02':ensure_r02_specs,'V02':ensure_v02_corrected_specs,'V05':ensure_v05_specs,'R04':ensure_r04_specs,'V03':ensure_v03_specs,'R05':ensure_r05_specs}
+    parser.add_argument('--event',choices=('R03','V01','R02','V02','V05','R04','V03','R05','V04','REAL_RIGID'),default='R03');parser.add_argument('--limit',type=int,default=0);args=parser.parse_args()
+    generators={'R03':generate_r03,'V01':generate_v01,'R02':generate_r02,'V02':generate_v02_corrected,'V05':generate_v05,'R04':generate_r04,'V03':generate_v03,'R05':generate_r05,'V04':generate_v04,'REAL_RIGID':generate_real_rigid_supplement}
+    ensure_functions={'R03':ensure_r03_specs,'V01':ensure_v01_specs,'R02':ensure_r02_specs,'V02':ensure_v02_corrected_specs,'V05':ensure_v05_specs,'R04':ensure_r04_specs,'V03':ensure_v03_specs,'R05':ensure_r05_specs,'V04':ensure_v04_specs,'REAL_RIGID':ensure_real_rigid_specs}
     generator=generators[args.event];ensure=ensure_functions[args.event]
     rows,pairs=ensure(args.output)
     if args.limit:rows=rows[:args.limit]

@@ -8,7 +8,7 @@ from world_model_dataset.contract import CONFIG, prepare, resolve, validate_epis
 from world_model_dataset.io import file_hash, inside, read_json
 from world_model_dataset.actions import due, sample_trajectory, compile_actions
 from world_model_dataset.finalize import checks_accepted
-from world_model_dataset.loader import Episode
+from world_model_dataset.loader import Episode,_legacy_manual_physics_acceptance
 from world_model_dataset.legacy import inventory
 
 
@@ -150,6 +150,17 @@ class ContractTests(unittest.TestCase):
             next(episode.contacts())
         with self.assertRaisesRegex(RuntimeError,'undeclared'):
             episode.capability('unknown_capability')
+
+    def test_legacy_manual_acceptance_is_narrow(self):
+        with tempfile.TemporaryDirectory() as temp:
+            matrix=Path(temp)/'matrix';root=matrix/'episodes'/'r01_old';root.mkdir(parents=True)
+            (matrix/'matrix.json').write_text(json.dumps({'episodes':['r01_old']}))
+            (matrix/'manual_physics_review.json').write_text(json.dumps({'R01':{'decision':'accepted'}}))
+            manifest={'episode_id':'r01_old','spec':{'event_id':'R01'}}
+            validation={'checks':[{'name':'surface_fixture_intersection_audit','status':'fail'}]}
+            self.assertTrue(_legacy_manual_physics_acceptance(root,manifest,validation))
+            validation['checks'][0]['name']='no_inverted_tets'
+            self.assertFalse(_legacy_manual_physics_acceptance(root,manifest,validation))
 
     def test_legacy_bridge_quarantines_missing_contact_truth(self):
         bridge=inventory()

@@ -35,7 +35,18 @@
       "group": "rigid",
       "object_count": 4,
       "contract_status": "m4_development"
+    },
+    "V04": {
+      "group": "volumetric",
+      "object_count": 1,
+      "contract_status": "m4_development"
     }
+  },
+  "objects": {
+    "asset_banana": {"generator": "stl", "source_path": "assets/simulation_ready_models/banana.stl", "source_sha256": "be46b8210d56639405eb10a0996f6dea0122ac7371200073c436ee9dc0d26397", "characteristic_size_m": 0.2, "normalization": "max_extent", "rigid_collision": "convexHull", "deformable_resolution": 12},
+    "asset_carrot": {"generator": "stl", "source_path": "assets/simulation_ready_models/carrot.stl", "source_sha256": "7d6c0212338be3c21ed13d52f1688896246718a82cdc3dbecdc6f75d709719c4", "characteristic_size_m": 0.2, "normalization": "max_extent", "rigid_collision": "convexHull", "deformable_resolution": 12},
+    "asset_chair": {"generator": "stl", "source_path": "assets/simulation_ready_models/chair.stl", "source_sha256": "b7ffa23cbdcc173eb07d803de956b8c55c49f0f9d23dbb8bb1d42be86df98c33", "characteristic_size_m": 0.2, "normalization": "max_extent", "rigid_collision": "convexHull", "deformable_resolution": 12},
+    "asset_elephant": {"generator": "stl", "source_path": "assets/simulation_ready_models/elephant.stl", "source_sha256": "e6224d13e89b4dcb9ac5dd7fed2b32fe2b6799f2981929ad094f418a07a06b10", "characteristic_size_m": 0.2, "normalization": "max_extent", "rigid_collision": "convexHull", "deformable_resolution": 12}
   },
   "physics_materials": {
     "rigid_light": {

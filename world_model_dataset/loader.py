@@ -7,6 +7,19 @@ from .contract import validate_episode,validate_schema,artifact
 from .io import read_json,inside
 
 
+def _legacy_manual_physics_acceptance(root,manifest,validation):
+    """Recognize the narrow, documented R01 pre-policy compatibility case."""
+    root=Path(root);matrix=root.parent.parent
+    review_path=matrix/'manual_physics_review.json';definition_path=matrix/'matrix.json'
+    failures={item['name'] for item in validation.get('checks',[]) if item['status']=='fail'}
+    if failures!={'surface_fixture_intersection_audit'} or not review_path.is_file() or not definition_path.is_file():
+        return False
+    review=read_json(review_path);event_id=manifest['spec']['event_id'];section=review.get(event_id,{})
+    definition=read_json(definition_path)
+    return (root.parent.name=='episodes' and section.get('decision')=='accepted' and
+            manifest['episode_id'] in definition.get('episodes',[]))
+
+
 class Episode:
     def __init__(self,path,require_complete=True):
         self.root=Path(path)
@@ -35,7 +48,8 @@ class Episode:
             report=read_json(self.root/'native_report.json')
             validation=read_json(self.root/'physics_validation.json')
             kind=report.get('physical_representation','')
-            if not kind.startswith('rigid') or not validation['passed'] or not (self.root/'contacts.jsonl').is_file():
+            accepted=validation['passed'] or _legacy_manual_physics_acceptance(self.root,self.manifest,validation)
+            if not kind.startswith('rigid') or not accepted or not (self.root/'contacts.jsonl').is_file():
                 if kind=='volumetric':
                     probe=read_json(self.root/'capability_probes/soft_contact_impulse.json')
                     raise RuntimeError(f"Capability soft_contact_impulse is {probe['status']}: {probe['reason']}")

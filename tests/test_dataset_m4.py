@@ -6,7 +6,9 @@ from world_model_dataset.m4 import (ensure_r02_specs,ensure_r03_specs,ensure_v01
                                     generate_r02,generate_r03,generate_v01,
                                     generate_v02_corrected,ensure_v02_corrected_specs,
                                     generate_v05,ensure_v05_specs,generate_r04,ensure_r04_specs,
-                                    generate_v03,ensure_v03_specs,generate_r05,ensure_r05_specs)
+                                    generate_v03,ensure_v03_specs,generate_r05,ensure_r05_specs,
+                                    generate_v04,ensure_v04_specs,generate_real_rigid_supplement,
+                                    ensure_real_rigid_specs)
 from world_model_dataset.contract import CONFIG,resolve,validate_pair
 from world_model_dataset.actions import compile_actions
 from world_model_dataset.fixtures import build_fixture
@@ -151,6 +153,35 @@ class M4Tests(unittest.TestCase):
         self.assertEqual(sum(row['counterfactual']['baseline_episode_id'] is None for row in rows),3)
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp)/'r05';self.assertEqual(ensure_r05_specs(root),ensure_r05_specs(root))
+
+    def test_v04_aperture_contract(self):
+        spec=read_json(CONFIG/'examples/v04_cube_aperture_smoke.json');resolved=resolve(spec)
+        vertices=make_geometry(resolved['objects'][0]['geometry']).vertices
+        fixture=build_fixture(spec,resolved,vertices);commands=compile_actions(spec,resolved,fixture)['commands']
+        self.assertAlmostEqual(fixture['aperture_width_m'],.85*fixture['D_m'])
+        self.assertEqual({b['id'] for b in fixture['boxes']},{'floor','wall_guide_neg_y','wall_guide_pos_y',
+            'wall_throat_neg_y','wall_throat_pos_y','pusher'})
+        self.assertAlmostEqual(fixture['guide_inlet_width_m'],1.3*fixture['D_m'])
+        self.assertEqual(commands[0]['target'],'pusher');self.assertAlmostEqual(commands[0]['end_time_s'],4.)
+        self.assertAlmostEqual(commands[0]['parameters']['to_m'][0]-commands[0]['parameters']['from_m'][0],3.4*fixture['D_m'])
+
+    def test_v04_matrix(self):
+        rows,pairs=generate_v04();self.assertEqual(len(rows),11);self.assertEqual(len(pairs),8)
+        self.assertEqual({row['objects'][0]['object_id'] for row in rows},{'rounded_cube','sphere','capsule'})
+        self.assertEqual(sum(row['counterfactual']['baseline_episode_id'] is None for row in rows),3)
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp)/'v04';self.assertEqual(ensure_v04_specs(root),ensure_v04_specs(root))
+
+    def test_real_rigid_supplement(self):
+        rows,pairs=generate_real_rigid_supplement();self.assertEqual(len(rows),4);self.assertFalse(pairs)
+        self.assertEqual({row['event_id'] for row in rows},{'R03','R02','R04','R05'})
+        self.assertEqual({obj['object_id'] for row in rows for obj in row['objects'] if obj['object_id'].startswith('asset_')},
+                         {'asset_banana','asset_carrot','asset_chair','asset_elephant'})
+        entry=resolve(rows[0])['objects'][0]['geometry'];self.assertTrue(make_geometry(entry).is_watertight)
+        with self.assertRaisesRegex(ValueError,'source hash mismatch'):
+            make_geometry(dict(entry,source_sha256='0'*64))
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp)/'real';self.assertEqual(ensure_real_rigid_specs(root),ensure_real_rigid_specs(root))
 
 
 if __name__=='__main__':unittest.main()

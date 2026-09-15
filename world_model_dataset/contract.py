@@ -95,6 +95,7 @@ def resolve(spec):
     elif spec['event_id']=='R04':ends=ap['start_time_s']+ap['push_duration_s']
     elif spec['event_id']=='V03':ends=ap['load_start_time_s']+ap['load_duration_s']
     elif spec['event_id']=='R05':ends=ap['remove_time_s']
+    elif spec['event_id']=='V04':ends=ap['start_time_s']+ap['push_duration_s']
     else:ends=ap['start_time_s']
     if ends >= t["duration_s"]:
         raise ValueError("Episode must include post-action observation")

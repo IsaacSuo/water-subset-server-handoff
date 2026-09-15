@@ -1,0 +1,17 @@
+{
+  "schema_version": "0.1.0",
+  "episode_id": "v04_cube_aperture_smoke03",
+  "event_id": "V04",
+  "environment_id": "canonical_studio",
+  "camera_set_id": "two_fixed",
+  "numerics_profile_id": "contact_convergence_128",
+  "objects": [
+    {"instance_id": "subject", "object_id": "rounded_cube", "physics_profile_id": "elastic_reference", "appearance_profile_id": "neutral_blue", "orientation_xyzw": [0.0, 0.0, 0.0, 1.0]}
+  ],
+  "fixture_parameters": {"aperture_width_D": 0.85},
+  "action_parameters": {"start_time_s": 0.5, "push_distance_D": 3.4, "push_duration_s": 3.5},
+  "timing": {"physics_hz": 240, "capture_hz": 60, "duration_s": 5.5},
+  "seed": 20260916,
+  "counterfactual": {"family_id": "v04_cube_aperture_smoke", "baseline_episode_id": null, "changed_pointer": null},
+  "split": "development"
+}

@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1.0",
+  "seed": 20260916,
+  "episodes": 11,
+  "pairs": 8,
+  "baseline_aperture_width_D": 0.85,
+  "aperture_width_variants_D": [0.75, 1.0],
+  "baseline_target_profile": "elastic_reference",
+  "target_modulus_profiles": ["elastic_soft", "elastic_stiff"],
+  "baseline_push_distance_D": 3.4,
+  "push_distance_variants_D": [2.9, 3.7],
+  "baseline_push_duration_s": 3.5,
+  "push_duration_variants_s": [2.75, 4.0],
+  "geometry_variants": ["sphere", "capsule"],
+  "start_time_s": 0.5,
+  "duration_s": 6.5,
+  "numerics_profile_id": "contact_convergence_128"
+}

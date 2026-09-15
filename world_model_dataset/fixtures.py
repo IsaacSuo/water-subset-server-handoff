@@ -133,6 +133,40 @@ def build_fixture(spec,inputs,vertices):
                 'rest_height_m':height,'drop_clearance_m':clearance,'D_m':d,
                 'fixture_material':{'static_friction':0.,'dynamic_friction':0.,'restitution':0.,
                                     'friction_combine_mode':'min','restitution_combine_mode':'average'}}
+    if spec['event_id']=='V04':
+        gap=spec['fixture_parameters']['aperture_width_D']*d;outer_y=3*d
+        subject_x=-1.5*d;subject_position=[subject_x,0.,-bottom+.0002]
+        pusher_thickness=.2*d;pusher_gap=.05*d
+        pusher_x=subject_x+float(rotated[:,0].min())-pusher_gap-pusher_thickness/2
+        # A zero-radius slit edge concentrates the displacement-controlled load
+        # into one row of collision Tets.  Use a short converging entry followed
+        # by a parallel throat: it is still a width-controlled aperture, but the
+        # lateral strain is introduced over a finite distance like a real die.
+        guide_start_x=-.5*d;throat_start_x=.3*d;throat_end_x=1.*d
+        inlet_half=.65*d;outlet_half=gap/2;guide_dx=throat_start_x-guide_start_x
+        guide_dy=inlet_half-outlet_half;guide_angle=math.atan2(guide_dy,guide_dx)
+        guide_length=math.hypot(guide_dx,guide_dy);guide_thickness=.2*d
+        guide_centre_x=(guide_start_x+throat_start_x)/2+math.sin(guide_angle)*guide_thickness/2
+        lower_centre_y=-(inlet_half+outlet_half)/2-math.cos(guide_angle)*guide_thickness/2
+        upper_centre_y=-lower_centre_y
+        throat_length=throat_end_x-throat_start_x
+        side_width=outer_y-outlet_half;side_centre=(outer_y+outlet_half)/2
+        boxes=[box('floor',[1.5*d,0.,-.1*d],[10*d,8*d,.2*d]),
+               box('wall_guide_neg_y',[guide_centre_x,lower_centre_y,d],
+                   [guide_length,guide_thickness,2*d],angle_z=guide_angle),
+               box('wall_guide_pos_y',[guide_centre_x,upper_centre_y,d],
+                   [guide_length,guide_thickness,2*d],angle_z=-guide_angle),
+               box('wall_throat_neg_y',[(throat_start_x+throat_end_x)/2,-side_centre,d],
+                   [throat_length,side_width,2*d]),
+               box('wall_throat_pos_y',[(throat_start_x+throat_end_x)/2,side_centre,d],
+                   [throat_length,side_width,2*d]),
+               box('pusher',[pusher_x,0.,.5*d],[pusher_thickness,.6*gap,d],kinematic=True)]
+        return {'boxes':boxes,'subject_position_m':subject_position,'rest_height_m':height,'D_m':d,
+               'pusher_id':'pusher','pusher_start_position_m':boxes[-1]['position_m'],
+                'aperture_width_m':gap,'wall_center_x_m':(throat_start_x+throat_end_x)/2,
+                'wall_thickness_m':throat_length,'guide_inlet_width_m':2*inlet_half,
+                'fixture_material':{'static_friction':.25,'dynamic_friction':.15,'restitution':0.,
+                                    'friction_combine_mode':'min','restitution_combine_mode':'average'}}
     if spec['event_id']=='V02':
         return {'boxes':compression_plates(d,height),'subject_position_m':[0,0,-bottom+.0002],
                 'rest_height_m':height,'D_m':d}
