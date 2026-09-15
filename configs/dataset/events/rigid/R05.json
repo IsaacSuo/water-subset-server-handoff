@@ -1,0 +1,26 @@
+{
+  "schema_version": "0.1.0",
+  "id": "R05",
+  "name": "stack_support_removal",
+  "allowed_physics": ["rigid"],
+  "fixture": "removable_pedestal_stack",
+  "actions": ["remove_support"],
+  "object_count": 4,
+  "fixture_parameters": ["support_height_D", "level_offset_D"],
+  "action_parameters": ["remove_time_s"],
+  "parameters": {
+    "support_height_D": [0.1, 0.8],
+    "level_offset_D": [-0.2, 0.2],
+    "remove_time_s": [0.5, 2.0]
+  },
+  "metrics": [
+    "pre_removal_contact_graph",
+    "final_contact_graph",
+    "contact_graph_edit_count",
+    "collapse_onset_time_s",
+    "maximum_height_drop_D",
+    "maximum_orientation_change_rad",
+    "final_spatial_extent_D",
+    "final_maximum_speed_m_s"
+  ]
+}

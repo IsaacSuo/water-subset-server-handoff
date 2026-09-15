@@ -1,0 +1,20 @@
+{
+  "schema_version": "0.1.0",
+  "episode_id": "r05_cube_stack_smoke02",
+  "event_id": "R05",
+  "environment_id": "canonical_studio",
+  "camera_set_id": "two_fixed",
+  "numerics_profile_id": "reference",
+  "objects": [
+    {"instance_id": "level_0", "object_id": "rounded_cube", "physics_profile_id": "rigid_reference", "appearance_profile_id": "neutral_blue", "orientation_xyzw": [0.0, 0.0, 0.0, 1.0]},
+    {"instance_id": "level_1", "object_id": "rounded_cube", "physics_profile_id": "rigid_reference", "appearance_profile_id": "neutral_orange", "orientation_xyzw": [0.0, 0.0, 0.0, 1.0]},
+    {"instance_id": "level_2", "object_id": "rounded_cube", "physics_profile_id": "rigid_reference", "appearance_profile_id": "neutral_blue", "orientation_xyzw": [0.0, 0.0, 0.0, 1.0]},
+    {"instance_id": "level_3", "object_id": "rounded_cube", "physics_profile_id": "rigid_reference", "appearance_profile_id": "neutral_orange", "orientation_xyzw": [0.0, 0.0, 0.0, 1.0]}
+  ],
+  "fixture_parameters": {"support_height_D": 0.6, "level_offset_D": 0.15},
+  "action_parameters": {"remove_time_s": 1.0},
+  "timing": {"physics_hz": 240, "capture_hz": 60, "duration_s": 4.0},
+  "seed": 20260915,
+  "counterfactual": {"family_id": "r05_cube_stack_smoke", "baseline_episode_id": null, "changed_pointer": null},
+  "split": "development"
+}

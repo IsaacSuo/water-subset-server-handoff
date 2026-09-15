@@ -62,13 +62,16 @@ def main():
         px.CreateGpuCollisionStackSizeAttr(64*1024*1024)
 
         fixture_material='/World/FixtureMaterial';UsdShade.Material.Define(stage,fixture_material)
-        fm=UsdPhysics.MaterialAPI.Apply(stage.GetPrimAtPath(fixture_material))
+        fm=UsdPhysics.MaterialAPI.Apply(stage.GetPrimAtPath(fixture_material));fixture_profile=fixture.get('fixture_material',{})
         # The canonical collision lane supports the bodies without injecting a
         # horizontal friction impulse. Object-object material response remains
         # active, so restitution/friction counterfactuals still concern the pair.
-        fm.CreateStaticFrictionAttr(0.);fm.CreateDynamicFrictionAttr(0.);fm.CreateRestitutionAttr(0.)
+        fm.CreateStaticFrictionAttr(fixture_profile.get('static_friction',0.))
+        fm.CreateDynamicFrictionAttr(fixture_profile.get('dynamic_friction',0.))
+        fm.CreateRestitutionAttr(fixture_profile.get('restitution',0.))
         fixture_px=PhysxSchema.PhysxMaterialAPI.Apply(stage.GetPrimAtPath(fixture_material))
-        fixture_px.CreateFrictionCombineModeAttr('min');fixture_px.CreateRestitutionCombineModeAttr('average')
+        fixture_px.CreateFrictionCombineModeAttr(fixture_profile.get('friction_combine_mode','min'))
+        fixture_px.CreateRestitutionCombineModeAttr(fixture_profile.get('restitution_combine_mode','average'))
 
         def contact_api(prim):
             PhysxSchema.PhysxContactReportAPI.Apply(prim).CreateThresholdAttr(0.)
@@ -79,13 +82,13 @@ def main():
             col.CreateContactOffsetAttr(numerics['contact_offset_m']);col.CreateRestOffsetAttr(numerics['rest_offset_m'])
             physicsUtils.add_physics_material_to_prim(stage,prim,Sdf.Path(material_path));contact_api(prim)
 
-        fixture_positions={}
+        fixture_positions={};fixture_prims={}
         for item in fixture['boxes']:
             path='/World/'+item['id'];cube=UsdGeom.Cube.Define(stage,path);cube.CreateSizeAttr(1.)
             cube.AddTranslateOp().Set(Gf.Vec3d(*item['position_m']))
             q=item['orientation_xyzw'];cube.AddOrientOp().Set(Gf.Quatf(q[3],Gf.Vec3f(*q[:3])))
             cube.AddScaleOp().Set(Gf.Vec3f(*item['size_m']));cube.CreateDisplayColorAttr([Gf.Vec3f(.42,.45,.48)])
-            collision(cube.GetPrim(),fixture_material);fixture_positions[item['id']]=item['position_m']
+            collision(cube.GetPrim(),fixture_material);fixture_positions[item['id']]=item['position_m'];fixture_prims[item['id']]=cube.GetPrim()
             if item['kinematic']:UsdPhysics.RigidBodyAPI.Apply(cube.GetPrim()).CreateKinematicEnabledAttr(True)
 
         actors={};prims={}
@@ -206,7 +209,13 @@ def main():
                     body.GetVelocityAttr().Set(Gf.Vec3f(*parameters['linear_m_s']))
                     body.GetAngularVelocityAttr().Set(Gf.Vec3f(*np.degrees(parameters['angular_rad_s'])))
                     action_applications[command_index]+=1
-                elif command['kind']!='initial_velocity':raise ValueError('Unsupported multi-rigid command '+command['kind'])
+                elif command['kind']=='remove_support' and due(command,step,hz):
+                    if command['target'] not in fixture_prims or command['parameters'].get('method')!='disable_collision':
+                        raise ValueError('Unsupported multi-rigid support removal')
+                    UsdPhysics.CollisionAPI(fixture_prims[command['target']]).GetCollisionEnabledAttr().Set(False)
+                    UsdGeom.Imageable(fixture_prims[command['target']]).MakeInvisible();action_applications[command_index]+=1
+                elif command['kind'] not in ('initial_velocity','remove_support'):
+                    raise ValueError('Unsupported multi-rigid command '+command['kind'])
             step_index=step+1;simulation.simulate(dt,step*dt);simulation.fetch_results()
             if step_index%stride==0:
                 app.update();capture(step_index)

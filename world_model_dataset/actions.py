@@ -83,6 +83,10 @@ def compile_actions(spec, inputs, fixture=None):
             dict(kind='remove_support',target=target,start_time_s=t+ap['load_duration_s'],
                  end_time_s=t+ap['load_duration_s'],parameters={'method':'deactivate_actor'}),
         ])
+    elif spec["event_id"] == "R05":
+        t=ap['remove_time_s']
+        commands.append(dict(kind='remove_support',target='support',start_time_s=t,end_time_s=t,
+            parameters={'method':'disable_collision'}))
     else:
         raise ValueError("Unimplemented event")
     return dict(schema_version="0.1.0", time_units="s", sample_semantics="command_at_step_start_state_after_step",

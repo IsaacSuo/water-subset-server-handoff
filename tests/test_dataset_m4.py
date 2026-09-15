@@ -6,7 +6,7 @@ from world_model_dataset.m4 import (ensure_r02_specs,ensure_r03_specs,ensure_v01
                                     generate_r02,generate_r03,generate_v01,
                                     generate_v02_corrected,ensure_v02_corrected_specs,
                                     generate_v05,ensure_v05_specs,generate_r04,ensure_r04_specs,
-                                    generate_v03,ensure_v03_specs)
+                                    generate_v03,ensure_v03_specs,generate_r05,ensure_r05_specs)
 from world_model_dataset.contract import CONFIG,resolve,validate_pair
 from world_model_dataset.actions import compile_actions
 from world_model_dataset.fixtures import build_fixture
@@ -132,6 +132,25 @@ class M4Tests(unittest.TestCase):
         self.assertEqual(sum(row['counterfactual']['baseline_episode_id'] is None for row in rows),4)
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp)/'v03';self.assertEqual(ensure_v03_specs(root),ensure_v03_specs(root))
+
+    def test_r05_stack_removal_contract(self):
+        spec=read_json(CONFIG/'examples/r05_cube_stack_smoke.json');resolved=resolve(spec)
+        vertices={obj['instance_id']:make_geometry(obj['geometry']).vertices for obj in resolved['objects']}
+        fixture=build_fixture(spec,resolved,vertices);commands=compile_actions(spec,resolved,fixture)['commands']
+        self.assertEqual(fixture['stack_order'],[f'level_{i}' for i in range(4)])
+        self.assertEqual(commands,[{'kind':'remove_support','target':'support','start_time_s':1.,'end_time_s':1.,
+            'parameters':{'method':'disable_collision'}}])
+        z=[fixture['subject_positions_m'][oid][2] for oid in fixture['stack_order']]
+        self.assertTrue(all(a<b for a,b in zip(z,z[1:])))
+        floor=next(box for box in fixture['boxes'] if box['id']=='floor')
+        self.assertEqual(floor['size_m'][:2],[30*fixture['D_m'],30*fixture['D_m']])
+
+    def test_r05_matrix(self):
+        rows,pairs=generate_r05();self.assertEqual(len(rows),11);self.assertEqual(len(pairs),8)
+        self.assertEqual({row['objects'][3]['object_id'] for row in rows},{'rounded_cube','l_shape','cylinder'})
+        self.assertEqual(sum(row['counterfactual']['baseline_episode_id'] is None for row in rows),3)
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp)/'r05';self.assertEqual(ensure_r05_specs(root),ensure_r05_specs(root))
 
 
 if __name__=='__main__':unittest.main()

@@ -1,0 +1,15 @@
+{
+  "schema_version": "0.1.0",
+  "seed": 20260915,
+  "episodes": 11,
+  "pairs": 8,
+  "object_count": 4,
+  "baseline_support_height_D": 0.6,
+  "support_height_variants_D": [0.2, 0.8],
+  "baseline_level_offset_D": 0.15,
+  "level_offset_variants_D": [0.0, 0.18],
+  "top_material_variants": ["rigid_low_friction", "rigid_bouncy", "rigid_light", "rigid_heavy"],
+  "top_geometry_variants": ["l_shape", "cylinder"],
+  "remove_time_s": 1.0,
+  "duration_s": 4.0
+}

@@ -62,6 +62,26 @@ def build_fixture(spec,inputs,vertices):
                                          -float(rotated[:,2].min())+.0002]
         return {'boxes':collision_ground(d),'subject_positions_m':positions,'D_m':d,
                 'collision_axis_world':[1.,0.,0.],'lateral_axis_world':[0.,1.,0.]}
+    if spec['event_id']=='R05':
+        if not isinstance(vertices,dict):raise ValueError('R05 requires per-instance geometry')
+        objects=inputs['objects'];d=max(o['geometry']['characteristic_size_m'] for o in objects)
+        support_height=spec['fixture_parameters']['support_height_D']*d;offset=spec['fixture_parameters']['level_offset_D']*d
+        support=box('support',[0.,0.,support_height/2],[1.4*d,1.4*d,support_height])
+        ground=collision_ground(d)
+        # Collapse outcomes can scatter low-friction bodies far beyond the
+        # compact R03 collision lane. Keep every matrix member on the same
+        # finite observation floor so travel distance is an outcome, not a
+        # table-edge artifact.
+        ground[0]['size_m']=[30*d,30*d,.2*d]
+        boxes=ground+[support];positions={};top=support_height
+        for level,obj in enumerate(objects):
+            rotated=Rotation.from_quat(obj['orientation_xyzw']).apply(vertices[obj['instance_id']])
+            positions[obj['instance_id']]=[level*offset,0.,top-float(rotated[:,2].min())+.0002]
+            top+=float(np.ptp(rotated[:,2]))+.0002
+        return {'boxes':boxes,'subject_positions_m':positions,'D_m':d,'support_id':'support',
+                'stack_order':[obj['instance_id'] for obj in objects],
+                'fixture_material':{'static_friction':.6,'dynamic_friction':.5,'restitution':0.,
+                                    'friction_combine_mode':'min','restitution_combine_mode':'average'}}
     if spec['event_id']=='V05':
         if not isinstance(vertices,dict):raise ValueError('V05 requires per-instance geometry')
         soft=[o for o in inputs['objects'] if o['physics']['kind']=='volumetric']
