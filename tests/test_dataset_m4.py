@@ -4,7 +4,8 @@ from pathlib import Path
 
 from world_model_dataset.m4 import (ensure_r02_specs,ensure_r03_specs,ensure_v01_specs,
                                     generate_r02,generate_r03,generate_v01,
-                                    generate_v02_corrected,ensure_v02_corrected_specs)
+                                    generate_v02_corrected,ensure_v02_corrected_specs,
+                                    generate_v05,ensure_v05_specs)
 from world_model_dataset.contract import CONFIG,resolve,validate_pair
 from world_model_dataset.actions import compile_actions
 from world_model_dataset.fixtures import build_fixture
@@ -83,6 +84,13 @@ class M4Tests(unittest.TestCase):
         times=[0.,.25,.5,.75,1.,1.25]
         self.assertEqual(velocity_comparison_indices(times,.5,None,None),(3,5))
         self.assertEqual(velocity_comparison_indices(times,.5,.8,1.05),(3,5))
+
+    def test_v05_matrix(self):
+        rows,pairs=generate_v05();self.assertEqual(len(rows),11);self.assertEqual(len(pairs),8)
+        self.assertEqual({o['object_id'] for row in rows for o in row['objects']},{'sphere','rounded_cube','capsule'})
+        self.assertEqual(sum(row['counterfactual']['baseline_episode_id'] is None for row in rows),3)
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp)/'v05';self.assertEqual(ensure_v05_specs(root),ensure_v05_specs(root))
 
 
 if __name__=='__main__':unittest.main()

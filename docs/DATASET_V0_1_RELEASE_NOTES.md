@@ -17,6 +17,21 @@ material comparisons, and all earlier conclusions about modulus sensitivity, is 
 M3 physical scope is not closed again until a corrected V02 matrix records matching native
 material tensor readback. Historical caches and manifests are retained rather than rewritten.
 
+### Corrected physical scope restored — 2026-09-15
+
+`m3_v02_material_corrected_v01` now contains nine reviewed corrected-material episodes
+(10/25/40% compression × 30/100/300 kPa), six strict modulus pairs, matching native material
+tensor readbacks and zero inversions across 10,800 steps. A 25% / 100 kPa repetition passes
+exact action replay and bounded GPU-state comparison, not bit-exact nodal replay. Corrected
+V02 compression/recovery/topology physical scope is accepted; observations remain deferred.
+Historical default-material comparisons stay withdrawn. No compression-speed comparison
+or monotonic material-identification claim is restored by this correction.
+
+Recovery is now measured against supported pre-action equilibrium and timed from withdrawal
+onset. Supplemental reviews preserve all original cache metrics/manifests. At 40% compression,
+sampled collision-shell/fixture penetration reaches 4.66 mm and is retained as boundary-case
+error evidence, not hidden by integrity acceptance. Details: `DATASET_V02_CORRECTED_REVIEW.md`.
+
 ## Accepted scope
 
 - R01 rigid ramp release: native pose, velocity, angular velocity and per-point PhysX
@@ -46,5 +61,7 @@ material tensor readback. Historical caches and manifests are retained rather th
 - `output/world_model_dataset/v0_1/m3_physics_v01/manual_physics_review.json`
 - `output/world_model_dataset/v0_1/m3_physics_v01/physics_consistency_review.json`
 - `output/world_model_dataset/v0_1/v02_rapid_release_review.json`
+- `output/world_model_dataset/v0_1/m3_v02_material_corrected_v01/equilibrium_recovery_review.json`
+- `output/world_model_dataset/v0_1/m3_v02_material_corrected_v01/corrected_replay_review.json`
 
 These outputs are development evidence, not repository release artifacts.

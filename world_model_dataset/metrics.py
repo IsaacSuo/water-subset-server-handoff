@@ -23,6 +23,55 @@ def recovery_time(times,values,release_time,threshold,hold_s=.5):
     return None
 
 
+def equilibrium_recovery_metrics(times,surfaces,start_time_s,unload_start_s,withdraw_end_s,d):
+    """Shape recovery relative to supported pre-action equilibrium, not rest mesh.
+
+    Times start at withdrawal onset; recovery during withdrawal is not mislabeled
+    as instantaneous recovery when the plate finishes moving. These are diagnostics,
+    never acceptance thresholds or evidence of irreversible deformation.
+    """
+    times=np.asarray(times,dtype=float)
+    if len(times)!=len(surfaces) or not len(times) or np.any(np.diff(times)<=0):
+        raise ValueError('Recovery requires aligned, increasing capture times')
+    eligible=np.flatnonzero(times<=start_time_s+1e-8)
+    if not len(eligible) or d<=0:raise ValueError('No pre-action reference or invalid scale')
+    reference_index=int(eligible[-1]);reference=surfaces[reference_index]
+    errors=[nonrigid_residual(reference,surface) for surface in surfaces]
+    levels={}
+    for fraction in (.001,.005,.01):
+        levels[str(fraction)]={'threshold_m':fraction*d,'sustained_hold_s':.5,
+            'time_from_unload_start_s':recovery_time(times,errors,unload_start_s,fraction*d),
+            'time_after_withdraw_end_s':recovery_time(times,errors,withdraw_end_s,fraction*d)}
+    return {'source':'fixed-topology native surface; rigid-motion-removed pre-action reference',
+        'reference_capture_index':reference_index,'reference_time_s':float(times[reference_index]),
+        'unload_start_time_s':unload_start_s,'withdraw_end_time_s':withdraw_end_s,
+        'times_s':times.tolist(),'equilibrium_shape_errors_m':errors,
+        'final_equilibrium_shape_error_m':errors[-1],'thresholds_D':levels,
+        'interpretation':'None is right-censored; zero after withdrawal means recovered by withdrawal end, not instant recovery.'}
+
+
+def convex_support_planes(vertices,triangles):
+    """Outward unit planes of a convex triangulated diagnostic mesh."""
+    vertices=np.asarray(vertices,dtype=float);faces=vertices[np.asarray(triangles,dtype=int)]
+    normals=np.cross(faces[:,1]-faces[:,0],faces[:,2]-faces[:,0]);lengths=np.linalg.norm(normals,axis=1)
+    valid=lengths>1e-12;normals=normals[valid]/lengths[valid,None];origins=faces[valid,0]
+    inward=np.sum(normals*(vertices.mean(0)-origins),axis=1)>0;normals[inward]*=-1
+    offsets=np.sum(normals*origins,axis=1)
+    return np.unique(np.round(np.column_stack((normals,offsets)),12),axis=0)
+
+
+def convex_support_gap(points,planes):
+    """Minimum node signed support-plane gap; negative interior depth is exact.
+
+    Positive outside distances are lower bounds, not Euclidean nearest distance.
+    Collision-node sampling can still miss an intersection between nodes.
+    """
+    points=np.asarray(points,dtype=float);planes=np.asarray(planes,dtype=float)
+    if not len(points) or not len(planes):raise ValueError('Empty convex diagnostic geometry')
+    return min(float((block@planes[:,:3].T-planes[:,3]).max(axis=1).min())
+               for block in np.array_split(points,max(1,(len(points)+255)//256)))
+
+
 def box_penetration(vertices,fixture_boxes,positions):
     """Vertex-in-OBB depth, diagnostic only: not complete triangle intersection."""
     from scipy.spatial.transform import Rotation

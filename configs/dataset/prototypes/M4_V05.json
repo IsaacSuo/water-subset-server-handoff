@@ -1,0 +1,14 @@
+{
+  "schema_version": "0.1.0",
+  "seed": 20260915,
+  "episodes": 11,
+  "pairs": 8,
+  "baseline_speed_m_s": 1.5,
+  "speed_variants_m_s": [0.75, 3.0],
+  "projectile_mass_profiles": ["rigid_light", "rigid_heavy"],
+  "target_modulus_profiles": ["elastic_soft", "elastic_stiff"],
+  "impact_offset_variants_D": [0.35, 1.25],
+  "separation_D": 1.0,
+  "duration_s": 3.0,
+  "numerics_profile_id": "contact_convergence_128"
+}

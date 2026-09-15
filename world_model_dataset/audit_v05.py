@@ -112,6 +112,8 @@ def audit_v05(output):
         'target_maximum_substep_nonrigid_rms_m':impact.get('maximum_target_nonrigid_rms_m'),
         'target_maximum_substep_local_displacement_m':impact.get('maximum_target_local_displacement_m'),
         'target_maximum_axis_compression_fraction':impact.get('maximum_target_axis_compression_fraction'),
+        'target_maximum_tet_edge_shortening_fraction':impact.get('maximum_tet_edge_shortening_fraction'),
+        'penetration_semantics':impact.get('penetration_semantics'),
         'target_minimum_tet_jacobian':substep.get('minimum_j'),'inverted_tets':substep.get('inverted_tets'),
         'minimum_sampled_surface_gap_m':impact.get('minimum_sampled_surface_gap_m'),
         'maximum_sampled_penetration_m':impact.get('maximum_sampled_penetration_m'),

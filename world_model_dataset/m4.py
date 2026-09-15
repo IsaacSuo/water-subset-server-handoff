@@ -157,6 +157,45 @@ def ensure_v02_corrected_specs(root):
     return _ensure_specs(root,'V02',*generate_v02_corrected())
 
 
+def generate_v05(config_path=CONFIG/'prototypes/M4_V05.json'):
+    cfg=read_json(config_path);base=read_json(CONFIG/'examples/v05_sphere_soft_cube_impact.json')
+    base.update(episode_id='v05_sphere_soft_cube_reference',seed=cfg['seed'],
+        numerics_profile_id=cfg['numerics_profile_id'],
+        timing={'physics_hz':240,'capture_hz':60,'duration_s':cfg['duration_s']},
+        fixture_parameters={'separation_D':cfg['separation_D'],'impact_offset_D':0.},
+        action_parameters={'start_time_s':.5,'impact_speed_m_s':cfg['baseline_speed_m_s']},
+        counterfactual={'family_id':'v05_sphere_soft_cube','baseline_episode_id':None,'changed_pointer':None})
+    rows=[base];pairs=[]
+    def variant(suffix,pointer):
+        row=copy.deepcopy(base);row['episode_id']='v05_sphere_soft_cube_'+suffix
+        row['counterfactual'].update(baseline_episode_id=base['episode_id'],changed_pointer=pointer)
+        rows.append(row);pairs.append((base['episode_id'],row['episode_id']));return row
+    for speed,label in zip(cfg['speed_variants_m_s'],('speed_low','speed_high')):
+        row=variant(label,'/action_parameters/impact_speed_m_s');row['action_parameters']['impact_speed_m_s']=speed
+    for profile in cfg['projectile_mass_profiles']:
+        row=variant('projectile_'+profile.removeprefix('rigid_'),'/objects/1/physics/density_kg_m3')
+        row['objects'][1]['physics_profile_id']=profile
+    for profile in cfg['target_modulus_profiles']:
+        row=variant('target_'+profile.removeprefix('elastic_'),'/objects/0/physics/youngs_modulus_pa')
+        row['objects'][0]['physics_profile_id']=profile
+    for offset,label in zip(cfg['impact_offset_variants_D'],('eccentric','miss')):
+        row=variant(label,'/fixture_parameters/impact_offset_D');row['fixture_parameters']['impact_offset_D']=offset
+    # Geometry cases also change resolved collision representation/mesh fields;
+    # do not label them as leaf-level single-variable pairs in frozen v0.1.
+    for oid,index,label in (('capsule',1,'capsule_soft_cube'),('sphere',0,'sphere_soft_sphere')):
+        row=copy.deepcopy(base);row['episode_id']='v05_'+label+'_reference';row['objects'][index]['object_id']=oid
+        row['counterfactual']={'family_id':'v05_'+label,'baseline_episode_id':None,'changed_pointer':None};rows.append(row)
+    if len(rows)!=cfg['episodes'] or len(pairs)!=cfg['pairs']:raise AssertionError('V05 matrix size mismatch')
+    by_id={row['episode_id']:row for row in rows}
+    for a,b in pairs:validate_pair(by_id[a],by_id[b])
+    for row in rows:resolve(row)
+    return rows,pairs
+
+
+def ensure_v05_specs(root):
+    return _ensure_specs(root,'V05',*generate_v05())
+
+
 def _ensure_specs(root,event_id,rows,pairs):
     root=Path(root);definition={'schema_version':'0.1.0','event_id':event_id,
         'episodes':[row['episode_id'] for row in rows],'pairs':[list(pair) for pair in pairs]}
@@ -173,9 +212,9 @@ def _ensure_specs(root,event_id,rows,pairs):
 def main():
     import argparse
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('output',type=Path)
-    parser.add_argument('--event',choices=('R03','V01','R02','V02'),default='R03');parser.add_argument('--limit',type=int,default=0);args=parser.parse_args()
-    generators={'R03':generate_r03,'V01':generate_v01,'R02':generate_r02,'V02':generate_v02_corrected}
-    ensure_functions={'R03':ensure_r03_specs,'V01':ensure_v01_specs,'R02':ensure_r02_specs,'V02':ensure_v02_corrected_specs}
+    parser.add_argument('--event',choices=('R03','V01','R02','V02','V05'),default='R03');parser.add_argument('--limit',type=int,default=0);args=parser.parse_args()
+    generators={'R03':generate_r03,'V01':generate_v01,'R02':generate_r02,'V02':generate_v02_corrected,'V05':generate_v05}
+    ensure_functions={'R03':ensure_r03_specs,'V01':ensure_v01_specs,'R02':ensure_r02_specs,'V02':ensure_v02_corrected_specs,'V05':ensure_v05_specs}
     generator=generators[args.event];ensure=ensure_functions[args.event]
     rows,pairs=ensure(args.output)
     if args.limit:rows=rows[:args.limit]

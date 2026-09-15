@@ -39,6 +39,7 @@ def main():
         from omni.physx.scripts import deformableUtils,physicsUtils
         from pxr import Gf,Sdf,Usd,UsdGeom,UsdPhysics,UsdShade,PhysxSchema,PhysicsSchemaTools,UsdUtils
         from soft_body.tet_quality import compute_tet_deformation,signed_tetrahedron_volumes
+        from world_model_dataset.metrics import convex_support_planes,convex_support_gap
 
         spec=ep['spec'];inputs=ep['inputs'];objects=inputs['objects']
         if spec['event_id']!='V05':raise ValueError('Mixed backend currently implements V05 only')
@@ -193,11 +194,14 @@ def main():
         frames=[];substep_min_j=float('inf');substep_inverted=0;substep_checked=0;start=time.monotonic()
         impact_substeps={'checked_steps':0,'maximum_target_nonrigid_rms_m':0.,
             'maximum_target_local_displacement_m':0.,
+            'maximum_tet_edge_shortening_fraction':0.,
             'maximum_target_axis_compression_fraction':0.,'maximum_rigid_speed_m_s':0.,
             'maximum_soft_nodal_speed_m_s':0.,'minimum_sampled_surface_gap_m':float('inf'),
             'maximum_sampled_penetration_m':0.,'geometric_contact_first_time_s':None,
             'geometric_contact_last_time_s':None,
-            'penetration_semantics':'rigid analytic sphere versus deformable collision-node sampling; diagnostic lower bound, not solver penetration'}
+            'penetration_semantics':('analytic sphere signed distance at collision nodes' if rigid[0]['geometry']['rigid_collision']=='sphere'
+                else 'convex visual-mesh support-plane signed gap at collision nodes; positive distances are non-Euclidean lower bounds')+
+                '; sampled penetration lower bound, not solver penetration or exact cooked-hull intersection'}
 
         def capture(step):
             cache=UsdGeom.XformCache(Usd.TimeCode.Default());objects_state={};geometry_paths={}
@@ -259,6 +263,12 @@ def main():
         bind_centered=soft_actor['bind_tet']-soft_actor['bind_tet'].mean(axis=0)
         bind_axis_extent=float(np.ptp(soft_actor['bind_tet'][:,0]))
         projectile_radius=rigid[0]['geometry']['characteristic_size_m']/2
+        sphere_projectile=rigid[0]['geometry']['rigid_collision']=='sphere'
+        projectile_planes=None if sphere_projectile else convex_support_planes(rigid_actor['vertices'],rigid_actor['triangles'])
+        tets=soft_actor['tet_indices'];edges=np.concatenate([tets[:,[a,b]] for a,b in ((0,1),(0,2),(0,3),(1,2),(1,3),(2,3))])
+        edges=np.unique(np.sort(edges,axis=1),axis=0)
+        bind_lengths=np.linalg.norm(soft_actor['bind_tet'][edges[:,1]]-soft_actor['bind_tet'][edges[:,0]],axis=1)
+        if np.any(bind_lengths<=1e-12):raise RuntimeError('Degenerate Tet edge in bind pose')
         for step in range(steps):
             for command_index,command in enumerate(actions):
                 if command['kind']=='initial_velocity' and due(command,step,hz):
@@ -277,23 +287,30 @@ def main():
             local_displacements=current_centered-bind_centered@rotation
             shape_rms=float(np.sqrt(np.mean(np.sum(local_displacements**2,axis=1))))
             local_max=float(np.linalg.norm(local_displacements,axis=1).max())
-            axis_compression=max(0.,1-float(np.ptp(current[:,0]))/bind_axis_extent)
+            axis_compression=max(0.,1-float(np.ptp((current_centered@rotation.T)[:,0]))/bind_axis_extent)
+            edge_shortening=max(0.,1-float((np.linalg.norm(current[edges[:,1]]-current[edges[:,0]],axis=1)/bind_lengths).min()))
             rigid_speed=float(np.linalg.norm(np.asarray(rigid_actor['rb'].GetVelocityAttr().Get(),dtype=float)))
             soft_velocities=native_nodal_velocities(mesh,len(current))
             soft_speed=float(np.linalg.norm(soft_velocities,axis=1).max())
             cache=UsdGeom.XformCache(Usd.TimeCode.Default())
-            rigid_centre=np.asarray(Gf.Transform(cache.GetLocalToWorldTransform(rigid_actor['xf'].GetPrim())).GetTranslation())
+            rigid_matrix=cache.GetLocalToWorldTransform(rigid_actor['xf'].GetPrim())
+            rigid_centre=np.asarray(Gf.Transform(rigid_matrix).GetTranslation())
             collision_mesh=UsdGeom.TetMesh.Get(stage,soft_actor['collision_path'])
             collision_points=np.asarray(collision_mesh.GetPointsAttr().Get(),dtype=np.float64)
             collision_matrix=cache.GetLocalToWorldTransform(collision_mesh.GetPrim())
             collision_world=np.asarray([collision_matrix.Transform(Gf.Vec3d(*point)) for point in collision_points])
-            sampled_gap=float(np.linalg.norm(collision_world-rigid_centre,axis=1).min()-projectile_radius)
-            if not all(np.isfinite(value) for value in (shape_rms,axis_compression,rigid_speed,soft_speed,sampled_gap)):
+            if sphere_projectile:sampled_gap=float(np.linalg.norm(collision_world-rigid_centre,axis=1).min()-projectile_radius)
+            else:
+                inverse=rigid_matrix.GetInverse()
+                points_local=np.asarray([inverse.Transform(Gf.Vec3d(*point)) for point in collision_world])
+                sampled_gap=convex_support_gap(points_local,projectile_planes)
+            if not all(np.isfinite(value) for value in (shape_rms,local_max,axis_compression,edge_shortening,rigid_speed,soft_speed,sampled_gap)):
                 raise RuntimeError('Non-finite V05 substep diagnostic')
             impact_substeps['checked_steps']+=1
             impact_substeps['maximum_target_nonrigid_rms_m']=max(impact_substeps['maximum_target_nonrigid_rms_m'],shape_rms)
             impact_substeps['maximum_target_local_displacement_m']=max(impact_substeps['maximum_target_local_displacement_m'],local_max)
             impact_substeps['maximum_target_axis_compression_fraction']=max(impact_substeps['maximum_target_axis_compression_fraction'],axis_compression)
+            impact_substeps['maximum_tet_edge_shortening_fraction']=max(impact_substeps['maximum_tet_edge_shortening_fraction'],edge_shortening)
             impact_substeps['maximum_rigid_speed_m_s']=max(impact_substeps['maximum_rigid_speed_m_s'],rigid_speed)
             impact_substeps['maximum_soft_nodal_speed_m_s']=max(impact_substeps['maximum_soft_nodal_speed_m_s'],soft_speed)
             impact_substeps['minimum_sampled_surface_gap_m']=min(impact_substeps['minimum_sampled_surface_gap_m'],sampled_gap)

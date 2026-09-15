@@ -5,7 +5,7 @@ import numpy as np
 
 from .contract import artifact,validate_schema
 from .io import read_json,write_json,inside
-from .metrics import nonrigid_residual,recovery_time,box_penetration,triangle_box_surface_audit,tet_boundary_faces
+from .metrics import nonrigid_residual,recovery_time,equilibrium_recovery_metrics,box_penetration,triangle_box_surface_audit,tet_boundary_faces
 
 
 def audit(output):
@@ -24,7 +24,7 @@ def audit(output):
         return audit_v05(out)
     report=read_json(out/'native_report.json');index=read_json(out/'state/index.json')
     fixture=read_json(out/'fixture.json');oid=spec['objects'][0]['instance_id']
-    times=[];bodies=[];residuals=[];depths=[];surface_reference=None;topology=None
+    times=[];bodies=[];residuals=[];depths=[];surface_reference=None;topology=None;surfaces=[]
     surface_intersections={'candidate_triangle_tests':0,'intersecting_triangles':0,'maximum_sampled_penetration_m':0.}
     collision_intersections={'candidate_triangle_tests':0,'intersecting_triangles':0,'maximum_sampled_penetration_m':0.}
     max_kinematic_error=0.
@@ -49,6 +49,7 @@ def audit(output):
                 max_kinematic_error=max(max_kinematic_error,float(np.linalg.norm(np.asarray(actual['position'])-positions_actual[name])))
                 positions_actual[name]=actual['position']
             residuals.append(nonrigid_residual(surface_reference,vertices))
+            if spec['event_id']=='V02':surfaces.append(vertices.copy())
             depths.append(box_penetration(vertices,fixture['boxes'],positions_actual))
             scan=triangle_box_surface_audit(vertices,faces,fixture['boxes'],positions_actual)
             for key in surface_intersections:surface_intersections[key]=max(surface_intersections[key],scan[key]) if 'maximum' in key else surface_intersections[key]+scan[key]
@@ -144,7 +145,11 @@ def audit(output):
         values['max_compression_fraction']=float(1-heights.min()/rest)
         values['volume_ratio']=[b['metrics']['volume_ratio'] for b in bodies]
         release=sum(spec['action_parameters'].values())
-        values['recovery_time_s']=recovery_time(times,residuals,release,.01*d)
+        values['legacy_recovery_to_authored_rest_s']=recovery_time(times,residuals,release,.01*d)
+        ap=spec['action_parameters'];unload=ap['start_time_s']+ap['compression_duration_s']+ap['hold_duration_s']
+        values['equilibrium_recovery']=equilibrium_recovery_metrics(times,surfaces,ap['start_time_s'],unload,release,d)
+        values['recovery_time_s']=values['equilibrium_recovery']['thresholds_D']['0.005']['time_from_unload_start_s']
+        values['recovery_time_origin']='plate_withdrawal_start; reference=pre-action supported shape; threshold=0.005D, hold=0.5s'
         values['recovery_observed']=values['recovery_time_s'] is not None
         target=spec['fixture_parameters']['compression_fraction']
         check('controlled_compression',abs(values['max_compression_fraction']-target)<=.03,

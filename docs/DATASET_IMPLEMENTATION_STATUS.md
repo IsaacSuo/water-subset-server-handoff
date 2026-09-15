@@ -9,7 +9,7 @@ Local-only work. No GitHub push or server submission. Fluid baseline unchanged.
 | --- | --- | --- |
 | M1 | Complete and frozen as v0.1 | Separate registries, JSON schema, strict JSON/path/hash/time checks, source snapshots, prepared examples, unified loader and single-variable checker. Release hashes are recorded in `contract_v0_1_release.json`. |
 | M2 | Core framework complete | Four native action types, five fixture families, six diagnostic meshes, shared R01/V02 runner, state/contact caches and post-physics inspection. Legacy 14-environment/42-object fixed-topology data has a truthful read-only bridge; formal resimulation is deferred to M4 event migration. |
-| M3 | R01 complete; V02 cache mechanics retained but material runs superseded | A later M4 native tensor readback found that the old mixed rigid/deformable material prim was not registered by the PhysX deformable backend. The 15 V02 runs remain evidence for actions, topology and cache export under the backend default material, but not for their declared 30/100/300 kPa inputs. |
+| M3 | Corrected physical scope complete; observations deferred | R01 remains accepted. Corrected V02: 9 material-readback-matched runs, 6 strict pairs and one bounded repetition. Historical 15 default-material V02 comparisons remain withdrawn. Recovery/reference correction and penetration limits are documented in `DATASET_V02_CORRECTED_REVIEW.md`. |
 | M4 | In progress; R03, V01 and R02 initial matrices complete; V05 hit/miss smoke accepted | Each completed event has 11 physics episodes over three geometries and eight strict pairs. V05 mechanics controls are reviewed in `DATASET_V05_SMOKE_REVIEW.md`; its formal matrix is pending corrected V02. |
 
 ## Current M4 result
@@ -135,7 +135,8 @@ All paths below are relative to `output/world_model_dataset/v0_1/`.
 | `v05_sphere_soft_cube_impact_smoke03` | Completed mixed mechanics smoke using native USD nodal velocities, matching 100 kPa material readback, 181 shared captures, and 720 steps without Tet inversion. Retained initial shorter-floor diagnostic; a same-fixture hit/miss pair follows with extended support. |
 | `v05_sphere_soft_cube_impact_smoke04` | Accepted extended-floor hit baseline. Ground length uses the declared speed domain, not the selected action speed, to keep speed and hit/miss controls on the same fixture. |
 | `v05_sphere_soft_cube_miss_smoke01` | Accepted same-action/same-support lateral miss. Projectile retains 1.5 m/s; no sampled geometric target contact; target changes are settling-scale only. |
-| `m3_v02_material_corrected_v01` | Prepared corrected-material matrix: 9 runs, 10/25/40% compression crossed with 30/100/300 kPa, 128 position iterations, 6 strict modulus pairs. Not yet accepted. |
+| `m3_v02_material_corrected_v01` | Accepted corrected physical scope: 9 runs, 10/25/40% compression crossed with 30/100/300 kPa, 128 position iterations, 6 strict pairs. Supplemental equilibrium recovery and bounded 25% / 100 kPa repetition evidence preserve original metrics. |
+| `m4_v05_physics_v01` | Formal 11-run V05 definition: baseline, low/high speed, light/heavy projectile, soft/stiff target, eccentric/miss, capsule projectile and soft sphere. Eight strict leaf-level pairs; two extra geometry cases are standalone coverage, not falsely labeled leaf-level pairs. |
 
 The first completed V05 mechanics smoke identifies geometric contact at 0.633--0.692 s.
 The projectile changes from 1.5 m/s to approximately 0.054 m/s (a small reverse velocity),

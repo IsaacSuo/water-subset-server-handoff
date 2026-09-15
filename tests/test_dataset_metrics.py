@@ -2,7 +2,8 @@ import unittest
 import numpy as np
 from scipy.spatial.transform import Rotation
 
-from world_model_dataset.metrics import nonrigid_residual,recovery_time,box_penetration,triangle_box_surface_audit,tet_boundary_faces
+from world_model_dataset.metrics import (nonrigid_residual,recovery_time,equilibrium_recovery_metrics,
+    convex_support_planes,convex_support_gap,box_penetration,triangle_box_surface_audit,tet_boundary_faces)
 from world_model_dataset.geometry import make_geometry
 from world_model_dataset.fixtures import box,stairs,obstacles,flat_ground,compression_plates
 from world_model_dataset.contract import CONFIG
@@ -34,6 +35,26 @@ class MetricsTests(unittest.TestCase):
         report=triangle_box_surface_audit(vertices,[[0,1,2]],[b],p)
         self.assertEqual(report['intersecting_triangles'],1)
         self.assertAlmostEqual(report['maximum_sampled_penetration_m'],.2)
+
+    def test_recovery_uses_supported_shape_and_withdrawal_start(self):
+        rest=np.array([[x,y,z] for x in (-.1,.1) for y in (-.1,.1) for z in (-.1,.1)])
+        settled=rest*np.array([1.,1.,.95]);compressed=rest*np.array([1.1,1.1,.7])
+        times=[0.,1.,2.,2.5,3.,3.5,4.]
+        surfaces=[rest,settled,compressed,compressed,settled+[2.,0.,0.],settled,settled]
+        result=equilibrium_recovery_metrics(times,surfaces,1.,2.5,3.,.2)
+        self.assertEqual(result['reference_capture_index'],1)
+        self.assertLess(result['final_equilibrium_shape_error_m'],1e-12)
+        self.assertGreater(nonrigid_residual(rest,settled),.002)
+        self.assertEqual(result['thresholds_D']['0.005']['time_from_unload_start_s'],.5)
+        self.assertEqual(result['thresholds_D']['0.005']['time_after_withdraw_end_s'],0.)
+
+    def test_convex_node_gap_does_not_use_bounding_sphere(self):
+        import trimesh
+        mesh=trimesh.creation.box(extents=[.08,.08,.2])
+        planes=convex_support_planes(mesh.vertices,mesh.faces)
+        self.assertAlmostEqual(convex_support_gap([[.06,0.,0.]],planes),.02)
+        self.assertAlmostEqual(convex_support_gap([[.03,0.,0.]],planes),-.01)
+        self.assertAlmostEqual(convex_support_gap([[0.,0.,.12]],planes),.02)
 
     def test_tet_boundary(self):
         faces=tet_boundary_faces([[0,1,2,3],[0,1,2,4]])
