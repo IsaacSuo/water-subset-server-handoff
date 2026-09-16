@@ -15,15 +15,20 @@ from world_model_dataset.io import file_hash, read_json, write_json
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--episode", type=Path, required=True)
+    parser.add_argument("--layout-only", action="store_true", help="Export the cached initial scene without sensor rendering")
+    parser.add_argument("--environment-layout", type=Path, help="Existing environment placement for layout-only inspection")
     args = parser.parse_args()
+    if args.environment_layout and not args.layout_only:
+        parser.error("Environment placement is currently layout-only, not a new physical episode")
     output = args.episode
     manifest = read_json(output / "episode.physics.json")
     resolved = read_json(output / "resolved_inputs.json")
     frames = [json.loads(line) for line in (output / "body_state_trace.jsonl").read_text(encoding="utf-8").splitlines()]
     stride = manifest["timing"]["physics_hz"] // manifest["timing"]["capture_hz"]
     frames = [row for row in frames if row["physics_step"] % stride == 0]
-    destination = output / "observations"
-    destination.mkdir(exist_ok=False)
+    environment = read_json(args.environment_layout) if args.environment_layout else None
+    destination = (output / "layouts" / (environment["id"] if environment else "canonical")) if args.layout_only else output / "observations"
+    destination.mkdir(parents=True, exist_ok=False)
     from isaacsim import SimulationApp
     camera_set = resolved["camera_set"]
     width, height = camera_set["resolution"]
@@ -41,8 +46,25 @@ def main():
         stage = omni.usd.get_context().get_stage()
         UsdGeom.SetStageUpAxis(stage, UsdGeom.Tokens.z)
         UsdGeom.SetStageMetersPerUnit(stage, 1.0)
-        UsdGeom.Xform.Define(stage, "/World")
+        stage.SetDefaultPrim(UsdGeom.Xform.Define(stage, "/World").GetPrim())
         # Fresh render stage: no PhysicsScene, rigid-body, collider, or deformable APIs.
+        if environment:
+            source = Path(environment["source_usd"])
+            if not source.is_file():
+                raise FileNotFoundError(source)
+            frame = UsdGeom.Xform.Define(stage, "/World/EnvironmentFrame")
+            # Old environments use Y up; canonical episodes remain in their cached Z-up frame.
+            x, y, z = environment["support_point_y_up_m"]
+            frame.AddTranslateOp().Set(Gf.Vec3d(-x, z, -y + environment["support_z_in_episode_m"]))
+            frame.AddRotateXOp().Set(90.0)
+            reference = stage.DefinePrim("/World/EnvironmentFrame/Background", "Xform")
+            reference.GetReferences().AddReference(source.as_posix(), environment["reference_prim"])
+            # This composition is presentation only. Never import background physics.
+            for prim in stage.Traverse():
+                if prim.GetPath().HasPrefix(reference.GetPath()):
+                    schemas = [name for name in prim.GetAppliedSchemas()
+                               if not name.startswith(("Physics", "Physx"))]
+                    prim.SetMetadata("apiSchemas", Sdf.TokenListOp.CreateExplicit(schemas))
         dome = UsdLux.DomeLight.Define(stage, "/World/Light")
         dome.CreateIntensityAttr(700.0)
         key = UsdLux.DistantLight.Define(stage, "/World/Key")
@@ -63,6 +85,13 @@ def main():
                 shape = UsdGeom.Mesh.Define(stage, "/World/" + oid)
                 shape.CreateSubdivisionSchemeAttr(UsdGeom.Tokens.none)
                 soft_meshes[oid] = shape
+            elif geometry["shape"] == "mesh":
+                shape = UsdGeom.Mesh.Define(stage,"/World/" + oid)
+                with np.load(inside(output,geometry["mesh"]["path"]),allow_pickle=False) as data:
+                    shape.CreatePointsAttr([Gf.Vec3f(*map(float,p)) for p in data["vertices"]])
+                    shape.CreateFaceVertexCountsAttr([3]*len(data["triangles"]))
+                    shape.CreateFaceVertexIndicesAttr(data["triangles"].ravel().tolist())
+                shape.CreateSubdivisionSchemeAttr(UsdGeom.Tokens.none)
             else:
                 raise ValueError(f"No renderer for {geometry['shape']}")
             translate = shape.AddTranslateOp()
@@ -95,6 +124,8 @@ def main():
             cam.CreateHorizontalApertureAttr(camera_set["horizontal_aperture_mm"])
             cam.CreateVerticalApertureAttr(camera_set["horizontal_aperture_mm"] * height / width)
             cam.CreateClippingRangeAttr(Gf.Vec2f(0.01, 100.0))
+            if args.layout_only:
+                continue
             product = rep.create.render_product(str(cam.GetPath()), (width, height))
             annotators = {name: rep.AnnotatorRegistry.get_annotator(name) for name in
                           ("rgb", "distance_to_image_plane", "semantic_segmentation")}
@@ -134,6 +165,18 @@ def main():
                 translate.Set(Gf.Vec3d(*value["position_m"]))
                 q = value["orientation_xyzw"]
                 orient.Set(Gf.Quatf(q[3], Gf.Vec3f(*q[:3])))
+            if args.layout_only:
+                stage.GetRootLayer().Export(str(destination / "scene.usda"))
+                write_json(destination / "layout.json", {
+                    "episode_id": manifest["episode_id"], "time_s": frame["time_s"],
+                    "environment": environment, "physics_rerun": False, "sensor_frames": 0,
+                    "scope": "initial cached canonical fixture in an existing visual environment; not native-environment collision evidence",
+                    "body_instance_ids": body_ids, "camera_set": camera_set,
+                    "source_state_sha256": file_hash(output / "body_state_trace.jsonl"),
+                    "environment_placement_source": str(args.environment_layout) if environment else None,
+                })
+                print("CAUSAL_LAYOUT_COMPLETE", destination, flush=True)
+                return
             rep.orchestrator.step(rt_subframes=1, delta_time=0.0, pause_timeline=True)
             if index == 0:
                 rep.orchestrator.step(rt_subframes=1, delta_time=0.0, pause_timeline=True)
@@ -173,7 +216,7 @@ def main():
             "physics_rerun": False, "render_backend": "Isaac RTX RayTracedLighting",
             "depth_units": "metres along the OpenCV optical z axis", "segmentation": "stable body instance ID; zero is background",
             "source_state_sha256": file_hash(output / "body_state_trace.jsonl"),
-            "geometry_representation": "Rigid USD primitives plus native deformed visual surface meshes; not exact analytical/cooked collider depth",
+            "geometry_representation": "Rigid primitives/STL visual meshes plus native deformed surfaces; not exact analytical/cooked collider depth",
         })
         print("CAUSAL_OBSERVATIONS_COMPLETE", output, flush=True)
     except Exception as exc:

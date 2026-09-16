@@ -11,7 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from world_model_dataset.io import file_hash, read_json, write_json
+from world_model_dataset.io import file_hash, inside, read_json, write_json
 from world_model_dataset.controllers import signed_work_increment
 from world_model_dataset.causal_control import evaluate
 from world_model_dataset import causal_soft
@@ -99,6 +99,15 @@ def main():
             elif geometry["shape"] == "box":
                 shape = UsdGeom.Cube.Define(stage, path)
                 shape.CreateSizeAttr(1.0)
+            elif geometry["shape"] == "mesh":
+                record = geometry["mesh"]
+                mesh_path = inside(output,record["path"])
+                with np.load(mesh_path,allow_pickle=False) as data:
+                    shape = UsdGeom.Mesh.Define(stage,path)
+                    shape.CreatePointsAttr([Gf.Vec3f(*map(float,p)) for p in data["vertices"]])
+                    shape.CreateFaceVertexCountsAttr([3]*len(data["triangles"]))
+                    shape.CreateFaceVertexIndicesAttr(data["triangles"].ravel().tolist())
+                    shape.CreateSubdivisionSchemeAttr(UsdGeom.Tokens.none)
             else:
                 raise ValueError(f"Unsupported prototype shape: {geometry['shape']}")
             shape.AddTranslateOp().Set(Gf.Vec3d(*initial["position_m"]))
@@ -109,6 +118,14 @@ def main():
             shape.CreateDisplayColorAttr([Gf.Vec3f(*definition["appearance"]["color"])])
             prim = shape.GetPrim()
             UsdPhysics.CollisionAPI.Apply(prim)
+            if geometry["shape"] == "mesh":
+                UsdPhysics.MeshCollisionAPI.Apply(prim).CreateApproximationAttr(geometry["collision_approximation"])
+                if geometry["collision_approximation"] == "convexHull" and "hull_vertex_limit" in geometry:
+                    PhysxSchema.PhysxConvexHullCollisionAPI.Apply(prim).CreateHullVertexLimitAttr(geometry["hull_vertex_limit"])
+                elif geometry["collision_approximation"] == "sdf":
+                    if not numerics["gpu_dynamics"]:
+                        raise ValueError("Dynamic SDF mesh requires GPU dynamics; do not silently fall back to convex hull")
+                    PhysxSchema.PhysxSDFMeshCollisionAPI.Apply(prim).CreateSdfResolutionAttr(geometry["sdf_resolution"])
             collision_api = PhysxSchema.PhysxCollisionAPI.Apply(prim)
             collision_api.CreateContactOffsetAttr(numerics["contact_offset_m"])
             collision_api.CreateRestOffsetAttr(numerics["rest_offset_m"])
@@ -127,6 +144,8 @@ def main():
             body = None
             mass = physics["mass_kg"]
             inertia = None
+            inertia_matrix = None
+            principal_axes = Gf.Quatf(1.0)
             if descriptor["physics_kind"] == "rigid":
                 body = UsdPhysics.RigidBodyAPI.Apply(prim)
                 # Preparation only: all initial conditions precede solver load and t0 capture.
@@ -140,6 +159,13 @@ def main():
                 rigid.CreateEnableSpeculativeCCDAttr(numerics["speculative_ccd"])
                 if geometry["shape"] == "sphere":
                     inertia = [0.4 * mass * geometry["radius_m"] ** 2] * 3
+                elif geometry["shape"] == "mesh":
+                    inertia_matrix = np.asarray(geometry["inertia_tensor_kg_m2"])
+                    eigenvalues, eigenvectors = np.linalg.eigh(inertia_matrix)
+                    if np.linalg.det(eigenvectors) < 0:
+                        eigenvectors[:,0] *= -1
+                    principal_axes = Gf.Quatf(Gf.Matrix3d(*map(float,eigenvectors.T.ravel())).ExtractRotation().GetQuat())
+                    inertia = eigenvalues.tolist()
                 else:
                     x, y, z = geometry["size_m"]
                     inertia = [mass * (y*y + z*z) / 12, mass * (x*x + z*z) / 12, mass * (x*x + y*y) / 12]
@@ -147,10 +173,11 @@ def main():
                 mass_api.CreateMassAttr(mass)
                 mass_api.CreateCenterOfMassAttr(Gf.Vec3f(0.0))
                 mass_api.CreateDiagonalInertiaAttr(Gf.Vec3f(*inertia))
-                mass_api.CreatePrincipalAxesAttr(Gf.Quatf(1.0))
+                mass_api.CreatePrincipalAxesAttr(principal_axes)
             elif descriptor["physics_kind"] != "static":
                 raise ValueError("Natural rigid backend cannot simulate flexible bodies")
-            actors[oid] = {"prim": prim, "body": body, "mass": mass, "inertia": inertia}
+            actors[oid] = {"prim": prim, "body": body, "mass": mass, "inertia": inertia,
+                           "inertia_matrix": inertia_matrix}
 
         for definition in manifest["system"]["joints"]:
             oid = definition["body1_id"]
@@ -271,10 +298,17 @@ def main():
                          "linear_velocity_m_s": linear, "angular_velocity_rad_s": angular}
                 if rb:
                     local_angular = Gf.Rotation(quat).GetInverse().TransformDir(Gf.Vec3d(*angular))
+                    matrix_inertia = actor["inertia_matrix"]
+                    rotational_energy = (0.5 * float(np.asarray(local_angular) @ matrix_inertia @ np.asarray(local_angular))
+                                         if matrix_inertia is not None else
+                                         0.5 * sum(actor["inertia"][i] * float(local_angular[i])**2 for i in range(3)))
                     value.update(mass_kg=actor["mass"], inertia_diagonal_kg_m2=actor["inertia"],
                                  kinetic_energy_j=0.5 * actor["mass"] * sum(v*v for v in linear) +
-                                     0.5 * sum(actor["inertia"][i] * float(local_angular[i])**2 for i in range(3)),
+                                     rotational_energy,
                                  potential_energy_j=-actor["mass"] * sum(gravity[i] * position[i] for i in range(3)))
+                    if matrix_inertia is not None:
+                        value["inertia_tensor_body_kg_m2"] = matrix_inertia.tolist()
+                        value["principal_axes_xyzw"] = list(map(float,actor["prim"].GetAttribute("physics:principalAxes").Get().GetImaginary())) + [float(actor["prim"].GetAttribute("physics:principalAxes").Get().GetReal())]
                 body_states[oid] = value
             for oid, actor in actors.items():
                 if actor.get("soft"):

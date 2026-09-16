@@ -1,0 +1,10 @@
+{
+  "id": "warehouse_push",
+  "source_usd": "Y:/scenes/warehouse/warehouse_sim.usda",
+  "reference_prim": "/World/Environment",
+  "support_point_y_up_m": [0.04144308193735671, -0.5000030728118722, -8.07641493563674],
+  "support_z_in_episode_m": -0.05,
+  "placement_source": "output/blender_scene_videos/isaac/warehouse/run_complete.json: ground_patch and support_top_y",
+  "track": "canonical_fixture_visual_layout_only",
+  "note": "The 5 cm canonical support slab sits on the existing warehouse floor. Original cached body poses and cameras remain unchanged. This does not resimulate warehouse collisions."
+}

@@ -50,14 +50,43 @@ def prepare(config_path, output):
     resolved["bodies"] = {}
     for body in manifest["system"]["bodies"]:
         resolved["bodies"][body["instance_id"]] = {
-            "geometry": resolved["geometry_profiles"][body["geometry_id"]],
+            "geometry": copy.deepcopy(resolved["geometry_profiles"][body["geometry_id"]]),
             "physics": resolved["physics_profiles"][body["physics_profile_id"]],
             "appearance": resolved["appearance_profiles"][body["appearance_profile_id"]],
         }
+    meshes = {}
+    for oid, definition in resolved["bodies"].items():
+        geometry = definition["geometry"]
+        if geometry["shape"] != "mesh":
+            continue
+        import numpy as np
+        from .geometry import make_geometry
+        entry = copy.deepcopy(read_json(ROOT / "configs/dataset/m4_extensions.json")["objects"][geometry["asset_id"]])
+        entry["characteristic_size_m"] = geometry["characteristic_size_m"]
+        mesh = make_geometry(entry)
+        mass = definition["physics"]["mass_kg"]
+        inertia = np.asarray(mesh.moment_inertia) * mass / mesh.volume
+        geometry.update(source_path=entry["source_path"], source_sha256=entry["source_sha256"],
+                        collision_approximation=geometry.get("collision_approximation", entry["rigid_collision"]), bounds_m=mesh.bounds.tolist(),
+                        inertia_tensor_kg_m2=inertia.tolist(), rest_volume_m3=float(mesh.volume))
+        if oid in config.get("place_on_floor", []):
+            initial = manifest["initial_state"]["body_states"][oid]
+            from scipy.spatial.transform import Rotation
+            rotated = Rotation.from_quat(initial["orientation_xyzw"]).apply(mesh.vertices)
+            initial["position_m"][2] = -float(rotated[:,2].min())
+        meshes[oid] = mesh
     audit = audit_causal_manifest(manifest)
     if not audit["accepted"]:
         raise ValueError(audit["errors"])
     output.mkdir(parents=True, exist_ok=False)
+    for oid, mesh in meshes.items():
+        folder = output / "geometry"
+        folder.mkdir(exist_ok=True)
+        name = "geometry/" + oid + ".npz"
+        with (output / name).open("xb") as stream:
+            np.savez_compressed(stream, vertices=np.asarray(mesh.vertices,dtype=np.float32),
+                                triangles=np.asarray(mesh.faces,dtype=np.int32))
+        resolved["bodies"][oid]["geometry"]["mesh"] = artifact(output,name,"existing STL normalized to declared size and centered at mass centroid")
     write_json(output / "input_config.json", config)
     write_json(output / "resolved_inputs.json", resolved)
     manifest["system"]["resolved_inputs"] = artifact(output, "resolved_inputs.json", "resolved independent geometry, physics, appearance, numerics and camera profiles")
@@ -65,7 +94,7 @@ def prepare(config_path, output):
     source_paths = ("world_model_dataset/native_causal_rigid.py", "world_model_dataset/causal_runner.py",
                     "world_model_dataset/causal_loader.py", "world_model_dataset/controllers.py",
                     "world_model_dataset/causal_control.py", "world_model_dataset/causal_soft.py", "soft_body/tet_quality.py",
-                    "world_model_dataset/io.py", "configs/dataset/v0_2/schema.json")
+                    "world_model_dataset/io.py", "world_model_dataset/geometry.py", "configs/dataset/v0_2/schema.json")
     write_json(output / "source_snapshot.json", {
         "files": {name: (ROOT / name).read_text(encoding="utf-8") for name in source_paths},
         "sha256": {name: file_hash(ROOT / name) for name in source_paths},

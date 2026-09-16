@@ -1,0 +1,11 @@
+{
+  "base_config": "configs/dataset/v0_2/c2_rigid_push.json",
+  "overrides": {
+    "prototype_id": "c2_real_rigid_push",
+    "geometry_profiles": {"elephant": {"shape": "mesh", "asset_id": "asset_elephant", "characteristic_size_m": 0.3, "collision_approximation": "sdf", "sdf_resolution": 384}},
+    "numerics": {"gpu_dynamics": true},
+    "body_profile_overrides": {"load": {"geometry_id": "elephant", "appearance_profile_id": "elephant_gray"}},
+    "appearance_profiles": {"elephant_gray": {"color": [0.46, 0.5, 0.56], "roughness": 0.5, "metallic": 0.0}},
+    "place_on_floor": ["load"]
+  }
+}

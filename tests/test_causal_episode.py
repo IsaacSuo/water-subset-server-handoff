@@ -11,6 +11,29 @@ from world_model_dataset.causal_finalize import finalize_none
 
 
 class CausalEpisodeTests(unittest.TestCase):
+    def test_real_mesh_preparation_preserves_mass_and_places_rotated_surface_on_floor(self):
+        import numpy as np
+        from scipy.spatial.transform import Rotation
+        from world_model_dataset.causal_runner import load_config
+        config = load_config(ROOT / "configs/dataset/v0_2/c2_push_banana.json")
+        config["initial_state_overrides"]["load"] = {
+            "orientation_xyzw": Rotation.from_euler("x", 30, degrees=True).as_quat().tolist()}
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "config.json"
+            write_json(path, config)
+            output = Path(tmp) / "banana"
+            manifest = prepare(path, output)
+            resolved = read_json(output / "resolved_inputs.json")
+            body = resolved["bodies"]["load"]
+            self.assertEqual(body["physics"]["mass_kg"], 0.5)
+            self.assertNotIn("inertia_tensor_kg_m2", resolved["geometry_profiles"]["banana"])
+            self.assertTrue((np.linalg.eigvalsh(body["geometry"]["inertia_tensor_kg_m2"]) > 0).all())
+            initial = manifest["initial_state"]["body_states"]["load"]
+            with np.load(output / body["geometry"]["mesh"]["path"]) as mesh:
+                points = Rotation.from_quat(initial["orientation_xyzw"]).apply(mesh["vertices"])
+                self.assertAlmostEqual(float(points[:, 2].min()) + initial["position_m"][2], 0, places=7)
+                self.assertAlmostEqual(float(np.ptp(mesh["vertices"], axis=0).max()), 0.3, places=6)
+
     def test_small_variants_resolve_material_and_one_force_authority(self):
         from world_model_dataset.causal_runner import load_config
         base = load_config(ROOT / "configs/dataset/v0_2/c2_soft_compression.json")

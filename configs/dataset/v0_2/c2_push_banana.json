@@ -1,0 +1,10 @@
+{
+  "base_config": "configs/dataset/v0_2/c2_rigid_push.json",
+  "overrides": {
+    "prototype_id": "c2_real_rigid_push",
+    "geometry_profiles": {"banana": {"shape": "mesh", "asset_id": "asset_banana", "characteristic_size_m": 0.3, "collision_approximation": "convexDecomposition"}},
+    "body_profile_overrides": {"load": {"geometry_id": "banana", "appearance_profile_id": "banana_yellow"}},
+    "appearance_profiles": {"banana_yellow": {"color": [0.95, 0.66, 0.055], "roughness": 0.5, "metallic": 0.0}},
+    "place_on_floor": ["load"]
+  }
+}
