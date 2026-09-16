@@ -1,0 +1,212 @@
+{
+  "schema_version": "0.2.0-draft",
+  "episode_id": "c1_effort_pusher_overload_draft01",
+  "lifecycle": "draft",
+  "system": {
+    "bodies": [
+      {
+        "instance_id": "pusher",
+        "role": "actuator",
+        "physics_kind": "rigid",
+        "geometry_id": "pusher_pad",
+        "physics_profile_id": "actuator_1kg",
+        "appearance_profile_id": "actuator_orange",
+        "physics_presence": "continuous",
+        "collision_participation": "continuous",
+        "render_presence": "continuous"
+      },
+      {
+        "instance_id": "anchor",
+        "role": "actuator",
+        "physics_kind": "rigid",
+        "geometry_id": "joint_anchor",
+        "physics_profile_id": "fixed_anchor",
+        "appearance_profile_id": "mechanism_gray",
+        "physics_presence": "continuous",
+        "collision_participation": "disabled",
+        "render_presence": "continuous"
+      },
+      {
+        "instance_id": "load",
+        "role": "subject",
+        "physics_kind": "rigid",
+        "geometry_id": "rounded_cube",
+        "physics_profile_id": "rigid_light",
+        "appearance_profile_id": "matte_blue",
+        "physics_presence": "continuous",
+        "collision_participation": "continuous",
+        "render_presence": "continuous"
+      },
+      {
+        "instance_id": "floor",
+        "role": "environment",
+        "physics_kind": "static",
+        "geometry_id": "plane",
+        "physics_profile_id": "fixture_reference",
+        "appearance_profile_id": "matte_gray",
+        "physics_presence": "continuous",
+        "collision_participation": "continuous",
+        "render_presence": "continuous"
+      },
+      {
+        "instance_id": "wall",
+        "role": "environment",
+        "physics_kind": "static",
+        "geometry_id": "blocking_wall",
+        "physics_profile_id": "fixture_reference",
+        "appearance_profile_id": "matte_gray",
+        "physics_presence": "continuous",
+        "collision_participation": "continuous",
+        "render_presence": "continuous"
+      }
+    ],
+    "fixed_connections": [],
+    "joints": [
+      {
+        "joint_id": "pusher_slider",
+        "kind": "prismatic",
+        "body0_id": "anchor",
+        "body1_id": "pusher",
+        "axis": "X",
+        "lower_limit": 0.0,
+        "upper_limit": 1.5
+      }
+    ]
+  },
+  "environment": {
+    "environment_id": "canonical_blocked_lane",
+    "gravity_m_s2": [0.0, 0.0, -9.81],
+    "environment_body_ids": ["floor", "wall"]
+  },
+  "initial_state": {
+    "time_s": 0,
+    "source": "fresh_simulation",
+    "participant_ids": ["pusher", "anchor", "load", "floor", "wall"],
+    "body_states": {
+      "pusher": {
+        "position_m": [-0.8, 0.0, 0.18],
+        "orientation_xyzw": [0.0, 0.0, 0.0, 1.0],
+        "linear_velocity_m_s": [0.0, 0.0, 0.0],
+        "angular_velocity_rad_s": [0.0, 0.0, 0.0]
+      },
+      "anchor": {
+        "position_m": [-0.8, 0.0, 0.18],
+        "orientation_xyzw": [0.0, 0.0, 0.0, 1.0],
+        "linear_velocity_m_s": [0.0, 0.0, 0.0],
+        "angular_velocity_rad_s": [0.0, 0.0, 0.0]
+      },
+      "load": {
+        "position_m": [-0.15, 0.0, 0.15],
+        "orientation_xyzw": [0.0, 0.0, 0.0, 1.0],
+        "linear_velocity_m_s": [0.0, 0.0, 0.0],
+        "angular_velocity_rad_s": [0.0, 0.0, 0.0]
+      },
+      "floor": {
+        "position_m": [0.0, 0.0, -0.025],
+        "orientation_xyzw": [0.0, 0.0, 0.0, 1.0],
+        "linear_velocity_m_s": [0.0, 0.0, 0.0],
+        "angular_velocity_rad_s": [0.0, 0.0, 0.0]
+      },
+      "wall": {
+        "position_m": [0.05, 0.0, 0.3],
+        "orientation_xyzw": [0.0, 0.0, 0.0, 1.0],
+        "linear_velocity_m_s": [0.0, 0.0, 0.0],
+        "angular_velocity_rad_s": [0.0, 0.0, 0.0]
+      }
+    },
+    "state": {
+      "status": "pending",
+      "path": null,
+      "sha256": null,
+      "bytes": null,
+      "source": "native state capture at the formal time origin",
+      "reason": null
+    }
+  },
+  "timing": {
+    "physics_hz": 240,
+    "capture_hz": 60,
+    "duration_s": 1.8
+  },
+  "control_program": {
+    "primitive": "effort_control",
+    "controllers": [
+      {
+        "controller_id": "pusher_velocity_effort",
+        "primitive": "effort_control",
+        "implementation": "dynamic_body_effort",
+        "actuator_instance_id": "pusher",
+        "max_force_n": 8.0,
+        "max_torque_nm": null,
+        "stiffness_n_m": null,
+        "damping_n_s_m": null,
+        "reaction_observable": true,
+        "state_trace": {
+          "status": "pending",
+          "path": null,
+          "sha256": null,
+          "bytes": null,
+          "source": "native rigid actuator state after each physics step",
+          "reason": null
+        },
+        "effort_trace": {
+          "status": "pending",
+          "path": null,
+          "sha256": null,
+          "bytes": null,
+          "source": "force-limited PhysxForceAPI input and work",
+          "reason": null
+        }
+      }
+    ],
+    "commands": [
+      {
+        "command_id": "push_velocity",
+        "controller_id": "pusher_velocity_effort",
+        "start_time_s": 0.2,
+        "end_time_s": 1.2,
+        "target": {"velocity_m_s": 0.8, "velocity_gain_n_s_m": 20.0},
+        "limits": {"max_force_n": 8.0}
+      }
+    ],
+    "command_trace": {
+      "status": "pending",
+      "path": null,
+      "sha256": null,
+      "bytes": null,
+      "source": "declared controller command stream",
+      "reason": null
+    }
+  },
+  "trajectory": {
+    "states": {"status": "pending", "path": null, "sha256": null, "bytes": null, "source": "native solver states", "reason": null},
+    "contacts": {"status": "pending", "path": null, "sha256": null, "bytes": null, "source": "PhysX native rigid contact report", "reason": null},
+    "observations": {"status": "pending", "path": null, "sha256": null, "bytes": null, "source": "synchronized sensor capture", "reason": null},
+    "interaction_annotations": {"status": "pending", "path": null, "sha256": null, "bytes": null, "source": "derived from accepted trajectory", "reason": null},
+    "outcomes": {"status": "pending", "path": null, "sha256": null, "bytes": null, "source": "derived from accepted trajectory", "reason": null}
+  },
+  "implementation": {
+    "state_update_authority": "solver_only",
+    "participant_set": "constant",
+    "collision_participation": "constant",
+    "render_presence": "constant",
+    "post_t0_operations": [
+      {
+        "kind": "apply_force",
+        "target": "pusher",
+        "time_s": 0.2,
+        "reason": "bounded feedback force is applied only to the physical actuator"
+      }
+    ]
+  },
+  "lineage": {"derivation": "fresh_simulation", "parents": []},
+  "counterfactual": {
+    "family_id": "c1_effort_pusher",
+    "baseline_episode_id": null,
+    "changed_pointer": null
+  },
+  "capabilities": {
+    "rigid_contact_impulse": {"status": "not_probed", "source": "PhysX native contact report", "reason": "episode execution pending"},
+    "actuator_applied_effort": {"status": "not_probed", "source": "bounded PhysxForceAPI external-force input", "reason": "episode execution pending"}
+  }
+}

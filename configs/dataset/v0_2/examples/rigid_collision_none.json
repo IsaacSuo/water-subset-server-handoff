@@ -11,10 +11,6 @@
         "geometry_id": "sphere",
         "physics_profile_id": "rigid_reference",
         "appearance_profile_id": "matte_orange",
-        "position_m": [-0.4, 0.0, 0.1],
-        "orientation_xyzw": [0.0, 0.0, 0.0, 1.0],
-        "linear_velocity_m_s": [1.0, 0.0, 0.0],
-        "angular_velocity_rad_s": [0.0, 0.0, 0.0],
         "physics_presence": "continuous",
         "collision_participation": "continuous",
         "render_presence": "continuous"
@@ -26,10 +22,6 @@
         "geometry_id": "sphere",
         "physics_profile_id": "rigid_reference",
         "appearance_profile_id": "matte_blue",
-        "position_m": [0.4, 0.0, 0.1],
-        "orientation_xyzw": [0.0, 0.0, 0.0, 1.0],
-        "linear_velocity_m_s": [-1.0, 0.0, 0.0],
-        "angular_velocity_rad_s": [0.0, 0.0, 0.0],
         "physics_presence": "continuous",
         "collision_participation": "continuous",
         "render_presence": "continuous"
@@ -41,16 +33,13 @@
         "geometry_id": "plane",
         "physics_profile_id": "rigid_reference",
         "appearance_profile_id": "matte_gray",
-        "position_m": [0.0, 0.0, 0.0],
-        "orientation_xyzw": [0.0, 0.0, 0.0, 1.0],
-        "linear_velocity_m_s": [0.0, 0.0, 0.0],
-        "angular_velocity_rad_s": [0.0, 0.0, 0.0],
         "physics_presence": "continuous",
         "collision_participation": "continuous",
         "render_presence": "continuous"
       }
     ],
-    "fixed_connections": []
+    "fixed_connections": [],
+    "joints": []
   },
   "environment": {
     "environment_id": "canonical_flat",
@@ -61,6 +50,26 @@
     "time_s": 0,
     "source": "fresh_simulation",
     "participant_ids": ["left", "right", "floor"],
+    "body_states": {
+      "left": {
+        "position_m": [-0.4, 0.0, 0.1],
+        "orientation_xyzw": [0.0, 0.0, 0.0, 1.0],
+        "linear_velocity_m_s": [1.0, 0.0, 0.0],
+        "angular_velocity_rad_s": [0.0, 0.0, 0.0]
+      },
+      "right": {
+        "position_m": [0.4, 0.0, 0.1],
+        "orientation_xyzw": [0.0, 0.0, 0.0, 1.0],
+        "linear_velocity_m_s": [-1.0, 0.0, 0.0],
+        "angular_velocity_rad_s": [0.0, 0.0, 0.0]
+      },
+      "floor": {
+        "position_m": [0.0, 0.0, 0.0],
+        "orientation_xyzw": [0.0, 0.0, 0.0, 1.0],
+        "linear_velocity_m_s": [0.0, 0.0, 0.0],
+        "angular_velocity_rad_s": [0.0, 0.0, 0.0]
+      }
+    },
     "state": {
       "status": "pending",
       "path": null,

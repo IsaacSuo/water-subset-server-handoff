@@ -79,19 +79,47 @@
         "geometry_id": {"$ref": "#/$defs/id"},
         "physics_profile_id": {"$ref": "#/$defs/id"},
         "appearance_profile_id": {"$ref": "#/$defs/id"},
-        "position_m": {"$ref": "#/$defs/vec3"},
-        "orientation_xyzw": {"$ref": "#/$defs/quat"},
-        "linear_velocity_m_s": {"$ref": "#/$defs/vec3"},
-        "angular_velocity_rad_s": {"$ref": "#/$defs/vec3"},
         "physics_presence": {"enum": ["continuous", "time_varying"]},
         "collision_participation": {"enum": ["continuous", "disabled", "time_varying"]},
         "render_presence": {"enum": ["continuous", "time_varying"]}
       },
       "required": [
         "instance_id", "role", "physics_kind", "geometry_id", "physics_profile_id",
-        "appearance_profile_id", "position_m", "orientation_xyzw", "linear_velocity_m_s",
-        "angular_velocity_rad_s", "physics_presence", "collision_participation", "render_presence"
+        "appearance_profile_id", "physics_presence", "collision_participation", "render_presence"
       ],
+      "additionalProperties": false
+    },
+    "initial_body_state": {
+      "type": "object",
+      "properties": {
+        "position_m": {"$ref": "#/$defs/vec3"},
+        "orientation_xyzw": {"$ref": "#/$defs/quat"},
+        "linear_velocity_m_s": {"$ref": "#/$defs/vec3"},
+        "angular_velocity_rad_s": {"$ref": "#/$defs/vec3"}
+      },
+      "required": ["position_m", "orientation_xyzw", "linear_velocity_m_s", "angular_velocity_rad_s"],
+      "additionalProperties": false
+    },
+    "joint": {
+      "type": "object",
+      "properties": {
+        "joint_id": {"$ref": "#/$defs/id"},
+        "kind": {"enum": ["fixed", "prismatic", "revolute"]},
+        "body0_id": {
+          "anyOf": [{"$ref": "#/$defs/id"}, {"type": "null"}]
+        },
+        "body1_id": {"$ref": "#/$defs/id"},
+        "axis": {
+          "anyOf": [{"enum": ["X", "Y", "Z"]}, {"type": "null"}]
+        },
+        "lower_limit": {
+          "anyOf": [{"type": "number"}, {"type": "null"}]
+        },
+        "upper_limit": {
+          "anyOf": [{"type": "number"}, {"type": "null"}]
+        }
+      },
+      "required": ["joint_id", "kind", "body0_id", "body1_id", "axis", "lower_limit", "upper_limit"],
       "additionalProperties": false
     },
     "controller": {
@@ -213,9 +241,13 @@
                 "minItems": 2,
                 "maxItems": 2
               }
+            },
+            "joints": {
+              "type": "array",
+              "items": {"$ref": "#/$defs/joint"}
             }
           },
-          "required": ["bodies", "fixed_connections"],
+          "required": ["bodies", "fixed_connections", "joints"],
           "additionalProperties": false
         },
         "environment": {
@@ -241,9 +273,14 @@
               "items": {"$ref": "#/$defs/id"},
               "minItems": 1
             },
+            "body_states": {
+              "type": "object",
+              "additionalProperties": {"$ref": "#/$defs/initial_body_state"},
+              "minProperties": 1
+            },
             "state": {"$ref": "#/$defs/record"}
           },
-          "required": ["time_s", "source", "participant_ids", "state"],
+          "required": ["time_s", "source", "participant_ids", "body_states", "state"],
           "additionalProperties": false
         },
         "timing": {

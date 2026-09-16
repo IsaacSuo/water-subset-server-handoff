@@ -2,6 +2,7 @@ import copy
 import unittest
 
 from world_model_dataset.causal_contract import SCHEMA, audit_causal_manifest, validate_causal_schema
+from world_model_dataset.controllers import bounded_velocity_effort, signed_work_increment
 from world_model_dataset.io import read_json
 from world_model_dataset.migration_v02 import classify, crop_boundary
 
@@ -28,8 +29,18 @@ class CausalContractTests(unittest.TestCase):
         validate_causal_schema(self.manifest)
         report = audit_causal_manifest(self.manifest)
         self.assertTrue(report["accepted"], report["errors"])
-        self.assertEqual(self.manifest["system"]["bodies"][0]["linear_velocity_m_s"], [1.0, 0.0, 0.0])
+        self.assertEqual(self.manifest["initial_state"]["body_states"]["left"]["linear_velocity_m_s"],
+                         [1.0, 0.0, 0.0])
         self.assertEqual(self.manifest["control_program"]["primitive"], "none")
+
+    def test_controlled_effort_example_declares_physical_joint_and_limit(self):
+        value = read_json(SCHEMA.parent / "examples/effort_pusher_overload.json")
+        report = audit_causal_manifest(value)
+        self.assertTrue(report["accepted"], report["errors"])
+        self.assertEqual(value["system"]["joints"][0]["kind"], "prismatic")
+        controller = value["control_program"]["controllers"][0]
+        self.assertEqual(controller["max_force_n"], 8.0)
+        self.assertTrue(controller["reaction_observable"])
 
     def test_mid_timeline_velocity_write_is_rejected(self):
         value = copy.deepcopy(self.manifest)
@@ -191,6 +202,22 @@ class CausalContractTests(unittest.TestCase):
         })
         self.assertTrue(all(not row["automatic_admission"] for row in inventory["episodes"]))
         self.assertTrue(all(row["captured_state_at_boundary"] for row in inventory["episodes"]))
+
+    def test_bounded_effort_controller_clips_and_reports_work(self):
+        saturated = bounded_velocity_effort(1.0, 0.0, 20.0, 8.0)
+        self.assertEqual(saturated, {
+            "requested_force_n": 20.0,
+            "applied_force_n": 8.0,
+            "saturated": True,
+        })
+        tracking = bounded_velocity_effort(1.0, 0.9, 20.0, 8.0)
+        self.assertAlmostEqual(tracking["applied_force_n"], 2.0)
+        self.assertFalse(tracking["saturated"])
+        braking = bounded_velocity_effort(0.0, 1.0, 20.0, 8.0)
+        self.assertEqual(braking["applied_force_n"], -8.0)
+        self.assertAlmostEqual(signed_work_increment(8.0, -0.8, -0.79), 0.08)
+        with self.assertRaises(ValueError):
+            bounded_velocity_effort(1.0, 0.0, 0.0, 8.0)
 
 
 if __name__ == "__main__":

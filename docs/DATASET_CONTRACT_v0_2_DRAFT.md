@@ -23,12 +23,12 @@ is `configs/dataset/v0_2/examples/rigid_collision_none.json`. Static semantic ch
 
 ## Contract sections
 
-- `system` declares every subject, actuator and environment body that participates in physics.
-  Initial pose and velocity belong to each body here and are already true at formal time zero.
+- `system` declares every subject, actuator, environment body and physical joint that participates
+  in physics. It contains identity, representation and connectivity rather than time-varying state.
 - `environment` identifies boundary bodies and fixed external conditions such as gravity. It does
   not imply an action or an outcome.
-- `initial_state` records the complete participant set and distinguishes a fresh simulation from
-  an immutable crop derived from a historical cache.
+- `initial_state` records every body's pose and velocity at formal time zero, the complete
+  participant set, and whether the state is fresh or an immutable historical crop.
 - `control_program` contains one of `none`, `effort_control`, `impedance_control` or
   `field_control`. Commands, controllers and actual actuator traces are separate records.
 - `trajectory` points independently to state, contact, observation, interaction-label and outcome

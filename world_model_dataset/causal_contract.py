@@ -94,6 +94,9 @@ def audit_causal_manifest(value, require_complete=False):
     if set(value["initial_state"]["participant_ids"]) != set(body_ids) or \
             len(value["initial_state"]["participant_ids"]) != len(body_ids):
         errors.append("initial_state: participant_ids must equal the complete system body set")
+    state_by_id = value["initial_state"]["body_states"]
+    if set(state_by_id) != set(body_ids):
+        errors.append("initial_state: body_states must describe the complete system body set")
 
     environment_ids = value["environment"]["environment_body_ids"]
     if len(set(environment_ids)) != len(environment_ids):
@@ -102,15 +105,34 @@ def audit_causal_manifest(value, require_complete=False):
         if instance_id not in body_by_id or body_by_id[instance_id]["role"] != "environment":
             errors.append(f"environment: {instance_id} is not a declared environment body")
 
-    for body in bodies:
-        norm = sum(component * component for component in body["orientation_xyzw"])
+    for instance_id, state in state_by_id.items():
+        norm = sum(component * component for component in state["orientation_xyzw"])
         if abs(norm - 1.0) > 1e-6:
-            errors.append(f"system/{body['instance_id']}: orientation quaternion is not normalized")
+            errors.append(f"initial_state/{instance_id}: orientation quaternion is not normalized")
+    for body in bodies:
         for field in ("physics_presence", "render_presence"):
             if body[field] != "continuous":
                 errors.append(f"system/{body['instance_id']}: {field} is not continuous")
         if body["collision_participation"] == "time_varying":
             errors.append(f"system/{body['instance_id']}: collision participation changes after t0")
+
+    joints = value["system"]["joints"]
+    joint_ids = [joint["joint_id"] for joint in joints]
+    if len(set(joint_ids)) != len(joint_ids):
+        errors.append("system: duplicate joint_id")
+    for joint in joints:
+        for field in ("body0_id", "body1_id"):
+            body_id = joint[field]
+            if body_id is not None and body_id not in body_by_id:
+                errors.append(f"joint/{joint['joint_id']}: unknown {field} {body_id}")
+        if joint["kind"] == "fixed":
+            if any(joint[field] is not None for field in ("axis", "lower_limit", "upper_limit")):
+                errors.append(f"joint/{joint['joint_id']}: fixed joint cannot declare an axis or limits")
+        else:
+            if joint["axis"] is None or joint["lower_limit"] is None or joint["upper_limit"] is None:
+                errors.append(f"joint/{joint['joint_id']}: movable joint requires axis and finite limits")
+            elif joint["lower_limit"] >= joint["upper_limit"]:
+                errors.append(f"joint/{joint['joint_id']}: lower limit must be below upper limit")
 
     timing = value["timing"]
     if timing["physics_hz"] % timing["capture_hz"]:

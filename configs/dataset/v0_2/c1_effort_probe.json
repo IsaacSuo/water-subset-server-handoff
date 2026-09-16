@@ -1,0 +1,32 @@
+{
+  "schema_version": "0.2.0-draft",
+  "probe_id": "c1_bounded_effort_probe01",
+  "timing": {
+    "physics_hz": 240,
+    "capture_hz": 60,
+    "duration_s": 1.8
+  },
+  "controller": {
+    "start_time_s": 0.2,
+    "end_time_s": 1.2,
+    "target_velocity_m_s": 0.8,
+    "velocity_gain_n_s_m": 20.0,
+    "max_force_n": 8.0
+  },
+  "actuator": {
+    "mass_kg": 1.0,
+    "size_m": [0.2, 0.5, 0.3],
+    "initial_x_m": -0.8,
+    "travel_limit_m": 1.5
+  },
+  "load": {
+    "mass_kg": 0.5,
+    "size_m": 0.3,
+    "initial_x_m": -0.15
+  },
+  "scenarios": [
+    {"id": "free", "lane_y_m": -0.7, "load": false, "blocking_wall": false},
+    {"id": "resisted", "lane_y_m": 0.0, "load": true, "blocking_wall": false},
+    {"id": "overload", "lane_y_m": 0.7, "load": true, "blocking_wall": true}
+  ]
+}
