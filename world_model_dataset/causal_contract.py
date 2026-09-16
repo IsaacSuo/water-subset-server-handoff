@@ -196,7 +196,7 @@ def audit_causal_manifest(value, require_complete=False):
 
     expected_implementation = {
         "effort_control": {"dynamic_body_effort", "joint_effort"},
-        "impedance_control": {"joint_impedance"},
+        "impedance_control": {"dynamic_body_impedance", "joint_impedance"},
         "field_control": {"continuous_field"},
     }
     for controller in controllers:

@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from world_model_dataset.controllers import bounded_velocity_effort, signed_work_increment
+from world_model_dataset.controllers import bounded_linear_impedance, bounded_velocity_effort, signed_work_increment
 from world_model_dataset.io import read_json, write_json
 
 
@@ -41,6 +41,9 @@ def main():
 
         timing = config["timing"]
         controller = config["controller"]
+        law = controller.get("law", "velocity_effort")
+        if law not in ("velocity_effort", "linear_impedance"):
+            raise ValueError(f"Unsupported controller law: {law}")
         actuator = config["actuator"]
         load = config["load"]
         hz = timing["physics_hz"]
@@ -203,8 +206,10 @@ def main():
                 "start_time_s": controller["start_time_s"],
                 "end_time_s": controller["end_time_s"],
                 "target_velocity_m_s": controller["target_velocity_m_s"],
-                "velocity_gain_n_s_m": controller["velocity_gain_n_s_m"],
                 "max_force_n": controller["max_force_n"],
+                "law": law,
+                "parameters": {key: value for key, value in controller.items()
+                               if key not in ("start_time_s", "end_time_s")},
             }, allow_nan=False) + "\n")
 
         start = time.monotonic()
@@ -212,13 +217,22 @@ def main():
             t = step * dt
             command_active = controller["start_time_s"] <= t < controller["end_time_s"]
             decisions = {}
+            pre_step_cache = UsdGeom.XformCache(Usd.TimeCode.Default())
             for sid, lane in lanes.items():
                 measured_vx = float(lane["body"].GetVelocityAttr().Get()[0])
+                measured_x = float(pre_step_cache.GetLocalToWorldTransform(lane["pusher"].GetPrim()).ExtractTranslation()[0])
                 if command_active:
-                    decision = bounded_velocity_effort(
-                        controller["target_velocity_m_s"], measured_vx,
-                        controller["velocity_gain_n_s_m"], controller["max_force_n"],
-                    )
+                    if law == "velocity_effort":
+                        decision = bounded_velocity_effort(
+                            controller["target_velocity_m_s"], measured_vx,
+                            controller["velocity_gain_n_s_m"], controller["max_force_n"],
+                        )
+                    else:
+                        decision = bounded_linear_impedance(
+                            lane["initial_x_m"] + controller["target_offset_m"], 0.0,
+                            measured_x, measured_vx, controller["stiffness_n_m"],
+                            controller["damping_n_s_m"], controller["max_force_n"],
+                        )
                     lane["command_steps"] += 1
                     lane["saturated_steps"] += int(decision["saturated"])
                     if t >= controller["end_time_s"] - 0.25 * (controller["end_time_s"] - controller["start_time_s"]):
@@ -281,15 +295,25 @@ def main():
                 "pusher_contact_impulse_ns": lane["contact_impulse_ns"],
             }
         displacement = {sid: row["command_displacement_m"] for sid, row in summaries.items()}
-        behavior = {
-            "free_exceeds_resisted": displacement["free"] > displacement["resisted"],
-            "resisted_exceeds_overload": displacement["resisted"] > displacement["overload"],
-            "overload_is_force_limited": (
-                summaries["overload"]["terminal_saturated_fraction"] > 0.95 and
-                abs(summaries["overload"]["command_end_velocity_m_s"]) < 0.01
-            ),
-            "same_command_all_scenarios": True,
-        }
+        overload_limited = (summaries["overload"]["terminal_saturated_fraction"] > 0.95 and
+                            abs(summaries["overload"]["command_end_velocity_m_s"]) < 0.01)
+        if law == "velocity_effort":
+            behavior = {
+                "free_exceeds_resisted": displacement["free"] > displacement["resisted"],
+                "resisted_exceeds_overload": displacement["resisted"] > displacement["overload"],
+                "overload_is_force_limited": overload_limited,
+                "same_command_all_scenarios": True,
+            }
+        else:
+            residual_error = controller["target_offset_m"] - displacement["overload"]
+            behavior = {
+                "resisted_requires_more_controller_work": (
+                    summaries["resisted"]["controller_work_j"] > summaries["free"]["controller_work_j"]
+                ),
+                "overload_retains_position_error": residual_error > 0.1,
+                "overload_is_force_limited": overload_limited,
+                "same_command_all_scenarios": True,
+            }
         write_json(args.output / "probe_report.json", {
             "schema_version": "0.2.0-draft",
             "probe_id": config["probe_id"],

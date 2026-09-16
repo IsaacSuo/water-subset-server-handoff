@@ -49,15 +49,22 @@ The draft schema and both examples now use that separation. The controlled examp
 
 ## Limits and next work
 
-This proves the finite translational effort layer only. The effort trace is the bounded external
+The second accepted run,
+`output/world_model_dataset/v0_2/c1_impedance_probe02`, uses a 40 N/m spring, 8 N·s/m damping and
+the same 8 N hard limit to seek a 0.75 m offset. Its report hash is
+`4da441d9633539a44b7e819e138a09c259975e3c898884a265560a991b65641c`. Free and resisted motion
+both reach the target neighbourhood, but the resisted lane requires 1.298 J instead of 0.064 J.
+The overloaded lane stops after 0.400 m, retains about 0.350 m position error and stays saturated
+for the final command quarter. Thus the target is not presented as the actual actuator trajectory.
+
+The two runs prove the finite translational effort and linear-impedance layers. The effort trace is the bounded external
 force submitted to PhysX and the actuator state is native; joint/contact reactions are inferred
 only where native contact impulses are available and are not relabelled as a joint force sensor.
 C1 still needs:
 
-1. a finite linear impedance drive with target/actual/error/effort records;
-2. a rotational effort or impedance probe;
-3. a continuous field-control probe;
-4. packaging each lane as a complete v0.2 episode instead of a combined capability run.
+1. a rotational effort or impedance probe;
+2. a continuous field-control probe;
+3. packaging each lane as a complete v0.2 episode instead of a combined capability run.
 
 The first failed directory, `c1_effort_probe01`, contains only an import error. Probe02 has valid
 physics but used a whole-command saturation threshold that misclassified the overload because the

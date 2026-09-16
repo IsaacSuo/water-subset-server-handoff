@@ -129,7 +129,7 @@
         "primitive": {"enum": ["effort_control", "impedance_control", "field_control"]},
         "implementation": {
           "enum": [
-            "dynamic_body_effort", "joint_effort", "joint_impedance", "continuous_field",
+            "dynamic_body_effort", "joint_effort", "dynamic_body_impedance", "joint_impedance", "continuous_field",
             "unbounded_kinematic"
           ]
         },

@@ -1,17 +1,19 @@
 {
   "schema_version": "0.2.0-draft",
-  "probe_id": "c1_bounded_effort_probe01",
+  "probe_id": "c1_bounded_linear_impedance_probe01",
   "timing": {
     "physics_hz": 240,
     "capture_hz": 60,
     "duration_s": 1.8
   },
   "controller": {
-    "law": "velocity_effort",
+    "law": "linear_impedance",
     "start_time_s": 0.2,
     "end_time_s": 1.2,
-    "target_velocity_m_s": 0.8,
-    "velocity_gain_n_s_m": 20.0,
+    "target_velocity_m_s": 0.0,
+    "target_offset_m": 0.75,
+    "stiffness_n_m": 40.0,
+    "damping_n_s_m": 8.0,
     "max_force_n": 8.0
   },
   "actuator": {

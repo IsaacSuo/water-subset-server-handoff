@@ -2,7 +2,7 @@ import copy
 import unittest
 
 from world_model_dataset.causal_contract import SCHEMA, audit_causal_manifest, validate_causal_schema
-from world_model_dataset.controllers import bounded_velocity_effort, signed_work_increment
+from world_model_dataset.controllers import bounded_linear_impedance, bounded_velocity_effort, signed_work_increment
 from world_model_dataset.io import read_json
 from world_model_dataset.migration_v02 import classify, crop_boundary
 
@@ -218,6 +218,15 @@ class CausalContractTests(unittest.TestCase):
         self.assertAlmostEqual(signed_work_increment(8.0, -0.8, -0.79), 0.08)
         with self.assertRaises(ValueError):
             bounded_velocity_effort(1.0, 0.0, 0.0, 8.0)
+
+    def test_bounded_linear_impedance_preserves_error_when_saturated(self):
+        result = bounded_linear_impedance(0.7, 0.0, 0.0, 0.0, 40.0, 8.0, 8.0)
+        self.assertEqual(result["applied_force_n"], 8.0)
+        self.assertTrue(result["saturated"])
+        self.assertEqual(result["position_error_m"], 0.7)
+        tracking = bounded_linear_impedance(0.7, 0.0, 0.69, 0.02, 40.0, 8.0, 8.0)
+        self.assertAlmostEqual(tracking["requested_force_n"], 0.24)
+        self.assertFalse(tracking["saturated"])
 
 
 if __name__ == "__main__":
