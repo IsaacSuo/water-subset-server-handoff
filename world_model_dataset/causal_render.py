@@ -30,7 +30,12 @@ def main():
     destination = (output / "layouts" / (environment["id"] if environment else "canonical")) if args.layout_only else output / "observations"
     destination.mkdir(parents=True, exist_ok=False)
     from isaacsim import SimulationApp
-    camera_set = resolved["camera_set"]
+    profile_path = output / "observation_profile.json"
+    profile = read_json(profile_path) if profile_path.exists() else None
+    camera_set = profile["camera_set"] if profile else resolved["camera_set"]
+    expected_frame_count=len(frames)
+    if profile and profile.get('frame_limit'):
+        frames=frames[:profile['frame_limit']]
     width, height = camera_set["resolution"]
     app = SimulationApp({"headless": True, "renderer": "RayTracedLighting", "width": width, "height": height})
     try:
@@ -70,6 +75,16 @@ def main():
         key = UsdLux.DistantLight.Define(stage, "/World/Key")
         key.CreateIntensityAttr(1600.0)
         key.AddRotateXYZOp().Set(Gf.Vec3f(-35, -25, -15))
+        # Enclosed source rooms occlude the dome/distant light. Optional camera-
+        # local fill is an observation choice, never a geometry/physics change.
+        if profile and profile.get('camera_lights'):
+            light_profile=profile['camera_lights']
+            for i,camera in enumerate(camera_set['cameras']):
+                fill=UsdLux.SphereLight.Define(stage,f'/World/CameraFill_{i}')
+                fill.CreateIntensityAttr(light_profile['intensity'])
+                fill.CreateRadiusAttr(light_profile['radius_m'])
+                fill.CreateNormalizeAttr(True)
+                fill.AddTranslateOp().Set(Gf.Vec3d(*camera['position_m']))
         body_ids = {body["instance_id"]: index + 1 for index, body in enumerate(manifest["system"]["bodies"])}
         operations = {}
         soft_meshes = {}
@@ -209,13 +224,18 @@ def main():
             "renderer": Path(__file__).read_text(encoding="utf-8"), "renderer_sha256": file_hash(Path(__file__)),
             "source_state_sha256": file_hash(output / "body_state_trace.jsonl"),
             "resolved_inputs_sha256": file_hash(output / "resolved_inputs.json"),
+            "observation_profile_sha256": file_hash(profile_path) if profile else None,
         })
         write_json(destination / "index.json", {
-            "schema_version": "0.2.0-draft", "complete": True, "frames": outputs,
+            "schema_version": "0.2.0-draft", "complete": len(frames)==expected_frame_count, "frames": outputs,
             "cameras": calibration, "body_instance_ids": body_ids,
             "physics_rerun": False, "render_backend": "Isaac RTX RayTracedLighting",
             "depth_units": "metres along the OpenCV optical z axis", "segmentation": "stable body instance ID; zero is background",
             "source_state_sha256": file_hash(output / "body_state_trace.jsonl"),
+            "camera_set": camera_set,
+            "observation_profile_sha256": file_hash(profile_path) if profile else None,
+            "appearance_policy": "declared body appearance profiles and fixed neutral RTX lighting; source blend textures are not reproduced",
+            "camera_lights": profile.get('camera_lights') if profile else None,
             "geometry_representation": "Rigid primitives/STL visual meshes plus native deformed surfaces; not exact analytical/cooked collider depth",
         })
         print("CAUSAL_OBSERVATIONS_COMPLETE", output, flush=True)

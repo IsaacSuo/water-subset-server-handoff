@@ -60,7 +60,11 @@ def prepare(config_path, output):
         if geometry["shape"] != "mesh":
             continue
         import numpy as np
-        if "physical_asset_source" in geometry:
+        if "static_scene_source" in geometry:
+            from .static_scene_bridge import resolve_static_scene
+            descriptor = next(b for b in manifest["system"]["bodies"] if b["instance_id"] == oid)
+            mesh = resolve_static_scene(geometry, descriptor, manifest["initial_state"]["body_states"][oid], ROOT)
+        elif "physical_asset_source" in geometry:
             from .physical_asset_bridge import resolve_asset
             if not resolved["numerics"]["gpu_dynamics"]:
                 raise ValueError("Physical asset SDF source needs GPU dynamics, no convex fallback")
@@ -92,7 +96,8 @@ def prepare(config_path, output):
         with (output / name).open("xb") as stream:
             np.savez_compressed(stream, vertices=np.asarray(mesh.vertices,dtype=np.float32),
                                 triangles=np.asarray(mesh.faces,dtype=np.int32))
-        resolved["bodies"][oid]["geometry"]["mesh"] = artifact(output,name,"resolved source mesh in metres, centered at uniform-density COM; provenance in resolved geometry")
+        frame = "original scene world coordinates" if "static_scene_source" in resolved["bodies"][oid]["geometry"] else "centered at uniform-density COM"
+        resolved["bodies"][oid]["geometry"]["mesh"] = artifact(output,name,"resolved source mesh in metres, " + frame + "; provenance in resolved geometry")
     write_json(output / "input_config.json", config)
     write_json(output / "resolved_inputs.json", resolved)
     manifest["system"]["resolved_inputs"] = artifact(output, "resolved_inputs.json", "resolved independent geometry, physics, appearance, numerics and camera profiles")
@@ -101,7 +106,7 @@ def prepare(config_path, output):
                     "world_model_dataset/causal_loader.py", "world_model_dataset/controllers.py",
                     "world_model_dataset/causal_control.py", "world_model_dataset/causal_soft.py", "soft_body/tet_quality.py",
                     "world_model_dataset/io.py", "world_model_dataset/geometry.py",
-                    "world_model_dataset/physical_asset_bridge.py", "configs/dataset/v0_2/schema.json")
+                    "world_model_dataset/physical_asset_bridge.py", "world_model_dataset/static_scene_bridge.py", "configs/dataset/v0_2/schema.json")
     write_json(output / "source_snapshot.json", {
         "files": {name: (ROOT / name).read_text(encoding="utf-8") for name in source_paths},
         "sha256": {name: file_hash(ROOT / name) for name in source_paths},

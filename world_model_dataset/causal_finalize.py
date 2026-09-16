@@ -43,13 +43,15 @@ def finalize_smoke(output):
     subject_ids = {b["instance_id"] for b in manifest["system"]["bodies"] if b["role"] == "subject"}
     actuator_ids = {b["instance_id"] for b in manifest["system"]["bodies"] if b["role"] == "actuator"}
     soft_ids = {b["instance_id"] for b in manifest["system"]["bodies"] if b["physics_kind"] == "volumetric"}
-    impact_points = [r for r in contacts if
-                     ((len(set(r["actor_ids"]) & subject_ids) == 2) if primitive == "none" else
-                      (bool(set(r["actor_ids"]) & subject_ids) and bool(set(r["actor_ids"]) & actuator_ids))) and
-                     sum(v*v for v in r["impulse_ns"]) > 0]
+    # Preserve actual actor pairs. A chain contact must not label all subjects as
+    # simultaneously touching; environment contacts matter for support changes.
+    contact_pairs = {}
+    for row in contacts:
+        if sum(v*v for v in row['impulse_ns']) > 0:
+            contact_pairs.setdefault(tuple(sorted(row['actor_ids'])), []).append(row)
     labels = ([{"label": "free_motion", "start_time_s": 0, "end_time_s": states[-1]["time_s"],
                 "source": "native state under fixed environment and no control"}] if primitive == "none" else [])
-    if impact_points:
+    for pair, impact_points in sorted(contact_pairs.items()):
         # Preserve distinct runs rather than inventing contact across an observed gap.
         steps = sorted({r["physics_step"] for r in impact_points})
         runs = [[steps[0]]]
@@ -59,10 +61,13 @@ def finalize_smoke(output):
             else:
                 runs.append([step])
         for run in runs:
-            labels.append({"label": "transient_impact" if primitive == "none" else "actuator_subject_contact",
+            pair_ids = set(pair)
+            label = ("actuator_subject_contact" if pair_ids & actuator_ids and pair_ids & subject_ids else
+                     "transient_impact" if len(pair_ids & subject_ids) == 2 else "environment_contact")
+            labels.append({"label": label,
                 "start_time_s": run[0] / manifest["timing"]["physics_hz"],
                 "end_time_s": run[-1] / manifest["timing"]["physics_hz"],
-                "body_ids": sorted(subject_ids | actuator_ids), "source": "nonzero native interbody contact impulse reports"})
+                "body_ids": list(pair), "source": "nonzero native pair contact impulse reports; sampled report runs, not exact continuous contact intervals"})
     for oid in sorted(soft_ids):
         steps = [row["physics_step"] for row in states if row["body_states"][oid]["metrics"]["geometric_contact"]]
         runs = []

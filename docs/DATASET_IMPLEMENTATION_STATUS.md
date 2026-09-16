@@ -1,6 +1,6 @@
 # Dataset implementation status
 
-Updated: 2026-09-16. Branch: `dataset/interaction-world-model-m4`.
+Updated: 2026-09-17. Branch: `dataset/interaction-world-model-m4`.
 Local-only work. No GitHub push or server submission. Fluid baseline unchanged.
 
 ## Causal redesign decision
@@ -30,7 +30,10 @@ hiding before scale production resumes.
 | M5A | Diagnostic showcase complete | Ten cache-only videos demonstrate replay and presentation. They are not v0.2 training observations; the old replay can hide a removed support. |
 | C0 | In progress; contract and mechanical inventory implemented | The orthogonal ontology, separate `v0_2` JSON schema, no-control example and static causal auditor are present. All 121 historical caches now have immutable source hashes, a candidate crop boundary and a conservative reuse class; detailed interaction/object/observation review remains before C0 freezes. Frozen v0.1 files are unchanged. |
 | C1 | In progress; translational effort and impedance passed | A dynamic pusher on a prismatic joint receives the same bounded command under free, resisted and overloaded conditions. Native trajectories diverge and the overloaded actuator stops at 100% late saturation with residual position error. Rotational control and field control remain. |
-| C2--C5 | Not started | Causal vertical prototypes, compositional coverage, production and model benchmarks follow the capability layer. |
+| C2 | Existing causal prototypes reused | This C4 subset reuses the completed no-control and finite-push caches; prior detailed prototype reviews retain their own scope. |
+| C3 | Representative experiments complete in declared scope; full combinations remain open | P01–P12 simple-geometry pairs, selected real-asset batches, Blue Wall stop/fall and original warehouse push-obstruction/chain-propagation pairs. Original scene geometry remains in collision; this is no longer only the old warehouse background layout. See `NATIVE_SCENE_BATCH02_AND_C4.md`. |
+| C4 | First internal rigid subset delivered; full C4 not closed | `c4_rigid_micro01`: 10 episodes, 1,460 RGB-D/instance-segmentation view frames, 5,770 physical states; source-family train/validation/test groups 4/2/4. Unified loader reads all ten, fixed physical caches remain byte-identical. See `NATIVE_SCENE_BATCH02_AND_C4.md` and output `delivery_review.json`; normals, motion vectors, flexible objects and public release deferred. |
+| C5 | Not started | No model benchmarks or global OOD claims from the first small subset. |
 
 ## Current M4 result
 
@@ -246,6 +249,7 @@ before publishing force–displacement or momentum-balance labels.
 
 M1--M4 and the M5A showcase are closed only in their declared historical scopes. They remain
 valid regression evidence, but do not define the v0.2 ontology or grant causal-training
-admission. Scale production is paused at C0 while the causal contract, migration audit and
-finite-actuator probes are developed. Material identification remains assigned to a future
+admission. Broad scale production remains paused; the explicitly selected C4 rigid micro-subset
+now advances with existing finite actuators and source-family splits, without waiting for all
+historical C0 migration or full C3 coverage. Material identification remains assigned to a future
 force-observable or high-rate free-response study, not historical V02.

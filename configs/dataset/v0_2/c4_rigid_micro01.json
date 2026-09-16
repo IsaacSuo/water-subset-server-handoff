@@ -1,0 +1,25 @@
+{
+  "id": "c4_rigid_micro01",
+  "scope": "internal fixed-backend rigid-state dataset; RGB optical-Z depth instance segmentation control state contacts; not a public release or full C4 closure",
+  "camera_standard": {"resolution": [640, 480], "focal_length_mm": 35.0, "horizontal_aperture_mm": 36.0, "capture_hz": 30, "views": 2},
+  "appearance_policy": "declared body appearance, fixed neutral RTX illumination; original environment geometry retained, source blend textures not part of this first sensor subset",
+  "split_policy": "source-cache, same-source condition/re-render and scene families stay together; validation/test are environment-family holdouts, not geometry OOD certification",
+  "groups": {
+    "canonical_c2": "train",
+    "asset_push_development01": "train",
+    "blue_wall_native": "validation",
+    "warehouse_native": "test"
+  },
+  "episodes": [
+    {"id": "canonical_collision", "source": "output/world_model_dataset/v0_2/c2_none_smoke02", "group": "canonical_c2", "reuse_observations": true},
+    {"id": "canonical_push", "source": "output/world_model_dataset/v0_2/c2_push_smoke01", "group": "canonical_c2", "reuse_observations": true},
+    {"id": "banana_push", "source": "output/world_model_dataset/v0_2/physical_assets_development01/episodes/banana", "group": "asset_push_development01"},
+    {"id": "chair_push", "source": "output/world_model_dataset/v0_2/physical_assets_development01/episodes/chair", "group": "asset_push_development01"},
+    {"id": "blue_wall_stop", "source": "output/world_model_dataset/v0_2/blue_wall_native01/representative/episode", "group": "blue_wall_native"},
+    {"id": "blue_wall_fall", "source": "output/world_model_dataset/v0_2/blue_wall_native01/edge_speed12/episode", "group": "blue_wall_native", "limitations": ["floor penetration peak 5.17 mm; two steps above 2 mm; retain as fixed-backend state data, not high-accuracy impact supervision"]},
+    {"id": "warehouse_push_fast", "source": "output/world_model_dataset/v0_2/native_scene_batch02/push_smoke/warehouse_push_block20_fast/episode", "group": "warehouse_native"},
+    {"id": "warehouse_push_slow", "source": "output/world_model_dataset/v0_2/native_scene_batch02/push_control/warehouse_push_block20_slow/episode", "group": "warehouse_native"},
+    {"id": "warehouse_chain_near", "source": "output/world_model_dataset/v0_2/native_scene_batch02/chain_smoke/warehouse_chain_ball20_near/episode", "group": "warehouse_native"},
+    {"id": "warehouse_chain_far", "source": "output/world_model_dataset/v0_2/native_scene_batch02/chain_control/warehouse_chain_ball20_far/episode", "group": "warehouse_native"}
+  ]
+}
