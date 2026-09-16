@@ -1,7 +1,23 @@
 # Dataset implementation status
 
-Updated: 2026-09-15. Branch: `dataset/interaction-world-model-m4`.
+Updated: 2026-09-16. Branch: `dataset/interaction-world-model-m4`.
 Local-only work. No GitHub push or server submission. Fluid baseline unchanged.
+
+## Causal redesign decision
+
+The former R01--R05/V01--V05 catalogue mixed fixtures, terrains, material pairings,
+interaction mechanisms, tasks and outcomes. It is no longer the ontology for dataset
+production. M4 remains accepted as a **physics capability and regression corpus**, and the
+M5A videos remain diagnostic visualizations of those caches. Neither status grants causal
+training admission.
+
+The replacement roadmap is
+[Interaction World Model Dataset Plan v0.2](INTERACTION_WORLD_MODEL_DATASET_PLAN.md). It
+factorizes an episode into system, environment, initial state and physical control, then
+derives multi-label interactions and outcomes from the trajectory. Dataset Contract v0.1
+and all historical evidence remain frozen. A separate v0.2 contract increment must reject
+in-timeline state writes, object/collision removal, unlimited kinematic actors and render-only
+hiding before scale production resumes.
 
 ## Milestones
 
@@ -10,7 +26,10 @@ Local-only work. No GitHub push or server submission. Fluid baseline unchanged.
 | M1 | Complete and frozen as v0.1 | Separate registries, JSON schema, strict JSON/path/hash/time checks, source snapshots, prepared examples, unified loader and single-variable checker. Release hashes are recorded in `contract_v0_1_release.json`. |
 | M2 | Core framework complete | Four native action types, five fixture families, six diagnostic meshes, shared R01/V02 runner, state/contact caches and post-physics inspection. Legacy 14-environment/42-object fixed-topology data has a truthful read-only bridge; formal resimulation is deferred to M4 event migration. |
 | M3 | Corrected physical scope complete; observations deferred | R01 remains accepted. Corrected V02: 9 material-readback-matched runs, 6 strict pairs and one bounded repetition. Historical 15 default-material V02 comparisons remain withdrawn. Recovery/reference correction and penetration limits are documented in `DATASET_V02_CORRECTED_REVIEW.md`. |
-| M4 | In progress; R03, V01, R02 and V05 initial matrices complete | Each event has 11 physics episodes, three or more diagnostic geometries/roles and eight strict pairs. V05 formal results are reviewed in `DATASET_V05_MATRIX_REVIEW.md`. R04 is next. |
+| M4 | Complete as physics regression corpus | 117 canonical matrix episodes, 81 strict pairs and 4 real-STL supplements are accepted for physics regression. Their causal-training status is intentionally unresolved. |
+| M5A | Diagnostic showcase complete | Ten cache-only videos demonstrate replay and presentation. They are not v0.2 training observations; the old replay can hide a removed support. |
+| C0 | In progress; first contract draft implemented | The orthogonal ontology, separate `v0_2` JSON schema, no-control example and static causal auditor are present. Historical family-level migration is classified; all 121 caches still need cache-level lineage/crop review before C0 freezes. Frozen v0.1 files are unchanged. |
+| C1--C5 | Not started | Finite actuators, causal vertical prototypes, compositional coverage, production and model benchmarks follow C0. |
 
 ## Current M4 result
 
@@ -199,7 +218,7 @@ call an empty unsupported stream “zero force”. Callback contact impulse is p
 as reported; full friction-anchor accounting and impulse/normal sign validation remain
 before publishing force–displacement or momentum-balance labels.
 
-## Remaining scoped work after M3
+## Historical carry-over limits
 
 - The bounded 0.1 s rapid-withdrawal probe is complete. It activates free oscillation but
   does not produce a robust monotonic modulus label at 30 Hz. Material identification moves
@@ -224,6 +243,8 @@ before publishing force–displacement or momentum-balance labels.
 - R01/V02 physics matrix, R01 two-camera output and cache-only Cycles smoke checks are
   described above.
 
-M1--M3 are closed in the declared scope. M4 R03 is now implemented and its initial physics
-matrix is complete; V01 soft-body drop/rebound is next. Material identification remains
-assigned to a future force-observable or high-rate free-response event, not V02.
+M1--M4 and the M5A showcase are closed only in their declared historical scopes. They remain
+valid regression evidence, but do not define the v0.2 ontology or grant causal-training
+admission. Scale production is paused at C0 while the causal contract, migration audit and
+finite-actuator probes are developed. Material identification remains assigned to a future
+force-observable or high-rate free-response study, not historical V02.

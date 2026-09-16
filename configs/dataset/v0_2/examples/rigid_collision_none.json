@@ -1,0 +1,168 @@
+{
+  "schema_version": "0.2.0-draft",
+  "episode_id": "c2_rigid_collision_none_draft01",
+  "lifecycle": "draft",
+  "system": {
+    "bodies": [
+      {
+        "instance_id": "left",
+        "role": "subject",
+        "physics_kind": "rigid",
+        "geometry_id": "sphere",
+        "physics_profile_id": "rigid_reference",
+        "appearance_profile_id": "matte_orange",
+        "position_m": [-0.4, 0.0, 0.1],
+        "orientation_xyzw": [0.0, 0.0, 0.0, 1.0],
+        "linear_velocity_m_s": [1.0, 0.0, 0.0],
+        "angular_velocity_rad_s": [0.0, 0.0, 0.0],
+        "physics_presence": "continuous",
+        "collision_participation": "continuous",
+        "render_presence": "continuous"
+      },
+      {
+        "instance_id": "right",
+        "role": "subject",
+        "physics_kind": "rigid",
+        "geometry_id": "sphere",
+        "physics_profile_id": "rigid_reference",
+        "appearance_profile_id": "matte_blue",
+        "position_m": [0.4, 0.0, 0.1],
+        "orientation_xyzw": [0.0, 0.0, 0.0, 1.0],
+        "linear_velocity_m_s": [-1.0, 0.0, 0.0],
+        "angular_velocity_rad_s": [0.0, 0.0, 0.0],
+        "physics_presence": "continuous",
+        "collision_participation": "continuous",
+        "render_presence": "continuous"
+      },
+      {
+        "instance_id": "floor",
+        "role": "environment",
+        "physics_kind": "static",
+        "geometry_id": "plane",
+        "physics_profile_id": "rigid_reference",
+        "appearance_profile_id": "matte_gray",
+        "position_m": [0.0, 0.0, 0.0],
+        "orientation_xyzw": [0.0, 0.0, 0.0, 1.0],
+        "linear_velocity_m_s": [0.0, 0.0, 0.0],
+        "angular_velocity_rad_s": [0.0, 0.0, 0.0],
+        "physics_presence": "continuous",
+        "collision_participation": "continuous",
+        "render_presence": "continuous"
+      }
+    ],
+    "fixed_connections": []
+  },
+  "environment": {
+    "environment_id": "canonical_flat",
+    "gravity_m_s2": [0.0, 0.0, -9.81],
+    "environment_body_ids": ["floor"]
+  },
+  "initial_state": {
+    "time_s": 0,
+    "source": "fresh_simulation",
+    "participant_ids": ["left", "right", "floor"],
+    "state": {
+      "status": "pending",
+      "path": null,
+      "sha256": null,
+      "bytes": null,
+      "source": "native state capture at the formal time origin",
+      "reason": null
+    }
+  },
+  "timing": {
+    "physics_hz": 240,
+    "capture_hz": 60,
+    "duration_s": 1.5
+  },
+  "control_program": {
+    "primitive": "none",
+    "controllers": [],
+    "commands": [],
+    "command_trace": {
+      "status": "not_applicable",
+      "path": null,
+      "sha256": null,
+      "bytes": null,
+      "source": "no control after t0",
+      "reason": null
+    }
+  },
+  "trajectory": {
+    "states": {
+      "status": "pending",
+      "path": null,
+      "sha256": null,
+      "bytes": null,
+      "source": "native solver state",
+      "reason": null
+    },
+    "contacts": {
+      "status": "pending",
+      "path": null,
+      "sha256": null,
+      "bytes": null,
+      "source": "PhysX native rigid contact report",
+      "reason": null
+    },
+    "observations": {
+      "status": "pending",
+      "path": null,
+      "sha256": null,
+      "bytes": null,
+      "source": "synchronized sensor capture",
+      "reason": null
+    },
+    "interaction_annotations": {
+      "status": "pending",
+      "path": null,
+      "sha256": null,
+      "bytes": null,
+      "source": "derived from the accepted trajectory",
+      "reason": null
+    },
+    "outcomes": {
+      "status": "pending",
+      "path": null,
+      "sha256": null,
+      "bytes": null,
+      "source": "derived from the accepted trajectory",
+      "reason": null
+    }
+  },
+  "implementation": {
+    "state_update_authority": "solver_only",
+    "participant_set": "constant",
+    "collision_participation": "constant",
+    "render_presence": "constant",
+    "post_t0_operations": [
+      {
+        "kind": "solver_step",
+        "target": "system",
+        "time_s": 0,
+        "reason": "all post-origin motion is integrated by the solver"
+      }
+    ]
+  },
+  "lineage": {
+    "derivation": "fresh_simulation",
+    "parents": []
+  },
+  "counterfactual": {
+    "family_id": "c2_rigid_collision_none",
+    "baseline_episode_id": null,
+    "changed_pointer": null
+  },
+  "capabilities": {
+    "rigid_contact_impulse": {
+      "status": "not_probed",
+      "source": "PhysX native rigid contact report",
+      "reason": "runtime probe pending"
+    },
+    "soft_contact_impulse": {
+      "status": "not_applicable",
+      "source": "no volumetric body in this episode",
+      "reason": null
+    }
+  }
+}

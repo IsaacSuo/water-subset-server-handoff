@@ -1,5 +1,11 @@
 # M5A observation and rendering slice
 
+> **Causal-status note (2026-09-16):** these videos are diagnostic presentations of the
+> historical M4 caches. They are not admitted to v0.2 training or evaluation. In particular,
+> hiding the removed R05 support conflicts with the new requirement that observations and
+> physical participants remain consistent. See
+> [the v0.2 roadmap](INTERACTION_WORLD_MODEL_DATASET_PLAN.md).
+
 Reviewed 2026-09-16 from accepted M3/M4 native caches. M5A establishes one neutral
 observation domain and one representative cache-only video for each of R01–R05 and V01–V05.
 It does not rerun physics and does not change any accepted physical result.

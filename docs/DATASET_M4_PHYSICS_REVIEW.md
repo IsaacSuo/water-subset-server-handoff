@@ -1,5 +1,11 @@
 # M4 canonical physics review
 
+> **Causal-status note (2026-09-16):** this review accepts numerical physics and cache
+> integrity under the historical v0.1 action semantics. It does not admit the trajectories
+> to the causal v0.2 training corpus. The ten-event catalogue is now a regression suite;
+> migration status is recorded in
+> [the v0.2 causal migration audit](DATASET_V0_2_MIGRATION_AUDIT.md).
+
 Reviewed 2026-09-16 from accepted immutable caches. The canonical physics implementation for
 all ten core events is now present. This closes M4 physics development, not Dataset v0.1
 publication: camera observations, environment deployment and final train/validation/test

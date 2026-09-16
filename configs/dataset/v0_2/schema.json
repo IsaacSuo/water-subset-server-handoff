@@ -1,0 +1,351 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:interaction-world-model:0.2.0-draft",
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+    },
+    "vec3": {
+      "type": "array",
+      "items": {"type": "number"},
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "quat": {
+      "type": "array",
+      "items": {"type": "number"},
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "record": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": ["pending", "available", "unavailable", "not_applicable"]
+        },
+        "path": {
+          "anyOf": [
+            {"type": "string", "minLength": 1},
+            {"type": "null"}
+          ]
+        },
+        "sha256": {
+          "anyOf": [
+            {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+            {"type": "null"}
+          ]
+        },
+        "bytes": {
+          "anyOf": [
+            {"type": "integer", "minimum": 0},
+            {"type": "null"}
+          ]
+        },
+        "source": {"type": "string", "minLength": 1},
+        "reason": {
+          "anyOf": [
+            {"type": "string", "minLength": 1},
+            {"type": "null"}
+          ]
+        }
+      },
+      "required": ["status", "path", "sha256", "bytes", "source", "reason"],
+      "additionalProperties": false
+    },
+    "capability": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": ["native", "derived", "unavailable", "not_probed", "not_applicable"]
+        },
+        "source": {"type": "string", "minLength": 1},
+        "reason": {
+          "anyOf": [
+            {"type": "string", "minLength": 1},
+            {"type": "null"}
+          ]
+        }
+      },
+      "required": ["status", "source", "reason"],
+      "additionalProperties": false
+    },
+    "body": {
+      "type": "object",
+      "properties": {
+        "instance_id": {"$ref": "#/$defs/id"},
+        "role": {"enum": ["subject", "actuator", "environment"]},
+        "physics_kind": {"enum": ["rigid", "volumetric", "static", "articulation"]},
+        "geometry_id": {"$ref": "#/$defs/id"},
+        "physics_profile_id": {"$ref": "#/$defs/id"},
+        "appearance_profile_id": {"$ref": "#/$defs/id"},
+        "position_m": {"$ref": "#/$defs/vec3"},
+        "orientation_xyzw": {"$ref": "#/$defs/quat"},
+        "linear_velocity_m_s": {"$ref": "#/$defs/vec3"},
+        "angular_velocity_rad_s": {"$ref": "#/$defs/vec3"},
+        "physics_presence": {"enum": ["continuous", "time_varying"]},
+        "collision_participation": {"enum": ["continuous", "disabled", "time_varying"]},
+        "render_presence": {"enum": ["continuous", "time_varying"]}
+      },
+      "required": [
+        "instance_id", "role", "physics_kind", "geometry_id", "physics_profile_id",
+        "appearance_profile_id", "position_m", "orientation_xyzw", "linear_velocity_m_s",
+        "angular_velocity_rad_s", "physics_presence", "collision_participation", "render_presence"
+      ],
+      "additionalProperties": false
+    },
+    "controller": {
+      "type": "object",
+      "properties": {
+        "controller_id": {"$ref": "#/$defs/id"},
+        "primitive": {"enum": ["effort_control", "impedance_control", "field_control"]},
+        "implementation": {
+          "enum": [
+            "dynamic_body_effort", "joint_effort", "joint_impedance", "continuous_field",
+            "unbounded_kinematic"
+          ]
+        },
+        "actuator_instance_id": {
+          "anyOf": [
+            {"$ref": "#/$defs/id"},
+            {"type": "null"}
+          ]
+        },
+        "max_force_n": {
+          "anyOf": [
+            {"type": "number", "exclusiveMinimum": 0},
+            {"type": "null"}
+          ]
+        },
+        "max_torque_nm": {
+          "anyOf": [
+            {"type": "number", "exclusiveMinimum": 0},
+            {"type": "null"}
+          ]
+        },
+        "stiffness_n_m": {
+          "anyOf": [
+            {"type": "number", "minimum": 0},
+            {"type": "null"}
+          ]
+        },
+        "damping_n_s_m": {
+          "anyOf": [
+            {"type": "number", "minimum": 0},
+            {"type": "null"}
+          ]
+        },
+        "reaction_observable": {"type": "boolean"},
+        "state_trace": {"$ref": "#/$defs/record"},
+        "effort_trace": {"$ref": "#/$defs/record"}
+      },
+      "required": [
+        "controller_id", "primitive", "implementation", "actuator_instance_id",
+        "max_force_n", "max_torque_nm", "stiffness_n_m", "damping_n_s_m",
+        "reaction_observable", "state_trace", "effort_trace"
+      ],
+      "additionalProperties": false
+    },
+    "command": {
+      "type": "object",
+      "properties": {
+        "command_id": {"$ref": "#/$defs/id"},
+        "controller_id": {"$ref": "#/$defs/id"},
+        "start_time_s": {"type": "number", "minimum": 0},
+        "end_time_s": {"type": "number", "exclusiveMinimum": 0},
+        "target": {"type": "object"},
+        "limits": {"type": "object"}
+      },
+      "required": ["command_id", "controller_id", "start_time_s", "end_time_s", "target", "limits"],
+      "additionalProperties": false
+    },
+    "lineage_parent": {
+      "type": "object",
+      "properties": {
+        "episode_id": {"$ref": "#/$defs/id"},
+        "manifest_path": {"type": "string", "minLength": 1},
+        "manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "crop_start_time_s": {"type": "number", "minimum": 0},
+        "crop_end_time_s": {"type": "number", "exclusiveMinimum": 0}
+      },
+      "required": [
+        "episode_id", "manifest_path", "manifest_sha256", "crop_start_time_s", "crop_end_time_s"
+      ],
+      "additionalProperties": false
+    },
+    "operation": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "solver_step", "controller_command", "apply_force", "apply_torque", "field_update",
+            "direct_state_write", "set_pose", "set_velocity", "spawn_body", "delete_body",
+            "activate_body", "deactivate_body", "enable_collision", "disable_collision",
+            "show_body", "hide_body", "unbounded_kinematic_target"
+          ]
+        },
+        "target": {"type": "string", "minLength": 1},
+        "time_s": {"type": "number", "minimum": 0},
+        "reason": {"type": "string", "minLength": 1}
+      },
+      "required": ["kind", "target", "time_s", "reason"],
+      "additionalProperties": false
+    },
+    "manifest": {
+      "type": "object",
+      "properties": {
+        "schema_version": {"const": "0.2.0-draft"},
+        "episode_id": {"$ref": "#/$defs/id"},
+        "lifecycle": {"enum": ["draft", "prepared", "completed", "rejected"]},
+        "system": {
+          "type": "object",
+          "properties": {
+            "bodies": {
+              "type": "array",
+              "items": {"$ref": "#/$defs/body"},
+              "minItems": 1
+            },
+            "fixed_connections": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {"$ref": "#/$defs/id"},
+                "minItems": 2,
+                "maxItems": 2
+              }
+            }
+          },
+          "required": ["bodies", "fixed_connections"],
+          "additionalProperties": false
+        },
+        "environment": {
+          "type": "object",
+          "properties": {
+            "environment_id": {"$ref": "#/$defs/id"},
+            "gravity_m_s2": {"$ref": "#/$defs/vec3"},
+            "environment_body_ids": {
+              "type": "array",
+              "items": {"$ref": "#/$defs/id"}
+            }
+          },
+          "required": ["environment_id", "gravity_m_s2", "environment_body_ids"],
+          "additionalProperties": false
+        },
+        "initial_state": {
+          "type": "object",
+          "properties": {
+            "time_s": {"const": 0},
+            "source": {"enum": ["fresh_simulation", "derived_crop"]},
+            "participant_ids": {
+              "type": "array",
+              "items": {"$ref": "#/$defs/id"},
+              "minItems": 1
+            },
+            "state": {"$ref": "#/$defs/record"}
+          },
+          "required": ["time_s", "source", "participant_ids", "state"],
+          "additionalProperties": false
+        },
+        "timing": {
+          "type": "object",
+          "properties": {
+            "physics_hz": {"type": "integer", "minimum": 30, "maximum": 4000},
+            "capture_hz": {"type": "integer", "minimum": 1, "maximum": 240},
+            "duration_s": {"type": "number", "exclusiveMinimum": 0, "maximum": 120}
+          },
+          "required": ["physics_hz", "capture_hz", "duration_s"],
+          "additionalProperties": false
+        },
+        "control_program": {
+          "type": "object",
+          "properties": {
+            "primitive": {"enum": ["none", "effort_control", "impedance_control", "field_control"]},
+            "controllers": {
+              "type": "array",
+              "items": {"$ref": "#/$defs/controller"}
+            },
+            "commands": {
+              "type": "array",
+              "items": {"$ref": "#/$defs/command"}
+            },
+            "command_trace": {"$ref": "#/$defs/record"}
+          },
+          "required": ["primitive", "controllers", "commands", "command_trace"],
+          "additionalProperties": false
+        },
+        "trajectory": {
+          "type": "object",
+          "properties": {
+            "states": {"$ref": "#/$defs/record"},
+            "contacts": {"$ref": "#/$defs/record"},
+            "observations": {"$ref": "#/$defs/record"},
+            "interaction_annotations": {"$ref": "#/$defs/record"},
+            "outcomes": {"$ref": "#/$defs/record"}
+          },
+          "required": ["states", "contacts", "observations", "interaction_annotations", "outcomes"],
+          "additionalProperties": false
+        },
+        "implementation": {
+          "type": "object",
+          "properties": {
+            "state_update_authority": {"enum": ["solver_only", "mixed", "direct_write"]},
+            "participant_set": {"enum": ["constant", "time_varying"]},
+            "collision_participation": {"enum": ["constant", "time_varying"]},
+            "render_presence": {"enum": ["constant", "time_varying"]},
+            "post_t0_operations": {
+              "type": "array",
+              "items": {"$ref": "#/$defs/operation"}
+            }
+          },
+          "required": [
+            "state_update_authority", "participant_set", "collision_participation",
+            "render_presence", "post_t0_operations"
+          ],
+          "additionalProperties": false
+        },
+        "lineage": {
+          "type": "object",
+          "properties": {
+            "derivation": {"enum": ["fresh_simulation", "derived_crop"]},
+            "parents": {
+              "type": "array",
+              "items": {"$ref": "#/$defs/lineage_parent"}
+            }
+          },
+          "required": ["derivation", "parents"],
+          "additionalProperties": false
+        },
+        "counterfactual": {
+          "type": "object",
+          "properties": {
+            "family_id": {"$ref": "#/$defs/id"},
+            "baseline_episode_id": {
+              "anyOf": [
+                {"$ref": "#/$defs/id"},
+                {"type": "null"}
+              ]
+            },
+            "changed_pointer": {
+              "anyOf": [
+                {"type": "string", "pattern": "^/"},
+                {"type": "null"}
+              ]
+            }
+          },
+          "required": ["family_id", "baseline_episode_id", "changed_pointer"],
+          "additionalProperties": false
+        },
+        "capabilities": {
+          "type": "object",
+          "additionalProperties": {"$ref": "#/$defs/capability"}
+        }
+      },
+      "required": [
+        "schema_version", "episode_id", "lifecycle", "system", "environment",
+        "initial_state", "timing", "control_program", "trajectory", "implementation",
+        "lineage", "counterfactual", "capabilities"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
