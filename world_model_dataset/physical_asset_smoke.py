@@ -6,7 +6,7 @@ from .causal_runner import ROOT, load_config, prepare, invoke, package_physics
 from .io import file_hash, write_json
 
 
-def make_config(exploration_root, name, size=.2, mass=None, density=700.):
+def make_config(exploration_root, name, size=.2, mass=None, density=700., library_root=None):
     exploration_root = Path(exploration_root).resolve()
     if Path(name).name != name or not name.replace('_','').isalnum():
         raise ValueError("Expected a single asset name")
@@ -16,7 +16,7 @@ def make_config(exploration_root, name, size=.2, mass=None, density=700.):
     config["numerics"]["gpu_dynamics"] = True
     config["geometry_profiles"]["exploration_asset"] = {
         "shape":"mesh", "physical_asset_source":{
-            "directory":str(exploration_root/"output/physical_assets/library_v1"/name),
+            "directory":str((Path(library_root) if library_root else exploration_root/"output/physical_assets/library_v1")/name),
             "loader_path":str(loader), "loader_sha256":file_hash(loader),
             "size":{"max_extent_m":size}}}
     config["physics_profiles"]["asset_development"] = dict(

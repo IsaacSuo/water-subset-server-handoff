@@ -31,8 +31,8 @@ def main():
     if controllers and len(controllers) != 1:
         raise ValueError("Initial causal backend requires one actuator")
     for joint in manifest["system"]["joints"]:
-        if joint["kind"] != "prismatic" or joint["body0_id"] is not None or joint["axis"] not in ("X", "Z"):
-            raise ValueError("Backend currently supports world-anchored X/Z sliders only")
+        if joint["kind"] != "prismatic" or joint["body0_id"] is not None or joint["axis"] not in ("X", "Y", "Z"):
+            raise ValueError("Backend currently supports world-anchored X/Y/Z sliders only")
     snapshot = read_json(output / "source_snapshot.json")
     for name, checksum in snapshot["sha256"].items():
         if file_hash(ROOT / name) != checksum:
@@ -210,7 +210,7 @@ def main():
             if not any(j["body1_id"] == actuator_id for j in manifest["system"]["joints"]):
                 raise ValueError("Push actuator requires a declared guide")
             axis = next(j["axis"] for j in manifest["system"]["joints"] if j["body1_id"] == actuator_id)
-            axis_index = {"X": 0, "Z": 2}[axis]
+            axis_index = {"X": 0, "Y": 1, "Z": 2}[axis]
             force_api = PhysxSchema.PhysxForceAPI.Apply(actors[actuator_id]["prim"])
             force_attr = force_api.CreateForceAttr(Gf.Vec3f(0.0))
             force_api.CreateTorqueAttr(Gf.Vec3f(0.0))

@@ -253,3 +253,13 @@ admission. Broad scale production remains paused; the explicitly selected C4 rig
 now advances with existing finite actuators and source-family splits, without waiting for all
 historical C0 migration or full C3 coverage. Material identification remains assigned to a future
 force-observable or high-rate free-response study, not historical V02.
+
+## Post-C4 proportion and new-scene revision (2026-09-17)
+
+`PROPORTIONAL_ASSETS_NATIVE03.md` records four resized real-object push examples,
+two new bathroom-object examples and two retained low-clearance diagnostics.
+The finite actuator is sized against the posed object rather than a universal
+50 cm-wide pad; original bathroom geometry and rug remain in collision.
+This is a development showcase, not automatic C4 expansion or replacement of
+the prior immutable subset. Material-face warnings and the unfinished travel
+to the cabinet are retained explicitly.

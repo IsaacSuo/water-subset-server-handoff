@@ -21,7 +21,9 @@ def main():
     p.add_argument('--left',type=Path,required=True);p.add_argument('--right',type=Path,required=True)
     p.add_argument('--output',type=Path,required=True);p.add_argument('--title',required=True)
     p.add_argument('--labels',nargs=2,required=True)
-    a=p.parse_args();left,lh=frames(a.left);right,rh=frames(a.right)
+    p.add_argument('--footer',default='同一原位场景／每组只改变标注条件／从真实缓存读取结果／未重跑物理')
+    p.add_argument('--camera',default='front')
+    a=p.parse_args();left,lh=frames(a.left,a.camera);right,rh=frames(a.right,a.camera)
     if [t for t,_ in left]!=[t for t,_ in right]:raise ValueError('Preview time axes differ')
     a.output.parent.mkdir(parents=True,exist_ok=True)
     font='/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc'
@@ -38,14 +40,14 @@ def main():
                 frame=raw.convert('RGB');frame.thumbnail((640,480))
                 image.paste(frame,(j*640+(640-frame.width)//2,85+(480-frame.height)//2))
             draw.text((18+j*640,48),a.labels[j],font=f18,fill='#182c40')
-        draw.text((18,573),'同一原位场景／每组只改变标注条件／从真实缓存读取结果／未重跑物理',font=f18,fill='#182c40')
+        draw.text((18,573),a.footer,font=f18,fill='#182c40')
         repeats=2+(15 if i in (0,len(left)-1) else 0)
         for _ in range(repeats):proc.stdin.write(image.tobytes())
         count+=repeats
     proc.stdin.close()
     if proc.wait():raise RuntimeError('Video encoding failed')
     write_json(a.output.with_suffix('.json'),dict(video=a.output.name,sha256=file_hash(a.output),
-        source_state_sha256=[lh,rh],duration_s=count/30,physics_rerun=False,render_rerun=False,labels=a.labels))
+        source_state_sha256=[lh,rh],duration_s=count/30,physics_rerun=False,render_rerun=False,labels=a.labels,footer=a.footer,camera=a.camera))
     print('PAIRED_PREVIEW',a.output,flush=True)
 
 

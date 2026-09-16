@@ -1,0 +1,26 @@
+{
+  "id": "proportional_assets_native03",
+  "exploration_root": "/home/fangsuo/isaacsim_work_flexible_explore",
+  "timing": {"physics_hz": 240, "capture_hz": 30, "duration_s": 3.2},
+  "control": {"target_speed_m_s": 0.35, "start_s": 0.2, "end_s": 2.7, "nominal_acceleration_m_s2": 0.8},
+  "layout": {"pad_width_fraction": 1.05, "pad_height_fraction": 0.45, "pad_thickness_fraction": 0.10, "approach_gap_fraction": 0.20, "ground_clearance_m": 0.003},
+  "episodes": [
+    {"id": "banana_push_rescaled", "asset": "banana", "size_m": 0.30, "mass_kg": 0.3, "scene": "canonical", "axis": "X", "orientation_xyzw": [0,0,0,1]},
+    {"id": "chair_push_rescaled", "asset": "chair", "size_m": 0.45, "mass_kg": 1.0, "scene": "canonical", "axis": "X", "orientation_xyzw": [0,0,0,1]},
+    {"id": "elephant_push_rescaled", "asset": "elephant", "size_m": 0.40, "mass_kg": 1.0, "scene": "canonical", "axis": "X", "orientation_xyzw": [0,0,0,1]},
+    {"id": "carrot_push_rescaled", "asset": "carrot", "size_m": 0.30, "mass_kg": 0.3, "scene": "canonical", "axis": "X", "orientation_xyzw": [0,0.7071067811865475,0,0.7071067811865476]},
+    {"id": "bathroom_jug_push", "asset": "ph_jug_01", "size_m": 0.35, "mass_kg": 0.5, "library": "output/physical_assets/library_web_20260917_v2", "scene": "bathroom", "axis": "Y", "subject_xy": [-0.40,0.95], "orientation_xyzw": [0.7071067811865475,0,0,0.7071067811865476]},
+    {"id": "bathroom_bottle_push", "asset": "ph_plastic_bottle_gallon", "size_m": 0.35, "mass_kg": 0.5, "library": "output/physical_assets/library_web_20260917_v2", "scene": "bathroom", "axis": "Y", "subject_xy": [-0.40,0.95], "orientation_xyzw": [0.7071067811865475,0,0,0.7071067811865476]},
+    {"id": "bathroom_jug_clearance15", "asset": "ph_jug_01", "size_m": 0.35, "mass_kg": 0.5, "library": "output/physical_assets/library_web_20260917_v2", "scene": "bathroom", "axis": "Y", "subject_xy": [-0.40,0.95], "orientation_xyzw": [0.7071067811865475,0,0,0.7071067811865476], "layout_overrides": {"ground_clearance_m": 0.015}},
+    {"id": "bathroom_bottle_clearance15", "asset": "ph_plastic_bottle_gallon", "size_m": 0.35, "mass_kg": 0.5, "library": "output/physical_assets/library_web_20260917_v2", "scene": "bathroom", "axis": "Y", "subject_xy": [-0.40,0.95], "orientation_xyzw": [0.7071067811865475,0,0,0.7071067811865476], "layout_overrides": {"ground_clearance_m": 0.015}}
+  ],
+  "scenes": {
+    "bathroom": {
+      "export": "output/world_model_dataset/v0_2/proportional_assets_native03/bathroom_geometry/scene.json",
+      "research_source": "/mnt/y/scene_research_20260916/phenomenon_atlas_20260917/raw/N09_geometry.json",
+      "observation_camera_overrides": {"rear": {"position_m": [1.10,0.45,1.05], "target_m": [-0.4,1.45,0.20]}},
+      "note": "Original Mitsuba source geometry in the research-derived Blender file. All geometry retained; Y-up to Z-up was a documented rigid basis conversion, not scale or shape editing. Original BSDFs not converted."
+    }
+  },
+  "scope": "Proportion/layout redesign, not single-variable pairs against old caches or formal asset admission. Preserve prior C4 data and source scene geometry."
+}
