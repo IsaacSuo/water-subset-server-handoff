@@ -257,6 +257,8 @@ def audit_causal_manifest(value, require_complete=False):
 
     records = [("initial_state/state", value["initial_state"]["state"]),
                ("control_program/command_trace", program["command_trace"])]
+    if "resolved_inputs" in value["system"]:
+        records.append(("system/resolved_inputs", value["system"]["resolved_inputs"]))
     records.extend((f"controller/{controller['controller_id']}/{field}", controller[field])
                    for controller in controllers for field in ("state_trace", "effort_trace"))
     records.extend((f"trajectory/{name}", record) for name, record in value["trajectory"].items())

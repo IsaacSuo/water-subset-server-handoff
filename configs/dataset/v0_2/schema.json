@@ -247,7 +247,8 @@
             "joints": {
               "type": "array",
               "items": {"$ref": "#/$defs/joint"}
-            }
+            },
+            "resolved_inputs": {"$ref": "#/$defs/record"}
           },
           "required": ["bodies", "fixed_connections", "joints"],
           "additionalProperties": false
