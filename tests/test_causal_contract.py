@@ -3,6 +3,7 @@ import unittest
 
 from world_model_dataset.causal_contract import SCHEMA, audit_causal_manifest, validate_causal_schema
 from world_model_dataset.io import read_json
+from world_model_dataset.migration_v02 import classify, crop_boundary
 
 
 EXAMPLE = SCHEMA.parent / "examples/rigid_collision_none.json"
@@ -156,6 +157,40 @@ class CausalContractTests(unittest.TestCase):
         report = audit_causal_manifest(value, require_complete=True)
         self.assertFalse(report["accepted"])
         self.assertTrue(any("required state" in error for error in report["errors"]))
+
+    def test_historical_action_classification_is_conservative(self):
+        initial_velocity = [{"kind": "initial_velocity"}]
+        removal = [{"kind": "remove_support", "parameters": {"method": "disable_collision"}}]
+        trajectory = [{"kind": "kinematic_trajectory"}]
+        deactivation = [
+            {"kind": "release", "parameters": {"method": "set_dynamic"}},
+            {"kind": "remove_support", "parameters": {"method": "deactivate_actor"}},
+        ]
+        self.assertEqual(classify("V01", []), "direct_candidate")
+        self.assertEqual(classify("R03", initial_velocity), "post_write_crop_candidate")
+        self.assertEqual(classify("R05", removal), "post_removal_crop_review")
+        self.assertEqual(classify("V02", trajectory), "post_actuation_passive_review")
+        self.assertEqual(classify("V03", deactivation), "post_deactivation_recovery_review")
+
+    def test_crop_starts_at_first_complete_state_after_mutation(self):
+        commands = [{"end_time_s": 0.5}]
+        frames = [{"time_s": 0.5}, {"time_s": 0.5166666666666667}, {"time_s": 0.5333333333333333}]
+        self.assertEqual(crop_boundary(commands, frames), 0.5166666666666667)
+        self.assertEqual(crop_boundary([], frames), 0.0)
+
+    def test_generated_historical_inventory_is_complete_but_not_admitted(self):
+        inventory = read_json(SCHEMA.parent / "historical_cache_inventory.json")
+        self.assertEqual(inventory["episode_count"], 121)
+        self.assertEqual(sum(inventory["event_counts"].values()), 121)
+        self.assertEqual(inventory["classification_counts"], {
+            "direct_candidate": 11,
+            "post_actuation_passive_review": 32,
+            "post_deactivation_recovery_review": 11,
+            "post_removal_crop_review": 32,
+            "post_write_crop_candidate": 35,
+        })
+        self.assertTrue(all(not row["automatic_admission"] for row in inventory["episodes"]))
+        self.assertTrue(all(row["captured_state_at_boundary"] for row in inventory["episodes"]))
 
 
 if __name__ == "__main__":

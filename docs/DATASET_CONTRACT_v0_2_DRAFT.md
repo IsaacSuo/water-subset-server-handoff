@@ -85,7 +85,8 @@ prototype run.
 
 ## C0 status after this draft
 
-The ontology, schema draft, no-control example and negative static checks now exist. C0 is not yet
-frozen. Remaining work is the cache-level audit of all 121 historical episodes, a controlled
-manifest example exercised against the first C1 probe, and a final review of runtime trace fields
-before assigning a stable `0.2.0` version.
+The ontology, schema draft, no-control example and negative static checks now exist. A mechanical
+inventory also resolves all 121 historical episodes to immutable source hashes and candidate crop
+boundaries. C0 is not yet frozen. Remaining work is the detailed interaction/object/observation
+review of those candidates, a controlled manifest example exercised against the first C1 probe,
+and a final review of runtime trace fields before assigning a stable `0.2.0` version.

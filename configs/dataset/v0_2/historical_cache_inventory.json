@@ -1,0 +1,3103 @@
+{
+  "schema_version": "0.2.0-draft",
+  "kind": "historical_causal_migration_inventory",
+  "source_definition": "configs/dataset/v0_2/historical_sources.json",
+  "source_matrices": [
+    {
+      "path": "output/world_model_dataset/v0_1/m3_physics_v01/matrix.json",
+      "sha256": "5eafd53df508613a07d8a9066f8ba55fa3fe22f4347a4d7fa925f1b6f6d4974e",
+      "included_event_ids": [
+        "R01"
+      ],
+      "episode_count": 20
+    },
+    {
+      "path": "output/world_model_dataset/v0_1/m3_v02_material_corrected_v01/matrix.json",
+      "sha256": "67d0c822ecbcf2ce2502efa88cb9e61e6aca1b5e4a1e6300ab32713d19b642a4",
+      "included_event_ids": [
+        "V02"
+      ],
+      "episode_count": 9
+    },
+    {
+      "path": "output/world_model_dataset/v0_1/m4_r02_physics_v02/matrix.json",
+      "sha256": "aff5f8d17fdb7066d5a17b5fc2cc5664e9e665a019a6f1a1e39349e192a9d07b",
+      "included_event_ids": [
+        "R02"
+      ],
+      "episode_count": 11
+    },
+    {
+      "path": "output/world_model_dataset/v0_1/m4_r03_physics_v02/matrix.json",
+      "sha256": "6fdab151d32741edeb3b497b448dff235fdc6248b458445fc15eb45b3b2362dc",
+      "included_event_ids": [
+        "R03"
+      ],
+      "episode_count": 11
+    },
+    {
+      "path": "output/world_model_dataset/v0_1/m4_r04_physics_v02/matrix.json",
+      "sha256": "88c32857980774a0ba3dbdcd25e036cc1d360394b3b2bdc5836f925f6f332f58",
+      "included_event_ids": [
+        "R04"
+      ],
+      "episode_count": 11
+    },
+    {
+      "path": "output/world_model_dataset/v0_1/m4_r05_physics_v02/matrix.json",
+      "sha256": "0dd3c43c5e857a3d3072988204b1c88d570f363c2932fc9c411b82758698ea39",
+      "included_event_ids": [
+        "R05"
+      ],
+      "episode_count": 11
+    },
+    {
+      "path": "output/world_model_dataset/v0_1/m4_v01_physics_v02/matrix.json",
+      "sha256": "de3d7ae464c8e81d0486b8c24f21a0c147a6142092ae30432f4b159d5f533409",
+      "included_event_ids": [
+        "V01"
+      ],
+      "episode_count": 11
+    },
+    {
+      "path": "output/world_model_dataset/v0_1/m4_v03_physics_v01/matrix.json",
+      "sha256": "8309bef229437e9850240266edfb82727b02577b77251507e77fde20f16cf0de",
+      "included_event_ids": [
+        "V03"
+      ],
+      "episode_count": 11
+    },
+    {
+      "path": "output/world_model_dataset/v0_1/m4_v04_physics_v01/matrix.json",
+      "sha256": "dbcbabe8e17463d2174faa2071beb03b32f428baed79699179832e7de5b34c94",
+      "included_event_ids": [
+        "V04"
+      ],
+      "episode_count": 11
+    },
+    {
+      "path": "output/world_model_dataset/v0_1/m4_v05_physics_v01/matrix.json",
+      "sha256": "677c61508009b94fddc6a5cae984616de75c09f01e34b60349e373adbda9890a",
+      "included_event_ids": [
+        "V05"
+      ],
+      "episode_count": 11
+    },
+    {
+      "path": "output/world_model_dataset/v0_1/m4_real_rigid_physics_v02/matrix.json",
+      "sha256": "b3c08096e0312d4409a522e3db3e10cdffc3d940dbe896bb83bf25563eca3bfd",
+      "included_event_ids": [
+        "R02",
+        "R03",
+        "R04",
+        "R05"
+      ],
+      "episode_count": 4
+    }
+  ],
+  "episode_count": 121,
+  "classification_counts": {
+    "direct_candidate": 11,
+    "post_actuation_passive_review": 32,
+    "post_deactivation_recovery_review": 11,
+    "post_removal_crop_review": 32,
+    "post_write_crop_candidate": 35
+  },
+  "event_counts": {
+    "R01": 20,
+    "R02": 12,
+    "R03": 12,
+    "R04": 12,
+    "R05": 12,
+    "V01": 11,
+    "V02": 9,
+    "V03": 11,
+    "V04": 11,
+    "V05": 11
+  },
+  "admission_policy": "candidate_only; every row requires manual cache and observation review",
+  "episodes": [
+    {
+      "episode_id": "r01_capsule_angle10",
+      "event_id": "R01",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_physics_v01/episodes/r01_capsule_angle10",
+      "manifest_sha256": "ea27d2b5d804d4a02fa9344f01f39c3d66998305afb82ada51aa34bfd6e06f9d",
+      "action_sha256": "0c61988fff1d67ac8be40c474b135e9ea1cfc2440696702a0f5fb70ff2efd1da",
+      "state_index_sha256": "2b8294ebe375f763d97b648ab28262285e877403d097615bd3699b0fa7ac5f67",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "gate",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5333333333333333,
+      "candidate_remaining_duration_s": 3.466666666666667,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r01_capsule_angle20",
+      "event_id": "R01",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_physics_v01/episodes/r01_capsule_angle20",
+      "manifest_sha256": "9849cc4feb9b691a953bdd0e1e65ad8e0b9155d302061df9369148089f55f055",
+      "action_sha256": "0c61988fff1d67ac8be40c474b135e9ea1cfc2440696702a0f5fb70ff2efd1da",
+      "state_index_sha256": "c282675682bbac007d2067d54888f4ecb0197e166458101082029f31764e1c14",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "gate",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5333333333333333,
+      "candidate_remaining_duration_s": 3.466666666666667,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r01_capsule_angle30",
+      "event_id": "R01",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_physics_v01/episodes/r01_capsule_angle30",
+      "manifest_sha256": "eb7a6d4169d4a0d5812c218ca2050ac76bafd747295a5b26a7b5c8b3b4220f25",
+      "action_sha256": "0c61988fff1d67ac8be40c474b135e9ea1cfc2440696702a0f5fb70ff2efd1da",
+      "state_index_sha256": "be84a0d9c8af451ae85dcc3a682476f9c2ca6b53123e266be5da2f59578a28d1",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "gate",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5333333333333333,
+      "candidate_remaining_duration_s": 3.466666666666667,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r01_capsule_friction_low",
+      "event_id": "R01",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_physics_v01/episodes/r01_capsule_friction_low",
+      "manifest_sha256": "62fc1e8d98ef2da1659d36894471ed74e217622cdf7f38d06d84bfdda44e8286",
+      "action_sha256": "0c61988fff1d67ac8be40c474b135e9ea1cfc2440696702a0f5fb70ff2efd1da",
+      "state_index_sha256": "c282675682bbac007d2067d54888f4ecb0197e166458101082029f31764e1c14",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "gate",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5333333333333333,
+      "candidate_remaining_duration_s": 3.466666666666667,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r01_capsule_friction_reference",
+      "event_id": "R01",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_physics_v01/episodes/r01_capsule_friction_reference",
+      "manifest_sha256": "3181babc583ef1c80563a777b0ebe9e1f0feb9de7b1f0eba094a14e3d77d8539",
+      "action_sha256": "0c61988fff1d67ac8be40c474b135e9ea1cfc2440696702a0f5fb70ff2efd1da",
+      "state_index_sha256": "c282675682bbac007d2067d54888f4ecb0197e166458101082029f31764e1c14",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "gate",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5333333333333333,
+      "candidate_remaining_duration_s": 3.466666666666667,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r01_cylinder_angle10",
+      "event_id": "R01",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_physics_v01/episodes/r01_cylinder_angle10",
+      "manifest_sha256": "700b4bce73357391ecfb3f48733a08cefd97ff4dd09b2e246723e9511052ee5f",
+      "action_sha256": "0c61988fff1d67ac8be40c474b135e9ea1cfc2440696702a0f5fb70ff2efd1da",
+      "state_index_sha256": "fe1c5b6395ea05a46b193b0f27713fe4ea89602c10ca99969929c41cc0a032fe",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "gate",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5333333333333333,
+      "candidate_remaining_duration_s": 3.466666666666667,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r01_cylinder_angle20",
+      "event_id": "R01",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_physics_v01/episodes/r01_cylinder_angle20",
+      "manifest_sha256": "d1b8d802c846c2a2d0ce4f1c4dddde9d227bed7136481fc9336b4ddc3d643434",
+      "action_sha256": "0c61988fff1d67ac8be40c474b135e9ea1cfc2440696702a0f5fb70ff2efd1da",
+      "state_index_sha256": "33cac2c0d44cf5aec79581a7ba2ae0b51692cc5bb830c25a5b3eea7b1a9c3f92",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "gate",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5333333333333333,
+      "candidate_remaining_duration_s": 3.466666666666667,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r01_cylinder_angle30",
+      "event_id": "R01",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_physics_v01/episodes/r01_cylinder_angle30",
+      "manifest_sha256": "4571700eec7df36ab4d8cfeef7f85d0e36106120115c79f5b75c1595e004ef9d",
+      "action_sha256": "0c61988fff1d67ac8be40c474b135e9ea1cfc2440696702a0f5fb70ff2efd1da",
+      "state_index_sha256": "116602b554d23504346635ead3143979696d31504a19c567328b5c65c29391be",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "gate",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5333333333333333,
+      "candidate_remaining_duration_s": 3.466666666666667,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r01_cylinder_friction_low",
+      "event_id": "R01",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_physics_v01/episodes/r01_cylinder_friction_low",
+      "manifest_sha256": "a5a997d04164459b21d23d9df2f1b8d4f5c9499a6e96559e4439a1e975683dea",
+      "action_sha256": "0c61988fff1d67ac8be40c474b135e9ea1cfc2440696702a0f5fb70ff2efd1da",
+      "state_index_sha256": "33cac2c0d44cf5aec79581a7ba2ae0b51692cc5bb830c25a5b3eea7b1a9c3f92",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "gate",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5333333333333333,
+      "candidate_remaining_duration_s": 3.466666666666667,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r01_cylinder_friction_reference",
+      "event_id": "R01",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_physics_v01/episodes/r01_cylinder_friction_reference",
+      "manifest_sha256": "d6199494e629b3b451d3d254c22d2c17f1d9bae0ff0b881a16d68c72390f588c",
+      "action_sha256": "0c61988fff1d67ac8be40c474b135e9ea1cfc2440696702a0f5fb70ff2efd1da",
+      "state_index_sha256": "33cac2c0d44cf5aec79581a7ba2ae0b51692cc5bb830c25a5b3eea7b1a9c3f92",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "gate",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5333333333333333,
+      "candidate_remaining_duration_s": 3.466666666666667,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r01_rounded_cube_angle10",
+      "event_id": "R01",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_physics_v01/episodes/r01_rounded_cube_angle10",
+      "manifest_sha256": "04227b1c80b743028e41933d0ff05c021f996ee5e4115c0972e8e58409ed2e67",
+      "action_sha256": "0c61988fff1d67ac8be40c474b135e9ea1cfc2440696702a0f5fb70ff2efd1da",
+      "state_index_sha256": "7546d1c59c8a4ede39f6e54101cb552dcdb73f5d0bf80d811b2ac926da359203",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "gate",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5333333333333333,
+      "candidate_remaining_duration_s": 3.466666666666667,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r01_rounded_cube_angle20",
+      "event_id": "R01",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_physics_v01/episodes/r01_rounded_cube_angle20",
+      "manifest_sha256": "e135c06f29ab0d7381474702309d189847696c4adb70ae76cef23aa77f4e9d97",
+      "action_sha256": "0c61988fff1d67ac8be40c474b135e9ea1cfc2440696702a0f5fb70ff2efd1da",
+      "state_index_sha256": "06d94acc28f0f81056dbd439c915a6db6d2f757af77ae5a527360b0520969e73",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "gate",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5333333333333333,
+      "candidate_remaining_duration_s": 3.466666666666667,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r01_rounded_cube_angle30",
+      "event_id": "R01",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_physics_v01/episodes/r01_rounded_cube_angle30",
+      "manifest_sha256": "4359731d71677bc585c7219b4a8fbbd101d343b945cb31117ccf4d30fc9acde4",
+      "action_sha256": "0c61988fff1d67ac8be40c474b135e9ea1cfc2440696702a0f5fb70ff2efd1da",
+      "state_index_sha256": "9ba3f5346d5f077ff6b91b9a8d26b849c207eae07d78f46597fceadbcf7a6353",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "gate",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5333333333333333,
+      "candidate_remaining_duration_s": 3.466666666666667,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r01_rounded_cube_friction_low",
+      "event_id": "R01",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_physics_v01/episodes/r01_rounded_cube_friction_low",
+      "manifest_sha256": "a19abae4f369b4b3b6dc9ae50c4af2ef77ff22c8e484a593af1e6ce2686b819d",
+      "action_sha256": "0c61988fff1d67ac8be40c474b135e9ea1cfc2440696702a0f5fb70ff2efd1da",
+      "state_index_sha256": "06d94acc28f0f81056dbd439c915a6db6d2f757af77ae5a527360b0520969e73",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "gate",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5333333333333333,
+      "candidate_remaining_duration_s": 3.466666666666667,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r01_rounded_cube_friction_reference",
+      "event_id": "R01",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_physics_v01/episodes/r01_rounded_cube_friction_reference",
+      "manifest_sha256": "038b585e9e7d9644b374cbae5816c1bf570ea623bd2b26e29dbb81171ecf1f21",
+      "action_sha256": "0c61988fff1d67ac8be40c474b135e9ea1cfc2440696702a0f5fb70ff2efd1da",
+      "state_index_sha256": "06d94acc28f0f81056dbd439c915a6db6d2f757af77ae5a527360b0520969e73",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "gate",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5333333333333333,
+      "candidate_remaining_duration_s": 3.466666666666667,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r01_sphere_angle10",
+      "event_id": "R01",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_physics_v01/episodes/r01_sphere_angle10",
+      "manifest_sha256": "1f8819f9d126e6f05757e829bdb6c01d85260c837a0f971efe8d661a2606d1f0",
+      "action_sha256": "0c61988fff1d67ac8be40c474b135e9ea1cfc2440696702a0f5fb70ff2efd1da",
+      "state_index_sha256": "c3a3f75c9e76e508bcfe81686f7daf1bca181a64cf7508a8ec5adb44903be03c",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "gate",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5333333333333333,
+      "candidate_remaining_duration_s": 3.466666666666667,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r01_sphere_angle20",
+      "event_id": "R01",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_physics_v01/episodes/r01_sphere_angle20",
+      "manifest_sha256": "db17807d29a7cdd75386db1007ad71bc5e61431d5153571bce6f2b2cd13a3713",
+      "action_sha256": "0c61988fff1d67ac8be40c474b135e9ea1cfc2440696702a0f5fb70ff2efd1da",
+      "state_index_sha256": "3fd82a71f490b45324f7020576c43bac70d16dd03f492a4cb84daecae32dc6cb",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "gate",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5333333333333333,
+      "candidate_remaining_duration_s": 3.466666666666667,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r01_sphere_angle30",
+      "event_id": "R01",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_physics_v01/episodes/r01_sphere_angle30",
+      "manifest_sha256": "716cf06ba591422ffb246b51af4e99f71371d955ee77ce79aa6c41af5903c619",
+      "action_sha256": "0c61988fff1d67ac8be40c474b135e9ea1cfc2440696702a0f5fb70ff2efd1da",
+      "state_index_sha256": "6f3f4924591d538ca6f204ab07fc2f3936faad5eb03903073e99e071f8fac5bb",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "gate",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5333333333333333,
+      "candidate_remaining_duration_s": 3.466666666666667,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r01_sphere_friction_low",
+      "event_id": "R01",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_physics_v01/episodes/r01_sphere_friction_low",
+      "manifest_sha256": "6de87d96e529332aad430a0cb840307f77432932d9c0fe68e6052c10062742e1",
+      "action_sha256": "0c61988fff1d67ac8be40c474b135e9ea1cfc2440696702a0f5fb70ff2efd1da",
+      "state_index_sha256": "3fd82a71f490b45324f7020576c43bac70d16dd03f492a4cb84daecae32dc6cb",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "gate",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5333333333333333,
+      "candidate_remaining_duration_s": 3.466666666666667,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r01_sphere_friction_reference",
+      "event_id": "R01",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_physics_v01/episodes/r01_sphere_friction_reference",
+      "manifest_sha256": "219bc0f0604a654701e0576a2993b36dc53386552b131dcefbaa4b6fc9ef8f63",
+      "action_sha256": "0c61988fff1d67ac8be40c474b135e9ea1cfc2440696702a0f5fb70ff2efd1da",
+      "state_index_sha256": "3fd82a71f490b45324f7020576c43bac70d16dd03f492a4cb84daecae32dc6cb",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "gate",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5333333333333333,
+      "candidate_remaining_duration_s": 3.466666666666667,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r02_asset_carrot_reference",
+      "event_id": "R02",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_real_rigid_physics_v02/episodes/r02_asset_carrot_reference",
+      "manifest_sha256": "af1ef83e365bac11291479fab8eab90a6b1148bdc64593b5ea8a9db52a0bd777",
+      "action_sha256": "761720b48960f78dc49349a3a6eb4f525464462d16cc45aa291f733c6973cdc9",
+      "state_index_sha256": "9ff2e415338167d5257194acf26dea0f126b79200e881a73d6b5ff8cc65e3108",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "subject",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 3.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r02_capsule_bouncy",
+      "event_id": "R02",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_r02_physics_v02/episodes/r02_capsule_bouncy",
+      "manifest_sha256": "2d1eaba72fded95be0ec138e250431a375ee6ee1cd11f130917ba348b6865445",
+      "action_sha256": "761720b48960f78dc49349a3a6eb4f525464462d16cc45aa291f733c6973cdc9",
+      "state_index_sha256": "9ff2e415338167d5257194acf26dea0f126b79200e881a73d6b5ff8cc65e3108",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "subject",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 3.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r02_capsule_low_friction",
+      "event_id": "R02",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_r02_physics_v02/episodes/r02_capsule_low_friction",
+      "manifest_sha256": "dfbbaae017dd19480024a44a63d1c81401ac9cdc2a0232aec2fcf416b12fb080",
+      "action_sha256": "761720b48960f78dc49349a3a6eb4f525464462d16cc45aa291f733c6973cdc9",
+      "state_index_sha256": "9ff2e415338167d5257194acf26dea0f126b79200e881a73d6b5ff8cc65e3108",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "subject",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 3.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r02_capsule_reference",
+      "event_id": "R02",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_r02_physics_v02/episodes/r02_capsule_reference",
+      "manifest_sha256": "4e6dc029326829bbbf938a9ba35e9435dd67a5a5d7ea477bae6b2f752c008bf8",
+      "action_sha256": "761720b48960f78dc49349a3a6eb4f525464462d16cc45aa291f733c6973cdc9",
+      "state_index_sha256": "9ff2e415338167d5257194acf26dea0f126b79200e881a73d6b5ff8cc65e3108",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "subject",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 3.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r02_rounded_cube_bouncy",
+      "event_id": "R02",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_r02_physics_v02/episodes/r02_rounded_cube_bouncy",
+      "manifest_sha256": "662d817248215f412ca2710052b4888b1d267be8c6f62ecbf7973df6057e8cf3",
+      "action_sha256": "761720b48960f78dc49349a3a6eb4f525464462d16cc45aa291f733c6973cdc9",
+      "state_index_sha256": "9ff2e415338167d5257194acf26dea0f126b79200e881a73d6b5ff8cc65e3108",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "subject",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 3.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r02_rounded_cube_height_0p2D",
+      "event_id": "R02",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_r02_physics_v02/episodes/r02_rounded_cube_height_0p2D",
+      "manifest_sha256": "3ebf0c2b26faee965725616f73f1e44dc2b6f070958e8b5205d8970652db1d49",
+      "action_sha256": "761720b48960f78dc49349a3a6eb4f525464462d16cc45aa291f733c6973cdc9",
+      "state_index_sha256": "3686dcda51b346ddddca5bd70cc8579274b183622e437deb5e8729e2241db928",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "subject",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 3.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r02_rounded_cube_height_0p5D",
+      "event_id": "R02",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_r02_physics_v02/episodes/r02_rounded_cube_height_0p5D",
+      "manifest_sha256": "35f8358ee32b63bec24b8218211669a7c53e911495134caffc00d332bbaa6ba3",
+      "action_sha256": "761720b48960f78dc49349a3a6eb4f525464462d16cc45aa291f733c6973cdc9",
+      "state_index_sha256": "6a596af961cb021fbcc30c08ca6433778461a9b5ccabb50caf980f55dd9ebd14",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "subject",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 3.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r02_rounded_cube_low_friction",
+      "event_id": "R02",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_r02_physics_v02/episodes/r02_rounded_cube_low_friction",
+      "manifest_sha256": "bd661d03842ca731cbcd32425d282d9b7770fbbb7e0fcea5d1804bbb720988c3",
+      "action_sha256": "761720b48960f78dc49349a3a6eb4f525464462d16cc45aa291f733c6973cdc9",
+      "state_index_sha256": "9ff2e415338167d5257194acf26dea0f126b79200e881a73d6b5ff8cc65e3108",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "subject",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 3.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r02_rounded_cube_reference",
+      "event_id": "R02",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_r02_physics_v02/episodes/r02_rounded_cube_reference",
+      "manifest_sha256": "436f67de7b8d333efcac28943b6e064ac812cd7fc8f0f90a459543a46370d6a5",
+      "action_sha256": "761720b48960f78dc49349a3a6eb4f525464462d16cc45aa291f733c6973cdc9",
+      "state_index_sha256": "9ff2e415338167d5257194acf26dea0f126b79200e881a73d6b5ff8cc65e3108",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "subject",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 3.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r02_sphere_bouncy",
+      "event_id": "R02",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_r02_physics_v02/episodes/r02_sphere_bouncy",
+      "manifest_sha256": "72a28d23699ee494a2ee866a73b09a13c61ab0237e8f1d75f7d29ef0c9ca58cf",
+      "action_sha256": "761720b48960f78dc49349a3a6eb4f525464462d16cc45aa291f733c6973cdc9",
+      "state_index_sha256": "9ff2e415338167d5257194acf26dea0f126b79200e881a73d6b5ff8cc65e3108",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "subject",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 3.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r02_sphere_low_friction",
+      "event_id": "R02",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_r02_physics_v02/episodes/r02_sphere_low_friction",
+      "manifest_sha256": "6f490a36b2cb34f8dca06e964df330045eb598703e4efce9e5ef3ee295c11c70",
+      "action_sha256": "761720b48960f78dc49349a3a6eb4f525464462d16cc45aa291f733c6973cdc9",
+      "state_index_sha256": "9ff2e415338167d5257194acf26dea0f126b79200e881a73d6b5ff8cc65e3108",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "subject",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 3.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r02_sphere_reference",
+      "event_id": "R02",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_r02_physics_v02/episodes/r02_sphere_reference",
+      "manifest_sha256": "f318309c61c8a51c0bb885ec4a14142d82caeca96c542a501c759048444e3297",
+      "action_sha256": "761720b48960f78dc49349a3a6eb4f525464462d16cc45aa291f733c6973cdc9",
+      "state_index_sha256": "9ff2e415338167d5257194acf26dea0f126b79200e881a73d6b5ff8cc65e3108",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "subject",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 3.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r03_asset_banana_reference",
+      "event_id": "R03",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_real_rigid_physics_v02/episodes/r03_asset_banana_reference",
+      "manifest_sha256": "80e65eb92979d0e6e89432d75cc29454589d2bad52e400ae3f2d29872d39149a",
+      "action_sha256": "948af0f401d687a978c8902b0ca04cc3cc16abe9b3c96485bcc19ee09f1f1735",
+      "state_index_sha256": "76f00db5d4383ee705eaaaef74f853995cfb61a9a3e8da16f7fdc3786ebc4907",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "left",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        },
+        {
+          "kind": "initial_velocity",
+          "target": "right",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 1.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r03_cylinder_reference",
+      "event_id": "R03",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_r03_physics_v02/episodes/r03_cylinder_reference",
+      "manifest_sha256": "e45540d6d76d00441648847eca5ddd79bbec3ece76ae24b977ed61157f50466b",
+      "action_sha256": "d72397c2a0462ee96357add4ac6e6b79c445493196c5d12772b86f3f1fec287c",
+      "state_index_sha256": "76f00db5d4383ee705eaaaef74f853995cfb61a9a3e8da16f7fdc3786ebc4907",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "left",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        },
+        {
+          "kind": "initial_velocity",
+          "target": "right",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 1.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r03_cylinder_right_bouncy",
+      "event_id": "R03",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_r03_physics_v02/episodes/r03_cylinder_right_bouncy",
+      "manifest_sha256": "af7c691e6da8f9ea28d09bbe472bc4e275fe03ccb4e00c09a4d2782a9aaead63",
+      "action_sha256": "d72397c2a0462ee96357add4ac6e6b79c445493196c5d12772b86f3f1fec287c",
+      "state_index_sha256": "76f00db5d4383ee705eaaaef74f853995cfb61a9a3e8da16f7fdc3786ebc4907",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "left",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        },
+        {
+          "kind": "initial_velocity",
+          "target": "right",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 1.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r03_cylinder_right_heavy",
+      "event_id": "R03",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_r03_physics_v02/episodes/r03_cylinder_right_heavy",
+      "manifest_sha256": "ee8147bdbb91b2c6a4b0c71e25d2ba13b5e930f004ab7c6253d29fd31c699c44",
+      "action_sha256": "d72397c2a0462ee96357add4ac6e6b79c445493196c5d12772b86f3f1fec287c",
+      "state_index_sha256": "76f00db5d4383ee705eaaaef74f853995cfb61a9a3e8da16f7fdc3786ebc4907",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "left",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        },
+        {
+          "kind": "initial_velocity",
+          "target": "right",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 1.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r03_rounded_cube_reference",
+      "event_id": "R03",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_r03_physics_v02/episodes/r03_rounded_cube_reference",
+      "manifest_sha256": "f4aede04efe765b60943691d3bca93142c7ee4df377b13a63c34d91caff8d5f0",
+      "action_sha256": "d72397c2a0462ee96357add4ac6e6b79c445493196c5d12772b86f3f1fec287c",
+      "state_index_sha256": "76f00db5d4383ee705eaaaef74f853995cfb61a9a3e8da16f7fdc3786ebc4907",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "left",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        },
+        {
+          "kind": "initial_velocity",
+          "target": "right",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 1.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r03_rounded_cube_right_bouncy",
+      "event_id": "R03",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_r03_physics_v02/episodes/r03_rounded_cube_right_bouncy",
+      "manifest_sha256": "b273e475317131fc0d7b0dfdd02051c34f86b824932db79dde9899ab0d4fefb6",
+      "action_sha256": "d72397c2a0462ee96357add4ac6e6b79c445493196c5d12772b86f3f1fec287c",
+      "state_index_sha256": "76f00db5d4383ee705eaaaef74f853995cfb61a9a3e8da16f7fdc3786ebc4907",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "left",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        },
+        {
+          "kind": "initial_velocity",
+          "target": "right",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 1.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r03_rounded_cube_right_heavy",
+      "event_id": "R03",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_r03_physics_v02/episodes/r03_rounded_cube_right_heavy",
+      "manifest_sha256": "c22f26b108fadde84b18a3e436e7af5791c6c0f1f1df33d48d25333f45173a83",
+      "action_sha256": "d72397c2a0462ee96357add4ac6e6b79c445493196c5d12772b86f3f1fec287c",
+      "state_index_sha256": "76f00db5d4383ee705eaaaef74f853995cfb61a9a3e8da16f7fdc3786ebc4907",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "left",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        },
+        {
+          "kind": "initial_velocity",
+          "target": "right",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 1.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r03_sphere_lateral_miss",
+      "event_id": "R03",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_r03_physics_v02/episodes/r03_sphere_lateral_miss",
+      "manifest_sha256": "8e5bd414a765c1eed09ac0c37b85db8937fbc4c8665e8c6bdbbcc553eada3129",
+      "action_sha256": "d72397c2a0462ee96357add4ac6e6b79c445493196c5d12772b86f3f1fec287c",
+      "state_index_sha256": "76f00db5d4383ee705eaaaef74f853995cfb61a9a3e8da16f7fdc3786ebc4907",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "left",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        },
+        {
+          "kind": "initial_velocity",
+          "target": "right",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 1.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r03_sphere_reference",
+      "event_id": "R03",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_r03_physics_v02/episodes/r03_sphere_reference",
+      "manifest_sha256": "aa3d76ffc6e9503955679f760823500a08f055256937d7f05bec121c16a3fa31",
+      "action_sha256": "d72397c2a0462ee96357add4ac6e6b79c445493196c5d12772b86f3f1fec287c",
+      "state_index_sha256": "76f00db5d4383ee705eaaaef74f853995cfb61a9a3e8da16f7fdc3786ebc4907",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "left",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        },
+        {
+          "kind": "initial_velocity",
+          "target": "right",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 1.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r03_sphere_right_bouncy",
+      "event_id": "R03",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_r03_physics_v02/episodes/r03_sphere_right_bouncy",
+      "manifest_sha256": "10f7201a4adc2859d469e6c376322048e302765821dca4905f5f14224fabb2ec",
+      "action_sha256": "d72397c2a0462ee96357add4ac6e6b79c445493196c5d12772b86f3f1fec287c",
+      "state_index_sha256": "76f00db5d4383ee705eaaaef74f853995cfb61a9a3e8da16f7fdc3786ebc4907",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "left",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        },
+        {
+          "kind": "initial_velocity",
+          "target": "right",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 1.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r03_sphere_right_heavy",
+      "event_id": "R03",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_r03_physics_v02/episodes/r03_sphere_right_heavy",
+      "manifest_sha256": "5234a39977a1e6e58e7843a2fc7d415a92944304f24ed8b75e5cdaff31b89a49",
+      "action_sha256": "d72397c2a0462ee96357add4ac6e6b79c445493196c5d12772b86f3f1fec287c",
+      "state_index_sha256": "76f00db5d4383ee705eaaaef74f853995cfb61a9a3e8da16f7fdc3786ebc4907",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "left",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        },
+        {
+          "kind": "initial_velocity",
+          "target": "right",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 1.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r03_sphere_stationary_right",
+      "event_id": "R03",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_r03_physics_v02/episodes/r03_sphere_stationary_right",
+      "manifest_sha256": "194bcc5f05f380d2439b01091afb30fd8e38600450a4f33b749ce4b0cd4ff5be",
+      "action_sha256": "5e6fb20d2c91ea146d4a3ca5b92256ba40c17561fbfc567e754a6bed28124397",
+      "state_index_sha256": "76f00db5d4383ee705eaaaef74f853995cfb61a9a3e8da16f7fdc3786ebc4907",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "left",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        },
+        {
+          "kind": "initial_velocity",
+          "target": "right",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 1.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r04_asset_chair_reference",
+      "event_id": "R04",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_real_rigid_physics_v02/episodes/r04_asset_chair_reference",
+      "manifest_sha256": "2a3b937cc362f361605c25d1a2537da827415a77eff6f71a83d65baa52735d1e",
+      "action_sha256": "d7db6cbbae11670397ec78551ff6c52630d2d625d6360f2964371216816d762e",
+      "state_index_sha256": "244e463b3b90e3bd092ded577075a66b37e078142845b0b22cee9182bb2022ae",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "pusher",
+          "start_time_s": 0.5,
+          "end_time_s": 0.8,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.8166666666666667,
+      "candidate_remaining_duration_s": 4.183333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r04_capsule_low_friction",
+      "event_id": "R04",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_r04_physics_v02/episodes/r04_capsule_low_friction",
+      "manifest_sha256": "eed94b4f55a35302ae8b3890558d4f7e25b20dd70ac2ef1ed68ad26a0a8724a2",
+      "action_sha256": "66e513428e86e300ada28d6f34382f6eccd67ef05f2009dcb1f9f10f50f31069",
+      "state_index_sha256": "45c7481b2924a3e45112c9d83e0e1d444ee6cf1b853a57066fb7df17aaab3c1c",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "pusher",
+          "start_time_s": 0.5,
+          "end_time_s": 1.0,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 1.0166666666666666,
+      "candidate_remaining_duration_s": 3.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r04_capsule_reference",
+      "event_id": "R04",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_r04_physics_v02/episodes/r04_capsule_reference",
+      "manifest_sha256": "2bfd64ef3c57e0a194350110f481e58199a766ed43bc6a5d0d04b889a5f43703",
+      "action_sha256": "66e513428e86e300ada28d6f34382f6eccd67ef05f2009dcb1f9f10f50f31069",
+      "state_index_sha256": "45c7481b2924a3e45112c9d83e0e1d444ee6cf1b853a57066fb7df17aaab3c1c",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "pusher",
+          "start_time_s": 0.5,
+          "end_time_s": 1.0,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 1.0166666666666666,
+      "candidate_remaining_duration_s": 3.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r04_rounded_cube_low_friction",
+      "event_id": "R04",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_r04_physics_v02/episodes/r04_rounded_cube_low_friction",
+      "manifest_sha256": "dae3561f928822b12f1abff03e783190a56da1e97a40cdda245a10596e5a728a",
+      "action_sha256": "4b0d5a1aa2767ed36ad740df8c3789c8c746dd5d62e33d0c177ceafaff044024",
+      "state_index_sha256": "13122150490787e9075296e5711361d1e5b7ef787e5764dc9ec280b85c0d98e3",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "pusher",
+          "start_time_s": 0.5,
+          "end_time_s": 1.0,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 1.0166666666666666,
+      "candidate_remaining_duration_s": 3.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r04_rounded_cube_reference",
+      "event_id": "R04",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_r04_physics_v02/episodes/r04_rounded_cube_reference",
+      "manifest_sha256": "ffb91a37e1cf02bd8bd4e559594c651d186c82f892fc42fbed60242551d59c41",
+      "action_sha256": "4b0d5a1aa2767ed36ad740df8c3789c8c746dd5d62e33d0c177ceafaff044024",
+      "state_index_sha256": "13122150490787e9075296e5711361d1e5b7ef787e5764dc9ec280b85c0d98e3",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "pusher",
+          "start_time_s": 0.5,
+          "end_time_s": 1.0,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 1.0166666666666666,
+      "candidate_remaining_duration_s": 3.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r04_sphere_low_friction",
+      "event_id": "R04",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_r04_physics_v02/episodes/r04_sphere_low_friction",
+      "manifest_sha256": "063325e52606cdf7383ea55a27270efa85b119e1bb454aa1c4069a88061be35a",
+      "action_sha256": "4b0d5a1aa2767ed36ad740df8c3789c8c746dd5d62e33d0c177ceafaff044024",
+      "state_index_sha256": "13122150490787e9075296e5711361d1e5b7ef787e5764dc9ec280b85c0d98e3",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "pusher",
+          "start_time_s": 0.5,
+          "end_time_s": 1.0,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 1.0166666666666666,
+      "candidate_remaining_duration_s": 3.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r04_sphere_mirror_branch",
+      "event_id": "R04",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_r04_physics_v02/episodes/r04_sphere_mirror_branch",
+      "manifest_sha256": "807248ccf94b4dfb59d0750f866268c33ee4c0c165e3141a19aadcbeb17d30c5",
+      "action_sha256": "bafeb82489bae0ea297ed23e18008b7d81e42264b938876b42f2ce30d1bc9c0f",
+      "state_index_sha256": "5cfaec64dea4fb677297efc2c37012baf89abd831e6f6309d56b1ad917137d0a",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "pusher",
+          "start_time_s": 0.5,
+          "end_time_s": 1.0,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 1.0166666666666666,
+      "candidate_remaining_duration_s": 3.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r04_sphere_obstacle_positive",
+      "event_id": "R04",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_r04_physics_v02/episodes/r04_sphere_obstacle_positive",
+      "manifest_sha256": "2ad3a231c8f0cb5a4af340dbfcc8eb1160d115f995e57d78fed419d937d7cba1",
+      "action_sha256": "4b0d5a1aa2767ed36ad740df8c3789c8c746dd5d62e33d0c177ceafaff044024",
+      "state_index_sha256": "8cd8e36a5f3acf9e5eb9fcdb2caf52f45a727afbbf94a0434503e7bcaa2d81fe",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "pusher",
+          "start_time_s": 0.5,
+          "end_time_s": 1.0,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 1.0166666666666666,
+      "candidate_remaining_duration_s": 3.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r04_sphere_push_fast",
+      "event_id": "R04",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_r04_physics_v02/episodes/r04_sphere_push_fast",
+      "manifest_sha256": "dccc094e7340a20efe871dae5e4843cb4e4a939676f25409c8a783232b9c6566",
+      "action_sha256": "12aa136e2660c7d368c68eddbe5ee5c8504ad289115cc38255fa76bf769f6b1b",
+      "state_index_sha256": "50e707006c75b82840325c5cb2a9fc709616c97ba18883fce7f3527e312bc402",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "pusher",
+          "start_time_s": 0.5,
+          "end_time_s": 0.8,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.8166666666666667,
+      "candidate_remaining_duration_s": 4.183333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r04_sphere_push_slow",
+      "event_id": "R04",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_r04_physics_v02/episodes/r04_sphere_push_slow",
+      "manifest_sha256": "55b0d68a376f78b2e3b94e5bf7b94df8f6d3a337711b9101423222ba69b18dfa",
+      "action_sha256": "63d79d1a30f889cd6ae496fa6f67e91b540131b17b78dc86e91d79296d660824",
+      "state_index_sha256": "f06633bcfc804a68a210a87032d2af65ec0476d13b0ca0886147988cffda4f1c",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "pusher",
+          "start_time_s": 0.5,
+          "end_time_s": 1.3,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 1.3166666666666667,
+      "candidate_remaining_duration_s": 3.6833333333333336,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r04_sphere_reference",
+      "event_id": "R04",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_r04_physics_v02/episodes/r04_sphere_reference",
+      "manifest_sha256": "66ebf1bc4cd3043d131040b03fa3f1a7a78f050f6f3a224a46096554e36f8b92",
+      "action_sha256": "4b0d5a1aa2767ed36ad740df8c3789c8c746dd5d62e33d0c177ceafaff044024",
+      "state_index_sha256": "13122150490787e9075296e5711361d1e5b7ef787e5764dc9ec280b85c0d98e3",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "pusher",
+          "start_time_s": 0.5,
+          "end_time_s": 1.0,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 1.0166666666666666,
+      "candidate_remaining_duration_s": 3.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r04_sphere_wide_miss",
+      "event_id": "R04",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_r04_physics_v02/episodes/r04_sphere_wide_miss",
+      "manifest_sha256": "96bb1960890b5cdfe73449a90853d98f3c68eaa747570df649dadbec06f17f32",
+      "action_sha256": "14faad4d77bc2c7e032cfbe9f9ba676db598775ca42c2756910cfd494a894219",
+      "state_index_sha256": "83c53e504a2720e35f589f27027898ac5c2175a750aa489de38ae9a2e82dd579",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "pusher",
+          "start_time_s": 0.5,
+          "end_time_s": 1.0,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 1.0166666666666666,
+      "candidate_remaining_duration_s": 3.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r05_cube_stack_lean_boundary",
+      "event_id": "R05",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_r05_physics_v02/episodes/r05_cube_stack_lean_boundary",
+      "manifest_sha256": "dd0df33c20b30561cd1c6d70aec03dbefa17e1ed40f64839a1ec40aab7a1106f",
+      "action_sha256": "2b66e76b068f2285065930fe99214b13e95cc58fc59cedc3ee93efd71c27d230",
+      "state_index_sha256": "0d556e42fa357e9bccd860710bad7d92abf4a60ea4f3093506458ead0a136121",
+      "historical_commands": [
+        {
+          "kind": "remove_support",
+          "target": "support",
+          "start_time_s": 1.0,
+          "end_time_s": 1.0,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 1.0166666666666666,
+      "candidate_remaining_duration_s": 2.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r05_cube_stack_reference",
+      "event_id": "R05",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_r05_physics_v02/episodes/r05_cube_stack_reference",
+      "manifest_sha256": "a98a7be5256ce9d4e62548b10f649a4a1717000c0748379825527769f213eb17",
+      "action_sha256": "2b66e76b068f2285065930fe99214b13e95cc58fc59cedc3ee93efd71c27d230",
+      "state_index_sha256": "0d556e42fa357e9bccd860710bad7d92abf4a60ea4f3093506458ead0a136121",
+      "historical_commands": [
+        {
+          "kind": "remove_support",
+          "target": "support",
+          "start_time_s": 1.0,
+          "end_time_s": 1.0,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 1.0166666666666666,
+      "candidate_remaining_duration_s": 2.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r05_cube_stack_support_high",
+      "event_id": "R05",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_r05_physics_v02/episodes/r05_cube_stack_support_high",
+      "manifest_sha256": "5fc787ff5a6f7aa9bbb827620ca9e41a41781cc653d1c5b04468554042ea67cb",
+      "action_sha256": "2b66e76b068f2285065930fe99214b13e95cc58fc59cedc3ee93efd71c27d230",
+      "state_index_sha256": "1d3c9988b66493834c4d779e96d88dd1073c0f810f11e25c39cd33803e090eff",
+      "historical_commands": [
+        {
+          "kind": "remove_support",
+          "target": "support",
+          "start_time_s": 1.0,
+          "end_time_s": 1.0,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 1.0166666666666666,
+      "candidate_remaining_duration_s": 2.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r05_cube_stack_support_low",
+      "event_id": "R05",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_r05_physics_v02/episodes/r05_cube_stack_support_low",
+      "manifest_sha256": "20612694a833e240941bac5107bccbec18942e776d0baeb99abbbf0f7a873edc",
+      "action_sha256": "2b66e76b068f2285065930fe99214b13e95cc58fc59cedc3ee93efd71c27d230",
+      "state_index_sha256": "042fa96b17d52de96c1e73ad476ffffb1109c95463cc16f2429df75f69e6a68a",
+      "historical_commands": [
+        {
+          "kind": "remove_support",
+          "target": "support",
+          "start_time_s": 1.0,
+          "end_time_s": 1.0,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 1.0166666666666666,
+      "candidate_remaining_duration_s": 2.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r05_cube_stack_top_bouncy",
+      "event_id": "R05",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_r05_physics_v02/episodes/r05_cube_stack_top_bouncy",
+      "manifest_sha256": "1a0f91f44a36b5da0e7aec4c56668ce98272b490bba17d095291c5ac983f06ca",
+      "action_sha256": "2b66e76b068f2285065930fe99214b13e95cc58fc59cedc3ee93efd71c27d230",
+      "state_index_sha256": "0d556e42fa357e9bccd860710bad7d92abf4a60ea4f3093506458ead0a136121",
+      "historical_commands": [
+        {
+          "kind": "remove_support",
+          "target": "support",
+          "start_time_s": 1.0,
+          "end_time_s": 1.0,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 1.0166666666666666,
+      "candidate_remaining_duration_s": 2.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r05_cube_stack_top_cylinder_reference",
+      "event_id": "R05",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_r05_physics_v02/episodes/r05_cube_stack_top_cylinder_reference",
+      "manifest_sha256": "51f6123ee056205ab6ae200751df408747c0f2b2bcf512c21cfbb88b616c2278",
+      "action_sha256": "2b66e76b068f2285065930fe99214b13e95cc58fc59cedc3ee93efd71c27d230",
+      "state_index_sha256": "0d556e42fa357e9bccd860710bad7d92abf4a60ea4f3093506458ead0a136121",
+      "historical_commands": [
+        {
+          "kind": "remove_support",
+          "target": "support",
+          "start_time_s": 1.0,
+          "end_time_s": 1.0,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 1.0166666666666666,
+      "candidate_remaining_duration_s": 2.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r05_cube_stack_top_heavy",
+      "event_id": "R05",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_r05_physics_v02/episodes/r05_cube_stack_top_heavy",
+      "manifest_sha256": "4020b1562342dbbb762bb5668f471ffc8d0a64ec8f951549fd4279d921cf00e8",
+      "action_sha256": "2b66e76b068f2285065930fe99214b13e95cc58fc59cedc3ee93efd71c27d230",
+      "state_index_sha256": "0d556e42fa357e9bccd860710bad7d92abf4a60ea4f3093506458ead0a136121",
+      "historical_commands": [
+        {
+          "kind": "remove_support",
+          "target": "support",
+          "start_time_s": 1.0,
+          "end_time_s": 1.0,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 1.0166666666666666,
+      "candidate_remaining_duration_s": 2.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r05_cube_stack_top_l_shape_reference",
+      "event_id": "R05",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_r05_physics_v02/episodes/r05_cube_stack_top_l_shape_reference",
+      "manifest_sha256": "b8b48f4258bb1b419eff1de194dd7f043aba3f1c24e01d685a38bc82ece5e802",
+      "action_sha256": "2b66e76b068f2285065930fe99214b13e95cc58fc59cedc3ee93efd71c27d230",
+      "state_index_sha256": "0d556e42fa357e9bccd860710bad7d92abf4a60ea4f3093506458ead0a136121",
+      "historical_commands": [
+        {
+          "kind": "remove_support",
+          "target": "support",
+          "start_time_s": 1.0,
+          "end_time_s": 1.0,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 1.0166666666666666,
+      "candidate_remaining_duration_s": 2.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r05_cube_stack_top_light",
+      "event_id": "R05",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_r05_physics_v02/episodes/r05_cube_stack_top_light",
+      "manifest_sha256": "41e2300ea1b640a5691c1848c10229debf0341ae7f7a743a923cf8f6302861aa",
+      "action_sha256": "2b66e76b068f2285065930fe99214b13e95cc58fc59cedc3ee93efd71c27d230",
+      "state_index_sha256": "0d556e42fa357e9bccd860710bad7d92abf4a60ea4f3093506458ead0a136121",
+      "historical_commands": [
+        {
+          "kind": "remove_support",
+          "target": "support",
+          "start_time_s": 1.0,
+          "end_time_s": 1.0,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 1.0166666666666666,
+      "candidate_remaining_duration_s": 2.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r05_cube_stack_top_low_friction",
+      "event_id": "R05",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_r05_physics_v02/episodes/r05_cube_stack_top_low_friction",
+      "manifest_sha256": "bcb12ca8f06eb52c432b5b370c45199e4b80c5d2f4dbcd60fd2c86d1ff297ce9",
+      "action_sha256": "2b66e76b068f2285065930fe99214b13e95cc58fc59cedc3ee93efd71c27d230",
+      "state_index_sha256": "0d556e42fa357e9bccd860710bad7d92abf4a60ea4f3093506458ead0a136121",
+      "historical_commands": [
+        {
+          "kind": "remove_support",
+          "target": "support",
+          "start_time_s": 1.0,
+          "end_time_s": 1.0,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 1.0166666666666666,
+      "candidate_remaining_duration_s": 2.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r05_cube_stack_vertical",
+      "event_id": "R05",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_r05_physics_v02/episodes/r05_cube_stack_vertical",
+      "manifest_sha256": "03114c570bb4c00dd890b01e0f4ee6613cbb1e2bf11224572e82a44eabce360c",
+      "action_sha256": "2b66e76b068f2285065930fe99214b13e95cc58fc59cedc3ee93efd71c27d230",
+      "state_index_sha256": "0d556e42fa357e9bccd860710bad7d92abf4a60ea4f3093506458ead0a136121",
+      "historical_commands": [
+        {
+          "kind": "remove_support",
+          "target": "support",
+          "start_time_s": 1.0,
+          "end_time_s": 1.0,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 1.0166666666666666,
+      "candidate_remaining_duration_s": 2.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "r05_stack_asset_elephant_reference",
+      "event_id": "R05",
+      "classification": "post_removal_crop_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_real_rigid_physics_v02/episodes/r05_stack_asset_elephant_reference",
+      "manifest_sha256": "f351dadcc4597475ff8dc1cd7c00e10a88fadc1fe926cd6777978421a7ac7dbe",
+      "action_sha256": "2b66e76b068f2285065930fe99214b13e95cc58fc59cedc3ee93efd71c27d230",
+      "state_index_sha256": "0d556e42fa357e9bccd860710bad7d92abf4a60ea4f3093506458ead0a136121",
+      "historical_commands": [
+        {
+          "kind": "remove_support",
+          "target": "support",
+          "start_time_s": 1.0,
+          "end_time_s": 1.0,
+          "method": "disable_collision"
+        }
+      ],
+      "candidate_crop_start_time_s": 1.0166666666666666,
+      "candidate_remaining_duration_s": 2.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v01_capsule_reference",
+      "event_id": "V01",
+      "classification": "direct_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_v01_physics_v02/episodes/v01_capsule_reference",
+      "manifest_sha256": "636a5944c069bd1336b350c777cb8acc63a967f95b991ee48940961b84482b31",
+      "action_sha256": "0a98baba257a2ed14815ee790301902e06befd6a720094f4faee4983d3925d94",
+      "state_index_sha256": "fd285214ddfb5fdb25362d90b700db3813464f16ec5045413ea09b038c3996f3",
+      "historical_commands": [],
+      "candidate_crop_start_time_s": 0.0,
+      "candidate_remaining_duration_s": 4.0,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v01_capsule_soft",
+      "event_id": "V01",
+      "classification": "direct_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_v01_physics_v02/episodes/v01_capsule_soft",
+      "manifest_sha256": "2f3550b2d94c1a779cbba649caaa88295d54d5abe6e3cc5dfec59f4d3bdfac96",
+      "action_sha256": "0a98baba257a2ed14815ee790301902e06befd6a720094f4faee4983d3925d94",
+      "state_index_sha256": "fd285214ddfb5fdb25362d90b700db3813464f16ec5045413ea09b038c3996f3",
+      "historical_commands": [],
+      "candidate_crop_start_time_s": 0.0,
+      "candidate_remaining_duration_s": 4.0,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v01_capsule_stiff",
+      "event_id": "V01",
+      "classification": "direct_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_v01_physics_v02/episodes/v01_capsule_stiff",
+      "manifest_sha256": "cd045cf3de0bbd9c26057382625c4038d499c6a8d329b93252e16d3a057ffc25",
+      "action_sha256": "0a98baba257a2ed14815ee790301902e06befd6a720094f4faee4983d3925d94",
+      "state_index_sha256": "fd285214ddfb5fdb25362d90b700db3813464f16ec5045413ea09b038c3996f3",
+      "historical_commands": [],
+      "candidate_crop_start_time_s": 0.0,
+      "candidate_remaining_duration_s": 4.0,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v01_rounded_cube_height_0p5D",
+      "event_id": "V01",
+      "classification": "direct_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_v01_physics_v02/episodes/v01_rounded_cube_height_0p5D",
+      "manifest_sha256": "6366481bd9ef8c646d06df37f193d461bd909e443392a1e0357a17d037f0c9e9",
+      "action_sha256": "0a98baba257a2ed14815ee790301902e06befd6a720094f4faee4983d3925d94",
+      "state_index_sha256": "fd285214ddfb5fdb25362d90b700db3813464f16ec5045413ea09b038c3996f3",
+      "historical_commands": [],
+      "candidate_crop_start_time_s": 0.0,
+      "candidate_remaining_duration_s": 4.0,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v01_rounded_cube_height_3p0D",
+      "event_id": "V01",
+      "classification": "direct_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_v01_physics_v02/episodes/v01_rounded_cube_height_3p0D",
+      "manifest_sha256": "8d3f0b9df0c5c996b0722d9ffae19ddbe33ede3719bb9b7ac91660b4512bc64d",
+      "action_sha256": "0a98baba257a2ed14815ee790301902e06befd6a720094f4faee4983d3925d94",
+      "state_index_sha256": "fd285214ddfb5fdb25362d90b700db3813464f16ec5045413ea09b038c3996f3",
+      "historical_commands": [],
+      "candidate_crop_start_time_s": 0.0,
+      "candidate_remaining_duration_s": 4.0,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v01_rounded_cube_reference",
+      "event_id": "V01",
+      "classification": "direct_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_v01_physics_v02/episodes/v01_rounded_cube_reference",
+      "manifest_sha256": "d74e27138a0efb9220ef4a2d45298938592dffe998b738560a4248892ce09433",
+      "action_sha256": "0a98baba257a2ed14815ee790301902e06befd6a720094f4faee4983d3925d94",
+      "state_index_sha256": "fd285214ddfb5fdb25362d90b700db3813464f16ec5045413ea09b038c3996f3",
+      "historical_commands": [],
+      "candidate_crop_start_time_s": 0.0,
+      "candidate_remaining_duration_s": 4.0,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v01_rounded_cube_soft",
+      "event_id": "V01",
+      "classification": "direct_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_v01_physics_v02/episodes/v01_rounded_cube_soft",
+      "manifest_sha256": "b01d217314c4bdedf31d9464507e8879a6f01032d202dfa642146e1f67223c05",
+      "action_sha256": "0a98baba257a2ed14815ee790301902e06befd6a720094f4faee4983d3925d94",
+      "state_index_sha256": "fd285214ddfb5fdb25362d90b700db3813464f16ec5045413ea09b038c3996f3",
+      "historical_commands": [],
+      "candidate_crop_start_time_s": 0.0,
+      "candidate_remaining_duration_s": 4.0,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v01_rounded_cube_stiff",
+      "event_id": "V01",
+      "classification": "direct_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_v01_physics_v02/episodes/v01_rounded_cube_stiff",
+      "manifest_sha256": "db93011e1933431b456992db2feaff635a75d4a22a516b61dea9526e6fefb86d",
+      "action_sha256": "0a98baba257a2ed14815ee790301902e06befd6a720094f4faee4983d3925d94",
+      "state_index_sha256": "fd285214ddfb5fdb25362d90b700db3813464f16ec5045413ea09b038c3996f3",
+      "historical_commands": [],
+      "candidate_crop_start_time_s": 0.0,
+      "candidate_remaining_duration_s": 4.0,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v01_sphere_reference",
+      "event_id": "V01",
+      "classification": "direct_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_v01_physics_v02/episodes/v01_sphere_reference",
+      "manifest_sha256": "0bce8f3ff7d2d04551d5e28550b4cc9976d8d25469eea6c432f1a6f7225348f5",
+      "action_sha256": "0a98baba257a2ed14815ee790301902e06befd6a720094f4faee4983d3925d94",
+      "state_index_sha256": "fd285214ddfb5fdb25362d90b700db3813464f16ec5045413ea09b038c3996f3",
+      "historical_commands": [],
+      "candidate_crop_start_time_s": 0.0,
+      "candidate_remaining_duration_s": 4.0,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v01_sphere_soft",
+      "event_id": "V01",
+      "classification": "direct_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_v01_physics_v02/episodes/v01_sphere_soft",
+      "manifest_sha256": "2c366f05df6dbfa07cb94690478da7afe33e7b9aba86f398b002b3b3234ba29d",
+      "action_sha256": "0a98baba257a2ed14815ee790301902e06befd6a720094f4faee4983d3925d94",
+      "state_index_sha256": "fd285214ddfb5fdb25362d90b700db3813464f16ec5045413ea09b038c3996f3",
+      "historical_commands": [],
+      "candidate_crop_start_time_s": 0.0,
+      "candidate_remaining_duration_s": 4.0,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v01_sphere_stiff",
+      "event_id": "V01",
+      "classification": "direct_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_v01_physics_v02/episodes/v01_sphere_stiff",
+      "manifest_sha256": "17ef5156e445be1de4b5ab5af66083289e727251c7440eeae4699f956469e477",
+      "action_sha256": "0a98baba257a2ed14815ee790301902e06befd6a720094f4faee4983d3925d94",
+      "state_index_sha256": "fd285214ddfb5fdb25362d90b700db3813464f16ec5045413ea09b038c3996f3",
+      "historical_commands": [],
+      "candidate_crop_start_time_s": 0.0,
+      "candidate_remaining_duration_s": 4.0,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v02_c0p1_modulus_reference_material_corrected",
+      "event_id": "V02",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_v02_material_corrected_v01/episodes/v02_c0p1_modulus_reference_material_corrected",
+      "manifest_sha256": "0430637381ac8c02a46bcba284121cdc8a889ef8cd8ab7ed3de0847c2b94e352",
+      "action_sha256": "339020ee5b87940e3e06e4e3077ce067b12e8d75dc656f9dd4f538bc81d11ac3",
+      "state_index_sha256": "b99403ec2a5682af0f44b5ef59f5023b1ec6c8b09573e2ddc5a1d0b6a1631f3e",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "upper_plate",
+          "start_time_s": 1.0,
+          "end_time_s": 2.0,
+          "method": null
+        },
+        {
+          "kind": "kinematic_trajectory",
+          "target": "upper_plate",
+          "start_time_s": 2.0,
+          "end_time_s": 2.5,
+          "method": null
+        },
+        {
+          "kind": "kinematic_trajectory",
+          "target": "upper_plate",
+          "start_time_s": 2.5,
+          "end_time_s": 3.0,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 3.033333333333333,
+      "candidate_remaining_duration_s": 1.9666666666666668,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v02_c0p1_modulus_soft_material_corrected",
+      "event_id": "V02",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_v02_material_corrected_v01/episodes/v02_c0p1_modulus_soft_material_corrected",
+      "manifest_sha256": "2954ade3721871cc8273e72d4713cfc2febee0574060fb89e3daa3267b9d3ee0",
+      "action_sha256": "339020ee5b87940e3e06e4e3077ce067b12e8d75dc656f9dd4f538bc81d11ac3",
+      "state_index_sha256": "b99403ec2a5682af0f44b5ef59f5023b1ec6c8b09573e2ddc5a1d0b6a1631f3e",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "upper_plate",
+          "start_time_s": 1.0,
+          "end_time_s": 2.0,
+          "method": null
+        },
+        {
+          "kind": "kinematic_trajectory",
+          "target": "upper_plate",
+          "start_time_s": 2.0,
+          "end_time_s": 2.5,
+          "method": null
+        },
+        {
+          "kind": "kinematic_trajectory",
+          "target": "upper_plate",
+          "start_time_s": 2.5,
+          "end_time_s": 3.0,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 3.033333333333333,
+      "candidate_remaining_duration_s": 1.9666666666666668,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v02_c0p1_modulus_stiff_material_corrected",
+      "event_id": "V02",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_v02_material_corrected_v01/episodes/v02_c0p1_modulus_stiff_material_corrected",
+      "manifest_sha256": "db717308fb7cc9764bf90bdea00fa477df22737eb4689f7688489af418dd7eea",
+      "action_sha256": "339020ee5b87940e3e06e4e3077ce067b12e8d75dc656f9dd4f538bc81d11ac3",
+      "state_index_sha256": "b99403ec2a5682af0f44b5ef59f5023b1ec6c8b09573e2ddc5a1d0b6a1631f3e",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "upper_plate",
+          "start_time_s": 1.0,
+          "end_time_s": 2.0,
+          "method": null
+        },
+        {
+          "kind": "kinematic_trajectory",
+          "target": "upper_plate",
+          "start_time_s": 2.0,
+          "end_time_s": 2.5,
+          "method": null
+        },
+        {
+          "kind": "kinematic_trajectory",
+          "target": "upper_plate",
+          "start_time_s": 2.5,
+          "end_time_s": 3.0,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 3.033333333333333,
+      "candidate_remaining_duration_s": 1.9666666666666668,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v02_c0p25_modulus_reference_material_corrected",
+      "event_id": "V02",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_v02_material_corrected_v01/episodes/v02_c0p25_modulus_reference_material_corrected",
+      "manifest_sha256": "752396b36dea89aa435e865cdb3be7d8cdd1bc571e0f6aab0a4c68c30d1d0587",
+      "action_sha256": "c426ea38980f4615fd41297d0f6842d6aefc62c213dcaff5f46c598c60165470",
+      "state_index_sha256": "760d7c969c405c4884d8e5e886b1c4e5a39a2524b15ca0d7d0f50e8e1fb03532",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "upper_plate",
+          "start_time_s": 1.0,
+          "end_time_s": 2.0,
+          "method": null
+        },
+        {
+          "kind": "kinematic_trajectory",
+          "target": "upper_plate",
+          "start_time_s": 2.0,
+          "end_time_s": 2.5,
+          "method": null
+        },
+        {
+          "kind": "kinematic_trajectory",
+          "target": "upper_plate",
+          "start_time_s": 2.5,
+          "end_time_s": 3.0,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 3.033333333333333,
+      "candidate_remaining_duration_s": 1.9666666666666668,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v02_c0p25_modulus_soft_material_corrected",
+      "event_id": "V02",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_v02_material_corrected_v01/episodes/v02_c0p25_modulus_soft_material_corrected",
+      "manifest_sha256": "9dd2e83ffc1b8cb2792a184f138d99da0219fe43e8fb3e6c940de43b52840f92",
+      "action_sha256": "c426ea38980f4615fd41297d0f6842d6aefc62c213dcaff5f46c598c60165470",
+      "state_index_sha256": "760d7c969c405c4884d8e5e886b1c4e5a39a2524b15ca0d7d0f50e8e1fb03532",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "upper_plate",
+          "start_time_s": 1.0,
+          "end_time_s": 2.0,
+          "method": null
+        },
+        {
+          "kind": "kinematic_trajectory",
+          "target": "upper_plate",
+          "start_time_s": 2.0,
+          "end_time_s": 2.5,
+          "method": null
+        },
+        {
+          "kind": "kinematic_trajectory",
+          "target": "upper_plate",
+          "start_time_s": 2.5,
+          "end_time_s": 3.0,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 3.033333333333333,
+      "candidate_remaining_duration_s": 1.9666666666666668,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v02_c0p25_modulus_stiff_material_corrected",
+      "event_id": "V02",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_v02_material_corrected_v01/episodes/v02_c0p25_modulus_stiff_material_corrected",
+      "manifest_sha256": "de7f8975b47220754d7b837a7d0b058260b1f10d5a675baff349d7ef829f077c",
+      "action_sha256": "c426ea38980f4615fd41297d0f6842d6aefc62c213dcaff5f46c598c60165470",
+      "state_index_sha256": "760d7c969c405c4884d8e5e886b1c4e5a39a2524b15ca0d7d0f50e8e1fb03532",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "upper_plate",
+          "start_time_s": 1.0,
+          "end_time_s": 2.0,
+          "method": null
+        },
+        {
+          "kind": "kinematic_trajectory",
+          "target": "upper_plate",
+          "start_time_s": 2.0,
+          "end_time_s": 2.5,
+          "method": null
+        },
+        {
+          "kind": "kinematic_trajectory",
+          "target": "upper_plate",
+          "start_time_s": 2.5,
+          "end_time_s": 3.0,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 3.033333333333333,
+      "candidate_remaining_duration_s": 1.9666666666666668,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v02_c0p4_modulus_reference_material_corrected",
+      "event_id": "V02",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_v02_material_corrected_v01/episodes/v02_c0p4_modulus_reference_material_corrected",
+      "manifest_sha256": "8a73a8d8762a167fe264209ed76d2af35ad0d97f34a6048f92b84d8ca5e655f6",
+      "action_sha256": "25745319a1d53890198e47850caea8c92c91c346f08b3892c8bea250e6dde11a",
+      "state_index_sha256": "3d3f2ac9fdaa72dc144a3c168487135d7406dd57fdd2382733273eeef7ff5334",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "upper_plate",
+          "start_time_s": 1.0,
+          "end_time_s": 2.0,
+          "method": null
+        },
+        {
+          "kind": "kinematic_trajectory",
+          "target": "upper_plate",
+          "start_time_s": 2.0,
+          "end_time_s": 2.5,
+          "method": null
+        },
+        {
+          "kind": "kinematic_trajectory",
+          "target": "upper_plate",
+          "start_time_s": 2.5,
+          "end_time_s": 3.0,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 3.033333333333333,
+      "candidate_remaining_duration_s": 1.9666666666666668,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v02_c0p4_modulus_soft_material_corrected",
+      "event_id": "V02",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_v02_material_corrected_v01/episodes/v02_c0p4_modulus_soft_material_corrected",
+      "manifest_sha256": "50798990ca4cc3f7be8b134e7e2ce45487284f85799397c4e07146b8cf2e5942",
+      "action_sha256": "25745319a1d53890198e47850caea8c92c91c346f08b3892c8bea250e6dde11a",
+      "state_index_sha256": "3d3f2ac9fdaa72dc144a3c168487135d7406dd57fdd2382733273eeef7ff5334",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "upper_plate",
+          "start_time_s": 1.0,
+          "end_time_s": 2.0,
+          "method": null
+        },
+        {
+          "kind": "kinematic_trajectory",
+          "target": "upper_plate",
+          "start_time_s": 2.0,
+          "end_time_s": 2.5,
+          "method": null
+        },
+        {
+          "kind": "kinematic_trajectory",
+          "target": "upper_plate",
+          "start_time_s": 2.5,
+          "end_time_s": 3.0,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 3.033333333333333,
+      "candidate_remaining_duration_s": 1.9666666666666668,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v02_c0p4_modulus_stiff_material_corrected",
+      "event_id": "V02",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m3_v02_material_corrected_v01/episodes/v02_c0p4_modulus_stiff_material_corrected",
+      "manifest_sha256": "28d8b9a9c737fd7a9a8a535d70371c76e3580de5ba7c775825d9f01bffd03c24",
+      "action_sha256": "25745319a1d53890198e47850caea8c92c91c346f08b3892c8bea250e6dde11a",
+      "state_index_sha256": "3d3f2ac9fdaa72dc144a3c168487135d7406dd57fdd2382733273eeef7ff5334",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "upper_plate",
+          "start_time_s": 1.0,
+          "end_time_s": 2.0,
+          "method": null
+        },
+        {
+          "kind": "kinematic_trajectory",
+          "target": "upper_plate",
+          "start_time_s": 2.0,
+          "end_time_s": 2.5,
+          "method": null
+        },
+        {
+          "kind": "kinematic_trajectory",
+          "target": "upper_plate",
+          "start_time_s": 2.5,
+          "end_time_s": 3.0,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 3.033333333333333,
+      "candidate_remaining_duration_s": 1.9666666666666668,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v03_cube_load_reference",
+      "event_id": "V03",
+      "classification": "post_deactivation_recovery_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_v03_physics_v01/episodes/v03_cube_load_reference",
+      "manifest_sha256": "b674fd16c0c36afcf2d0768135481d61232dda216fbebc953bacaad712de47e6",
+      "action_sha256": "c1d0ac28631d8d154549969c66aa0f71ccbb2fff4330a22cd0106ba67500aea9",
+      "state_index_sha256": "6a697da4c3a24b6f6bde7cd7e90b5a1932de82434534513f6f31d1e48269b210",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "load",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "set_dynamic"
+        },
+        {
+          "kind": "remove_support",
+          "target": "load",
+          "start_time_s": 2.0,
+          "end_time_s": 2.0,
+          "method": "deactivate_actor"
+        }
+      ],
+      "candidate_crop_start_time_s": 2.0166666666666666,
+      "candidate_remaining_duration_s": 2.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v03_cube_load_soft_sphere_reference",
+      "event_id": "V03",
+      "classification": "post_deactivation_recovery_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_v03_physics_v01/episodes/v03_cube_load_soft_sphere_reference",
+      "manifest_sha256": "5a179d35d4452b6661d4734ad70a4aa37e89e5442594df7945fce16568f09fd3",
+      "action_sha256": "c1d0ac28631d8d154549969c66aa0f71ccbb2fff4330a22cd0106ba67500aea9",
+      "state_index_sha256": "6a697da4c3a24b6f6bde7cd7e90b5a1932de82434534513f6f31d1e48269b210",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "load",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "set_dynamic"
+        },
+        {
+          "kind": "remove_support",
+          "target": "load",
+          "start_time_s": 2.0,
+          "end_time_s": 2.0,
+          "method": "deactivate_actor"
+        }
+      ],
+      "candidate_crop_start_time_s": 2.0166666666666666,
+      "candidate_remaining_duration_s": 2.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v03_cylinder_load_reference",
+      "event_id": "V03",
+      "classification": "post_deactivation_recovery_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_v03_physics_v01/episodes/v03_cylinder_load_reference",
+      "manifest_sha256": "56b6ea1c8f20b5ae73c3193bd0b56ec404b607f7be120650f0e3133bfb9b0281",
+      "action_sha256": "c1d0ac28631d8d154549969c66aa0f71ccbb2fff4330a22cd0106ba67500aea9",
+      "state_index_sha256": "6a697da4c3a24b6f6bde7cd7e90b5a1932de82434534513f6f31d1e48269b210",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "load",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "set_dynamic"
+        },
+        {
+          "kind": "remove_support",
+          "target": "load",
+          "start_time_s": 2.0,
+          "end_time_s": 2.0,
+          "method": "deactivate_actor"
+        }
+      ],
+      "candidate_crop_start_time_s": 2.0166666666666666,
+      "candidate_remaining_duration_s": 2.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v03_duration_long",
+      "event_id": "V03",
+      "classification": "post_deactivation_recovery_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_v03_physics_v01/episodes/v03_duration_long",
+      "manifest_sha256": "ecacdb23baeff0d80f001baa365e272d8347202888b147b3d7661a8d621ffcad",
+      "action_sha256": "f8b536fa32a2f22e9000f79a453c321de76382532b65fb4dcda3c8844ba58eb4",
+      "state_index_sha256": "6a697da4c3a24b6f6bde7cd7e90b5a1932de82434534513f6f31d1e48269b210",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "load",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "set_dynamic"
+        },
+        {
+          "kind": "remove_support",
+          "target": "load",
+          "start_time_s": 3.0,
+          "end_time_s": 3.0,
+          "method": "deactivate_actor"
+        }
+      ],
+      "candidate_crop_start_time_s": 3.0166666666666666,
+      "candidate_remaining_duration_s": 1.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v03_duration_short",
+      "event_id": "V03",
+      "classification": "post_deactivation_recovery_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_v03_physics_v01/episodes/v03_duration_short",
+      "manifest_sha256": "d8d5f7e08a37a2f1b26af0f0aed1025de6bdeac635cfb2cdf4e5f3528111d5a0",
+      "action_sha256": "28f5c3258442d01a8030199a5d9bdbe84872aa63cbaa0ecbca50bc184922e664",
+      "state_index_sha256": "6a697da4c3a24b6f6bde7cd7e90b5a1932de82434534513f6f31d1e48269b210",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "load",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "set_dynamic"
+        },
+        {
+          "kind": "remove_support",
+          "target": "load",
+          "start_time_s": 1.5,
+          "end_time_s": 1.5,
+          "method": "deactivate_actor"
+        }
+      ],
+      "candidate_crop_start_time_s": 1.5166666666666666,
+      "candidate_remaining_duration_s": 3.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v03_load_eccentric",
+      "event_id": "V03",
+      "classification": "post_deactivation_recovery_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_v03_physics_v01/episodes/v03_load_eccentric",
+      "manifest_sha256": "90418f255e2f2cb29e5576de39760d32c4f3299da23f19415b15e53572898207",
+      "action_sha256": "c1d0ac28631d8d154549969c66aa0f71ccbb2fff4330a22cd0106ba67500aea9",
+      "state_index_sha256": "6a697da4c3a24b6f6bde7cd7e90b5a1932de82434534513f6f31d1e48269b210",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "load",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "set_dynamic"
+        },
+        {
+          "kind": "remove_support",
+          "target": "load",
+          "start_time_s": 2.0,
+          "end_time_s": 2.0,
+          "method": "deactivate_actor"
+        }
+      ],
+      "candidate_crop_start_time_s": 2.0166666666666666,
+      "candidate_remaining_duration_s": 2.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v03_load_heavy",
+      "event_id": "V03",
+      "classification": "post_deactivation_recovery_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_v03_physics_v01/episodes/v03_load_heavy",
+      "manifest_sha256": "c96ba394fed90ac77429d7c23e8de8e80594152f4d4bf1de2d9c0363747bf676",
+      "action_sha256": "c1d0ac28631d8d154549969c66aa0f71ccbb2fff4330a22cd0106ba67500aea9",
+      "state_index_sha256": "6a697da4c3a24b6f6bde7cd7e90b5a1932de82434534513f6f31d1e48269b210",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "load",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "set_dynamic"
+        },
+        {
+          "kind": "remove_support",
+          "target": "load",
+          "start_time_s": 2.0,
+          "end_time_s": 2.0,
+          "method": "deactivate_actor"
+        }
+      ],
+      "candidate_crop_start_time_s": 2.0166666666666666,
+      "candidate_remaining_duration_s": 2.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v03_load_light",
+      "event_id": "V03",
+      "classification": "post_deactivation_recovery_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_v03_physics_v01/episodes/v03_load_light",
+      "manifest_sha256": "5892546cf7b5a511166edfd41f72bc82aac938c440496789eabef3b93a29c57f",
+      "action_sha256": "c1d0ac28631d8d154549969c66aa0f71ccbb2fff4330a22cd0106ba67500aea9",
+      "state_index_sha256": "6a697da4c3a24b6f6bde7cd7e90b5a1932de82434534513f6f31d1e48269b210",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "load",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "set_dynamic"
+        },
+        {
+          "kind": "remove_support",
+          "target": "load",
+          "start_time_s": 2.0,
+          "end_time_s": 2.0,
+          "method": "deactivate_actor"
+        }
+      ],
+      "candidate_crop_start_time_s": 2.0166666666666666,
+      "candidate_remaining_duration_s": 2.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v03_sphere_load_reference",
+      "event_id": "V03",
+      "classification": "post_deactivation_recovery_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_v03_physics_v01/episodes/v03_sphere_load_reference",
+      "manifest_sha256": "89f9d6e590fad21f967d26321722427541505cb6834bbb55e7295cb206ee1518",
+      "action_sha256": "c1d0ac28631d8d154549969c66aa0f71ccbb2fff4330a22cd0106ba67500aea9",
+      "state_index_sha256": "6a697da4c3a24b6f6bde7cd7e90b5a1932de82434534513f6f31d1e48269b210",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "load",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "set_dynamic"
+        },
+        {
+          "kind": "remove_support",
+          "target": "load",
+          "start_time_s": 2.0,
+          "end_time_s": 2.0,
+          "method": "deactivate_actor"
+        }
+      ],
+      "candidate_crop_start_time_s": 2.0166666666666666,
+      "candidate_remaining_duration_s": 2.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v03_target_soft",
+      "event_id": "V03",
+      "classification": "post_deactivation_recovery_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_v03_physics_v01/episodes/v03_target_soft",
+      "manifest_sha256": "3ad4a466b5695ada6c5d1da9037fa34b0445b8905a540a0bbe0da70864962047",
+      "action_sha256": "c1d0ac28631d8d154549969c66aa0f71ccbb2fff4330a22cd0106ba67500aea9",
+      "state_index_sha256": "6a697da4c3a24b6f6bde7cd7e90b5a1932de82434534513f6f31d1e48269b210",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "load",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "set_dynamic"
+        },
+        {
+          "kind": "remove_support",
+          "target": "load",
+          "start_time_s": 2.0,
+          "end_time_s": 2.0,
+          "method": "deactivate_actor"
+        }
+      ],
+      "candidate_crop_start_time_s": 2.0166666666666666,
+      "candidate_remaining_duration_s": 2.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v03_target_stiff",
+      "event_id": "V03",
+      "classification": "post_deactivation_recovery_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_v03_physics_v01/episodes/v03_target_stiff",
+      "manifest_sha256": "2b1496edc8fb9a4f2f75d35aa74ce58b0b75e039313f705a7b2ac8480249a11d",
+      "action_sha256": "c1d0ac28631d8d154549969c66aa0f71ccbb2fff4330a22cd0106ba67500aea9",
+      "state_index_sha256": "6a697da4c3a24b6f6bde7cd7e90b5a1932de82434534513f6f31d1e48269b210",
+      "historical_commands": [
+        {
+          "kind": "release",
+          "target": "load",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": "set_dynamic"
+        },
+        {
+          "kind": "remove_support",
+          "target": "load",
+          "start_time_s": 2.0,
+          "end_time_s": 2.0,
+          "method": "deactivate_actor"
+        }
+      ],
+      "candidate_crop_start_time_s": 2.0166666666666666,
+      "candidate_remaining_duration_s": 2.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v04_capsule_aperture_reference",
+      "event_id": "V04",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_v04_physics_v01/episodes/v04_capsule_aperture_reference",
+      "manifest_sha256": "8aabd2e16dd44219a17dea4917a6b252dbbe20b2f05efde8c74a08a7d4bdc019",
+      "action_sha256": "023b2cc5c97fca27a1839e05b456f70de9cfb82fa8507089ed130d8fb688b408",
+      "state_index_sha256": "8972f3dbd7153d6bd70798052fcba5d9e16a94a95d5afbbc7fb3ec7870ab1f56",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "pusher",
+          "start_time_s": 0.5,
+          "end_time_s": 4.0,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 4.016666666666667,
+      "candidate_remaining_duration_s": 2.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v04_cube_aperture_narrow",
+      "event_id": "V04",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_v04_physics_v01/episodes/v04_cube_aperture_narrow",
+      "manifest_sha256": "c6943811ce8c95e8e15f68aae4db4c117c52e5660c308c7892666894616da1b3",
+      "action_sha256": "2afe1516323de6bbb1c63da5f8855b1b2323e0df42367a9d4a79d4585736f9ad",
+      "state_index_sha256": "0ab9bfafcd085d1117651df16be07ee6a65be2c3fe9cc52c0fdb9097f56cc1a8",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "pusher",
+          "start_time_s": 0.5,
+          "end_time_s": 4.0,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 4.016666666666667,
+      "candidate_remaining_duration_s": 2.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v04_cube_aperture_push_fast",
+      "event_id": "V04",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_v04_physics_v01/episodes/v04_cube_aperture_push_fast",
+      "manifest_sha256": "2bf54494afd871e0b92c498c0b25647f47fc1472805a4ecd34bb47eb40017a54",
+      "action_sha256": "61e7f1a8129fe6649b4e031ff681518c11654366afeafba969f2e3bbeb6e1679",
+      "state_index_sha256": "f39bc96bb070a80184626c08d9d7760ae511f5d9f580d0c6fcc34c770617c20e",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "pusher",
+          "start_time_s": 0.5,
+          "end_time_s": 3.25,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 3.2666666666666666,
+      "candidate_remaining_duration_s": 3.2333333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v04_cube_aperture_push_long",
+      "event_id": "V04",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_v04_physics_v01/episodes/v04_cube_aperture_push_long",
+      "manifest_sha256": "c22787805f4c6785194e2b3ecb15ba194c5e8aa0a8e3e5dca2f31304520fc9dd",
+      "action_sha256": "342ccb514827652013eeea8cb7ffc68cb411f7be90409efb33c4960dd070c22e",
+      "state_index_sha256": "03c0a7fb9c98023e3403dcb92d9c91910ac6fdc2f6fe329660db6ed93f3dff6f",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "pusher",
+          "start_time_s": 0.5,
+          "end_time_s": 4.0,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 4.016666666666667,
+      "candidate_remaining_duration_s": 2.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v04_cube_aperture_push_short",
+      "event_id": "V04",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_v04_physics_v01/episodes/v04_cube_aperture_push_short",
+      "manifest_sha256": "4165acb5e714c5e11594d28e49b59b5f68f70a9e1bb0e9dd106d4498e8f87a20",
+      "action_sha256": "799c03a73ebcb00f28ee4743c2c7546d4fb37a9ed09a92935703fb5cec930d7e",
+      "state_index_sha256": "141214b931778db0a11ae530c9cbe0ca5e3473b54e129a8e05d9ac99cc01eb09",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "pusher",
+          "start_time_s": 0.5,
+          "end_time_s": 4.0,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 4.016666666666667,
+      "candidate_remaining_duration_s": 2.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v04_cube_aperture_push_slow",
+      "event_id": "V04",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_v04_physics_v01/episodes/v04_cube_aperture_push_slow",
+      "manifest_sha256": "f77eac1f034708b7cdb0ae39f8c0c7df9c5444bd653e214a9a4167a93d6d408d",
+      "action_sha256": "ffeaebf2b27db02908c1eaa27c1a67b73129e174a806d428d83137216dffa993",
+      "state_index_sha256": "5b00443ee601f17445ae6560581532ebb16447ddff13324b517759ce07455c1f",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "pusher",
+          "start_time_s": 0.5,
+          "end_time_s": 4.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 4.516666666666667,
+      "candidate_remaining_duration_s": 1.9833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v04_cube_aperture_reference",
+      "event_id": "V04",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_v04_physics_v01/episodes/v04_cube_aperture_reference",
+      "manifest_sha256": "437f6d47e7a87cf9addbbb4ce519d378eb0170811edbd105aa230af19efcff08",
+      "action_sha256": "2afe1516323de6bbb1c63da5f8855b1b2323e0df42367a9d4a79d4585736f9ad",
+      "state_index_sha256": "4fc871dde763d644eec7822307542d91e3199735b60d1ed4af9b5d2ebf0abc26",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "pusher",
+          "start_time_s": 0.5,
+          "end_time_s": 4.0,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 4.016666666666667,
+      "candidate_remaining_duration_s": 2.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v04_cube_aperture_soft",
+      "event_id": "V04",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_v04_physics_v01/episodes/v04_cube_aperture_soft",
+      "manifest_sha256": "e23cb31aec2819c36e2fb4424463c8e3796ced27d4a539eeaef257223350156f",
+      "action_sha256": "2afe1516323de6bbb1c63da5f8855b1b2323e0df42367a9d4a79d4585736f9ad",
+      "state_index_sha256": "4fc871dde763d644eec7822307542d91e3199735b60d1ed4af9b5d2ebf0abc26",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "pusher",
+          "start_time_s": 0.5,
+          "end_time_s": 4.0,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 4.016666666666667,
+      "candidate_remaining_duration_s": 2.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v04_cube_aperture_stiff",
+      "event_id": "V04",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_v04_physics_v01/episodes/v04_cube_aperture_stiff",
+      "manifest_sha256": "ed4c1088df7ef795cc63dcc1757d52dfed22bef084d52ccb3078750b8ea9764c",
+      "action_sha256": "2afe1516323de6bbb1c63da5f8855b1b2323e0df42367a9d4a79d4585736f9ad",
+      "state_index_sha256": "4fc871dde763d644eec7822307542d91e3199735b60d1ed4af9b5d2ebf0abc26",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "pusher",
+          "start_time_s": 0.5,
+          "end_time_s": 4.0,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 4.016666666666667,
+      "candidate_remaining_duration_s": 2.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v04_cube_aperture_wide",
+      "event_id": "V04",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_v04_physics_v01/episodes/v04_cube_aperture_wide",
+      "manifest_sha256": "0f844a465c3d1c93b630f002d9e55d4d9c23ef64be131d5ce974a2cd77a398fd",
+      "action_sha256": "2afe1516323de6bbb1c63da5f8855b1b2323e0df42367a9d4a79d4585736f9ad",
+      "state_index_sha256": "ef6e917912d50ab1bb55901482a472181c3b41e4bd580a518b9b61bb26fe1c51",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "pusher",
+          "start_time_s": 0.5,
+          "end_time_s": 4.0,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 4.016666666666667,
+      "candidate_remaining_duration_s": 2.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v04_sphere_aperture_reference",
+      "event_id": "V04",
+      "classification": "post_actuation_passive_review",
+      "source_root": "output/world_model_dataset/v0_1/m4_v04_physics_v01/episodes/v04_sphere_aperture_reference",
+      "manifest_sha256": "7e7143d13fd6fd3aefe12bb915447569d256d07338f5cb3d03bd76f46bf83c5f",
+      "action_sha256": "2afe1516323de6bbb1c63da5f8855b1b2323e0df42367a9d4a79d4585736f9ad",
+      "state_index_sha256": "4fc871dde763d644eec7822307542d91e3199735b60d1ed4af9b5d2ebf0abc26",
+      "historical_commands": [
+        {
+          "kind": "kinematic_trajectory",
+          "target": "pusher",
+          "start_time_s": 0.5,
+          "end_time_s": 4.0,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 4.016666666666667,
+      "candidate_remaining_duration_s": 2.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v05_capsule_soft_cube_reference",
+      "event_id": "V05",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_v05_physics_v01/episodes/v05_capsule_soft_cube_reference",
+      "manifest_sha256": "2225016b30bbb0ce39e2d17bf0f49bcc36c93275da0cd0d561489c24548b104d",
+      "action_sha256": "ca543c3ce1ed14074a333a187f2f4438fd0d6aebb123ffc2e1b1139217f30303",
+      "state_index_sha256": "c8aa20933be4cf230b630381fc9be3478303f7d162e74b46020e04f6b831a852",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "projectile",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 2.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v05_sphere_soft_cube_eccentric",
+      "event_id": "V05",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_v05_physics_v01/episodes/v05_sphere_soft_cube_eccentric",
+      "manifest_sha256": "505c03238ef0c8955c2f2ff7053aef50257d6efcd701869c87a05ac71a21c10d",
+      "action_sha256": "ca543c3ce1ed14074a333a187f2f4438fd0d6aebb123ffc2e1b1139217f30303",
+      "state_index_sha256": "c8aa20933be4cf230b630381fc9be3478303f7d162e74b46020e04f6b831a852",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "projectile",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 2.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v05_sphere_soft_cube_miss",
+      "event_id": "V05",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_v05_physics_v01/episodes/v05_sphere_soft_cube_miss",
+      "manifest_sha256": "6e0c6606878a0f77a903e7e0ed8908bc76763331a6c6eec3e62f15faa9a13baf",
+      "action_sha256": "ca543c3ce1ed14074a333a187f2f4438fd0d6aebb123ffc2e1b1139217f30303",
+      "state_index_sha256": "c8aa20933be4cf230b630381fc9be3478303f7d162e74b46020e04f6b831a852",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "projectile",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 2.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v05_sphere_soft_cube_projectile_heavy",
+      "event_id": "V05",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_v05_physics_v01/episodes/v05_sphere_soft_cube_projectile_heavy",
+      "manifest_sha256": "f0dd3b2c3763aedd333417be047d941cb1fdaaad720cb84e033018ae04f90585",
+      "action_sha256": "ca543c3ce1ed14074a333a187f2f4438fd0d6aebb123ffc2e1b1139217f30303",
+      "state_index_sha256": "c8aa20933be4cf230b630381fc9be3478303f7d162e74b46020e04f6b831a852",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "projectile",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 2.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v05_sphere_soft_cube_projectile_light",
+      "event_id": "V05",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_v05_physics_v01/episodes/v05_sphere_soft_cube_projectile_light",
+      "manifest_sha256": "50daae7935e282b90a540cb462e48689cd7279974915960a515ee687fbdb6612",
+      "action_sha256": "ca543c3ce1ed14074a333a187f2f4438fd0d6aebb123ffc2e1b1139217f30303",
+      "state_index_sha256": "c8aa20933be4cf230b630381fc9be3478303f7d162e74b46020e04f6b831a852",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "projectile",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 2.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v05_sphere_soft_cube_reference",
+      "event_id": "V05",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_v05_physics_v01/episodes/v05_sphere_soft_cube_reference",
+      "manifest_sha256": "b8b5080a9ea702eb0b5d9a979377f3b684a2b44fee7f45c583946e4ab3ed7041",
+      "action_sha256": "ca543c3ce1ed14074a333a187f2f4438fd0d6aebb123ffc2e1b1139217f30303",
+      "state_index_sha256": "c8aa20933be4cf230b630381fc9be3478303f7d162e74b46020e04f6b831a852",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "projectile",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 2.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v05_sphere_soft_cube_speed_high",
+      "event_id": "V05",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_v05_physics_v01/episodes/v05_sphere_soft_cube_speed_high",
+      "manifest_sha256": "f5cf0b90375a1d082eb2f91e1effa171d5ad0d00d25ac149fca78b5eba3d5f33",
+      "action_sha256": "6f277be22f802e1bc527db3d48bd0e7913770ee016927f356f19e4fe45a9f8f9",
+      "state_index_sha256": "c8aa20933be4cf230b630381fc9be3478303f7d162e74b46020e04f6b831a852",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "projectile",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 2.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v05_sphere_soft_cube_speed_low",
+      "event_id": "V05",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_v05_physics_v01/episodes/v05_sphere_soft_cube_speed_low",
+      "manifest_sha256": "3361cd5fca556d48c713a3c96cc07b0011169ba9ce9106f9dfca5fb1c008c325",
+      "action_sha256": "dfb0a3dea7d8531859f7ada806c56a8427708bf909714a8edf7497ac205b9400",
+      "state_index_sha256": "c8aa20933be4cf230b630381fc9be3478303f7d162e74b46020e04f6b831a852",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "projectile",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 2.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v05_sphere_soft_cube_target_soft",
+      "event_id": "V05",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_v05_physics_v01/episodes/v05_sphere_soft_cube_target_soft",
+      "manifest_sha256": "29af8991ed2b79bf19dbfd9e1be3b312a2e696c31c268b55e610adc7c83c39d6",
+      "action_sha256": "ca543c3ce1ed14074a333a187f2f4438fd0d6aebb123ffc2e1b1139217f30303",
+      "state_index_sha256": "c8aa20933be4cf230b630381fc9be3478303f7d162e74b46020e04f6b831a852",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "projectile",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 2.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v05_sphere_soft_cube_target_stiff",
+      "event_id": "V05",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_v05_physics_v01/episodes/v05_sphere_soft_cube_target_stiff",
+      "manifest_sha256": "4f95797425cc9980b8eeefe0df6bd05148b72b4892c1f4a4ea0a386f1fd3d962",
+      "action_sha256": "ca543c3ce1ed14074a333a187f2f4438fd0d6aebb123ffc2e1b1139217f30303",
+      "state_index_sha256": "c8aa20933be4cf230b630381fc9be3478303f7d162e74b46020e04f6b831a852",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "projectile",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 2.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    },
+    {
+      "episode_id": "v05_sphere_soft_sphere_reference",
+      "event_id": "V05",
+      "classification": "post_write_crop_candidate",
+      "source_root": "output/world_model_dataset/v0_1/m4_v05_physics_v01/episodes/v05_sphere_soft_sphere_reference",
+      "manifest_sha256": "ded711a3706b830aed6d51b31d9febab4107cab7a9a2f2975d353d483ff3c85c",
+      "action_sha256": "ca543c3ce1ed14074a333a187f2f4438fd0d6aebb123ffc2e1b1139217f30303",
+      "state_index_sha256": "c8aa20933be4cf230b630381fc9be3478303f7d162e74b46020e04f6b831a852",
+      "historical_commands": [
+        {
+          "kind": "initial_velocity",
+          "target": "projectile",
+          "start_time_s": 0.5,
+          "end_time_s": 0.5,
+          "method": null
+        }
+      ],
+      "candidate_crop_start_time_s": 0.5166666666666666,
+      "candidate_remaining_duration_s": 2.4833333333333334,
+      "captured_state_at_boundary": true,
+      "automatic_admission": false,
+      "manual_review_required": true
+    }
+  ]
+}

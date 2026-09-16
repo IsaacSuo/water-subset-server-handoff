@@ -28,7 +28,7 @@ hiding before scale production resumes.
 | M3 | Corrected physical scope complete; observations deferred | R01 remains accepted. Corrected V02: 9 material-readback-matched runs, 6 strict pairs and one bounded repetition. Historical 15 default-material V02 comparisons remain withdrawn. Recovery/reference correction and penetration limits are documented in `DATASET_V02_CORRECTED_REVIEW.md`. |
 | M4 | Complete as physics regression corpus | 117 canonical matrix episodes, 81 strict pairs and 4 real-STL supplements are accepted for physics regression. Their causal-training status is intentionally unresolved. |
 | M5A | Diagnostic showcase complete | Ten cache-only videos demonstrate replay and presentation. They are not v0.2 training observations; the old replay can hide a removed support. |
-| C0 | In progress; first contract draft implemented | The orthogonal ontology, separate `v0_2` JSON schema, no-control example and static causal auditor are present. Historical family-level migration is classified; all 121 caches still need cache-level lineage/crop review before C0 freezes. Frozen v0.1 files are unchanged. |
+| C0 | In progress; contract and mechanical inventory implemented | The orthogonal ontology, separate `v0_2` JSON schema, no-control example and static causal auditor are present. All 121 historical caches now have immutable source hashes, a candidate crop boundary and a conservative reuse class; detailed interaction/object/observation review remains before C0 freezes. Frozen v0.1 files are unchanged. |
 | C1--C5 | Not started | Finite actuators, causal vertical prototypes, compositional coverage, production and model benchmarks follow C0. |
 
 ## Current M4 result

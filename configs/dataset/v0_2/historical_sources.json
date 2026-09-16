@@ -1,0 +1,50 @@
+{
+  "schema_version": "0.2.0-draft",
+  "description": "Immutable M3/M4 matrices counted by the historical 121-cache review",
+  "sources": [
+    {
+      "matrix": "output/world_model_dataset/v0_1/m3_physics_v01/matrix.json",
+      "include_event_ids": ["R01"]
+    },
+    {
+      "matrix": "output/world_model_dataset/v0_1/m3_v02_material_corrected_v01/matrix.json",
+      "include_event_ids": ["V02"]
+    },
+    {
+      "matrix": "output/world_model_dataset/v0_1/m4_r02_physics_v02/matrix.json",
+      "include_event_ids": ["R02"]
+    },
+    {
+      "matrix": "output/world_model_dataset/v0_1/m4_r03_physics_v02/matrix.json",
+      "include_event_ids": ["R03"]
+    },
+    {
+      "matrix": "output/world_model_dataset/v0_1/m4_r04_physics_v02/matrix.json",
+      "include_event_ids": ["R04"]
+    },
+    {
+      "matrix": "output/world_model_dataset/v0_1/m4_r05_physics_v02/matrix.json",
+      "include_event_ids": ["R05"]
+    },
+    {
+      "matrix": "output/world_model_dataset/v0_1/m4_v01_physics_v02/matrix.json",
+      "include_event_ids": ["V01"]
+    },
+    {
+      "matrix": "output/world_model_dataset/v0_1/m4_v03_physics_v01/matrix.json",
+      "include_event_ids": ["V03"]
+    },
+    {
+      "matrix": "output/world_model_dataset/v0_1/m4_v04_physics_v01/matrix.json",
+      "include_event_ids": ["V04"]
+    },
+    {
+      "matrix": "output/world_model_dataset/v0_1/m4_v05_physics_v01/matrix.json",
+      "include_event_ids": ["V05"]
+    },
+    {
+      "matrix": "output/world_model_dataset/v0_1/m4_real_rigid_physics_v02/matrix.json",
+      "include_event_ids": ["R02", "R03", "R04", "R05"]
+    }
+  ]
+}

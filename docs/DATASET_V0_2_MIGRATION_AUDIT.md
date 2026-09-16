@@ -27,6 +27,27 @@ identity, parent-cache hash, exact crop boundary, regenerated time origin, initi
 declaration and observation review. A crop may preserve a passive physical trajectory; it
 cannot rename an old kinematic or removal action as a finite physical actuator.
 
+## Cache-level mechanical inventory
+
+The first read-only cache pass is recorded in
+`configs/dataset/v0_2/historical_cache_inventory.json`. It resolves every episode through the
+accepted matrix files, stores the SHA-256 values of its historical manifest, action stream and
+state index, and selects the first complete captured state strictly after the last historical
+state mutation. The inventory contains exactly 121 unique rows and no missing crop boundary.
+
+| Mechanical class | Count | Meaning |
+| --- | ---: | --- |
+| `direct_candidate` | 11 | No historical action command; full V01 interval can proceed to detailed review. |
+| `post_write_crop_candidate` | 35 | R02/R03/V05 plus real supplements; candidate time zero is the first captured state after velocity injection. |
+| `post_removal_crop_review` | 32 | R01/R05 plus real supplement; requires explicit object, collision and observation-set review. |
+| `post_actuation_passive_review` | 32 | R04/V02/V04 plus real supplement; only the passive tail may be useful and the old push/compression claim is discarded. |
+| `post_deactivation_recovery_review` | 11 | V03; the passive soft-body tail requires special review because the load actor was deactivated. |
+
+Every row deliberately has `automatic_admission=false` and `manual_review_required=true`. The
+mechanical pass proves that a state sample and at least 1.48 seconds of historical trajectory exist
+after the proposed boundary; it does not yet prove that the crop begins before the relevant
+interaction, that the remaining object set is visually self-consistent, or that the tail is useful.
+
 ## M5A observations
 
 All ten M5A videos remain diagnostic only. Their source intervals inherit the action status
@@ -46,6 +67,9 @@ For each candidate family:
 6. preserve parent paths and SHA-256 values without editing the parent cache;
 7. reject the crop if the remaining interval is too short, begins after the interaction, or
    cannot produce visually and physically consistent observations.
+
+Items 1, 2, 5 and 6 now have machine-readable candidates for all 121 rows. Items 3, 4 and 7 remain
+the manual/data-level admission pass. New v0.2 manifests have not been generated from these rows.
 
 ## Consequence
 
