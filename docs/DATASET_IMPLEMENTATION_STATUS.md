@@ -263,3 +263,13 @@ The finite actuator is sized against the posed object rather than a universal
 This is a development showcase, not automatic C4 expansion or replacement of
 the prior immutable subset. Material-face warnings and the unfinished travel
 to the cabinet are retained explicitly.
+
+## Unified phenomenon showcase v1 (2026-09-17)
+
+Presentation is now the immediate priority. `PHENOMENON_SHOWCASE_V1.md` records
+22 reused clips and a grouped, independently playable browser page. Coverage
+includes whole-body motion, contact transfer, elastic/plastic/viscoelastic response,
+cloth drape/span and rope swing/obstacle contact. This is a cross-backend showcase,
+not same-world coupling, C4 admission or a claim that the surface loader patch was merged.
+No new simulations or scene renders were needed; a dedicated multi-body rearrangement
+representative remains a useful next gap rather than more push/drop variants.
