@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import sys
 import time
 import traceback
@@ -14,17 +15,24 @@ sys.path.insert(0, str(ROOT))
 
 from world_model_dataset.controllers import bounded_linear_impedance, bounded_velocity_effort, signed_work_increment
 from world_model_dataset.io import read_json, write_json
+from world_model_dataset.probe_episode import package_probe_episode
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--scenario", choices=("free", "resisted", "overload"))
     args = parser.parse_args()
     if args.output.exists():
         raise FileExistsError(args.output)
     args.output.mkdir(parents=True)
     config = read_json(args.config)
+    if args.scenario:
+        config["scenarios"] = [row for row in config["scenarios"] if row["id"] == args.scenario]
+        if len(config["scenarios"]) != 1:
+            raise ValueError("Selected scenario is missing or duplicated")
+    write_json(args.output / "resolved_config.json", config)
 
     from isaacsim import SimulationApp
 
@@ -86,6 +94,8 @@ def main():
                                   UsdShade.Tokens.weakerThanDescendants, "physics")
             PhysxSchema.PhysxContactReportAPI.Apply(prim).CreateThresholdAttr(0.0)
 
+        participants = {}
+
         def cube(path, position, size, color, mass=None, disable_gravity=False, collision_enabled=True):
             shape = UsdGeom.Cube.Define(stage, path)
             shape.CreateSizeAttr(1.0)
@@ -104,6 +114,7 @@ def main():
                 rigid.CreateDisableGravityAttr(bool(disable_gravity))
                 rigid.CreateLinearDampingAttr(0.0)
                 rigid.CreateAngularDampingAttr(0.05)
+            participants[path] = (shape.GetPrim(), body)
             return shape, body
 
         cube("/World/floor", [0.0, 0.0, -0.025], [4.0, 2.4, 0.05], [.25, .27, .30])
@@ -118,6 +129,7 @@ def main():
             anchor.AddTranslateOp().Set(Gf.Vec3d(*initial))
             anchor_body = UsdPhysics.RigidBodyAPI.Apply(anchor.GetPrim())
             anchor_body.CreateKinematicEnabledAttr(True)
+            participants[root + "/anchor"] = (anchor.GetPrim(), anchor_body)
             PhysxSchema.PhysxRigidBodyAPI.Apply(anchor.GetPrim()).CreateDisableGravityAttr(True)
 
             pusher, pusher_body = cube(
@@ -163,6 +175,7 @@ def main():
                 "previous_x_m": actuator["initial_x_m"],
                 "work_j": 0.0,
                 "peak_speed_m_s": 0.0,
+                "peak_applied_force_n": 0.0,
                 "saturated_steps": 0,
                 "command_steps": 0,
                 "terminal_saturated_steps": 0,
@@ -172,6 +185,8 @@ def main():
             }
 
         step_index = 0
+        contact_stream = (args.output / "contacts.jsonl").open("x", encoding="utf-8")
+        streams.append(contact_stream)
 
         def belongs(path, root):
             return path == root or path.startswith(root + "/")
@@ -182,7 +197,16 @@ def main():
                          for key in ("actor0", "actor1", "collider0", "collider1")]
                 impulse = 0.0
                 for index in range(header.contact_data_offset, header.contact_data_offset + header.num_contact_data):
-                    impulse += float(np.linalg.norm(np.asarray(data[index].impulse, dtype=float)))
+                    point = data[index]
+                    impulse += float(np.linalg.norm(np.asarray(point.impulse, dtype=float)))
+                    contact_stream.write(json.dumps({
+                        "time_s": step_index * dt, "paths": paths,
+                        "position_m": list(map(float, point.position)),
+                        "normal": list(map(float, point.normal)),
+                        "impulse_ns": list(map(float, point.impulse)),
+                        "separation_m": float(point.separation),
+                        "source": "PhysX native contact report",
+                    }, allow_nan=False) + "\n")
                 for lane in lanes.values():
                     if any(belongs(path, lane["pusher_path"]) for path in paths):
                         lane["contact_impulse_ns"] += impulse
@@ -199,6 +223,31 @@ def main():
         state_stream = (args.output / "actuator_state_trace.jsonl").open("x", encoding="utf-8")
         effort_stream = (args.output / "actuator_effort_trace.jsonl").open("x", encoding="utf-8")
         streams.extend([command_stream, state_stream, effort_stream])
+        body_stream = (args.output / "body_state_trace.jsonl").open("x", encoding="utf-8")
+        streams.append(body_stream)
+
+        def body_states():
+            cache = UsdGeom.XformCache(Usd.TimeCode.Default())
+            result = {}
+            for path, (prim, body) in participants.items():
+                matrix = cache.GetLocalToWorldTransform(prim)
+                quat = Gf.Transform(matrix).GetRotation().GetQuat()
+                velocity = body.GetVelocityAttr().Get() if body else None
+                angular = body.GetAngularVelocityAttr().Get() if body else None
+                result[path.rsplit("/", 1)[-1]] = {
+                    "position_m": list(map(float, matrix.ExtractTranslation())),
+                    "orientation_xyzw": list(map(float, quat.GetImaginary())) + [float(quat.GetReal())],
+                    "linear_velocity_m_s": list(map(float, velocity)) if velocity is not None else [0.0] * 3,
+                    "angular_velocity_rad_s": [math.radians(float(v)) for v in angular] if angular is not None else [0.0] * 3,
+                }
+            return result
+
+        # Full-body names are unique only in the independent episode mode.
+        if args.scenario:
+            initial_states = body_states()
+            write_json(args.output / "initial_state.json", {"time_s": 0.0, "body_states": initial_states})
+            body_stream.write(json.dumps({"time_s": 0.0, "body_states": initial_states}, allow_nan=False) + "\n")
+            stage.GetRootLayer().Export(str(args.output / "probe_initial.usda"))
         for sid in lanes:
             command_stream.write(json.dumps({
                 "scenario_id": sid,
@@ -241,6 +290,7 @@ def main():
                 else:
                     decision = {"requested_force_n": 0.0, "applied_force_n": 0.0, "saturated": False}
                 lane["force_attr"].Set(Gf.Vec3f(decision["applied_force_n"], 0.0, 0.0))
+                lane["peak_applied_force_n"] = max(lane["peak_applied_force_n"], abs(decision["applied_force_n"]))
                 decisions[sid] = decision
 
             step_index = step + 1
@@ -249,6 +299,8 @@ def main():
             app.update()
             state_time = step_index * dt
             cache = UsdGeom.XformCache(Usd.TimeCode.Default())
+            if args.scenario:
+                body_stream.write(json.dumps({"time_s": state_time, "body_states": body_states()}, allow_nan=False) + "\n")
             for sid, lane in lanes.items():
                 position = cache.GetLocalToWorldTransform(lane["pusher"].GetPrim()).ExtractTranslation()
                 x = float(position[0])
@@ -289,15 +341,20 @@ def main():
                 "final_x_m": final_x,
                 "final_velocity_m_s": final_vx,
                 "peak_speed_m_s": lane["peak_speed_m_s"],
+                "peak_applied_force_n": lane["peak_applied_force_n"],
                 "controller_work_j": lane["work_j"],
                 "saturated_fraction": lane["saturated_steps"] / lane["command_steps"],
                 "terminal_saturated_fraction": lane["terminal_saturated_steps"] / lane["terminal_command_steps"],
                 "pusher_contact_impulse_ns": lane["contact_impulse_ns"],
             }
         displacement = {sid: row["command_displacement_m"] for sid, row in summaries.items()}
-        overload_limited = (summaries["overload"]["terminal_saturated_fraction"] > 0.95 and
+        overload_limited = ("overload" in summaries and summaries["overload"]["terminal_saturated_fraction"] > 0.95 and
                             abs(summaries["overload"]["command_end_velocity_m_s"]) < 0.01)
-        if law == "velocity_effort":
+        if args.scenario:
+            behavior = {"force_bound_respected": all(lane["peak_applied_force_n"] <= controller["max_force_n"] for lane in lanes.values())}
+            if args.scenario == "overload":
+                behavior["overload_is_force_limited"] = overload_limited
+        elif law == "velocity_effort":
             behavior = {
                 "free_exceeds_resisted": displacement["free"] > displacement["resisted"],
                 "resisted_exceeds_overload": displacement["resisted"] > displacement["overload"],
@@ -331,6 +388,8 @@ def main():
             },
         })
         stage.GetRootLayer().Export(str(args.output / "probe_final.usda"))
+        if args.scenario:
+            package_probe_episode(args.output)
         print("CAUSAL_EFFORT_PROBE_COMPLETE " + str(args.output), flush=True)
     except Exception as exc:
         traceback.print_exc()
