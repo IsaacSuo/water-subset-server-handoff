@@ -96,7 +96,32 @@ def initialize(stage_id, actors, output):
     return view
 
 
-def capture(stage, actor, cache, output, step, dt, gravity, actuator_state, actuator_geometry, contact_offset):
+def sampled_rigid_contacts(points_world, rigid_shapes, contact_offset):
+    """Node/analytic-shape distances only; not solver contacts, forces or exact penetration."""
+    import numpy as np
+    result = {}
+    for oid, (state, geometry) in rigid_shapes.items():
+        delta = points_world - np.asarray(state["position_m"])
+        if geometry["shape"] == "sphere":
+            signed = np.linalg.norm(delta, axis=1) - geometry["radius_m"]
+        elif geometry["shape"] == "box":
+            x,y,z,w = np.asarray(state["orientation_xyzw"])/np.linalg.norm(state["orientation_xyzw"])
+            rotation = np.array([[1-2*(y*y+z*z),2*(x*y-z*w),2*(x*z+y*w)],
+                                 [2*(x*y+z*w),1-2*(x*x+z*z),2*(y*z-x*w)],
+                                 [2*(x*z-y*w),2*(y*z+x*w),1-2*(x*x+y*y)]])
+            q = np.abs(delta@rotation) - np.asarray(geometry["size_m"])/2
+            signed = np.linalg.norm(np.maximum(q,0),axis=1)+np.minimum(q.max(axis=1),0)
+        else:
+            result[oid] = {"status": "unavailable", "reason": "No geometric distance adapter for this collision representation"}
+            continue
+        gap = float(signed.min())
+        result[oid] = {"status": "derived", "minimum_node_gap_m": gap,
+                       "sampled_penetration_m": max(0.0,-gap), "near_contact": gap<=contact_offset,
+                       "source": "collision nodes versus analytic rigid shape; sampled lower bound, not solver report"}
+    return result
+
+
+def capture(stage, actor, cache, output, step, dt, gravity, actuator_state, actuator_geometry, contact_offset, rigid_shapes=None):
     import numpy as np
     from pxr import UsdGeom
     from soft_body.tet_quality import compute_tet_deformation, signed_tetrahedron_volumes
@@ -151,6 +176,10 @@ def capture(stage, actor, cache, output, step, dt, gravity, actuator_state, actu
     metrics["maximum_local_displacement_m"] = float(np.linalg.norm(residual,axis=1).max())
     metrics["axis_z_compression_fraction"] = 1 - float(np.ptp(simulation_world[:,2]))/actor["rest_height"]
     metrics["height_m"] = float(np.ptp(simulation_world[:,2]))
+    metrics["bounds_world_m"] = [simulation_world.min(axis=0).tolist(), simulation_world.max(axis=0).tolist()]
+    metrics["axis_extents_m"] = np.ptp(simulation_world,axis=0).tolist()
+    if rigid_shapes is not None:
+        metrics["geometric_contacts"] = sampled_rigid_contacts(collision, rigid_shapes, contact_offset)
     metrics["maximum_nodal_speed_m_s"] = float(np.linalg.norm(nodal,axis=1).max())
     if actuator_state is not None:
         # Diagnostic sampling at native collision nodes; not exact mesh intersection.

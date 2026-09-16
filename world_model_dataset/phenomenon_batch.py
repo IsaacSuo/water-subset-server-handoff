@@ -11,6 +11,9 @@ from .io import read_json, write_json
 
 def recipe(design, variant, asset):
     """One design accepts a list of compatible assets; no per-asset scene scripts."""
+    from .phenomenon_recipes02 import KINDS, build
+    if design["kind"] in KINDS:
+        return build(design, variant, asset)
     kind = design["kind"]
     controlled = kind == "confinement"
     base = "c2_rigid_push.json" if controlled else "c2_none_collision.json"

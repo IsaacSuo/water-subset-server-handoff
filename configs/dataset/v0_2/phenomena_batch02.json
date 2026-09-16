@@ -1,0 +1,23 @@
+{
+  "batch_id": "phenomena_batch02",
+  "assets": {
+    "ball20": {"shape": "sphere", "radius_m": 0.1, "mass_kg": 1.0},
+    "tall_block": {"shape": "box", "size_m": [0.2, 0.2, 0.6], "mass_kg": 1.0},
+    "edge_block": {"shape": "box", "size_m": [0.25, 0.2, 0.2], "mass_kg": 1.0},
+    "elastic20": {"shape": "soft_box", "size_m": [0.2, 0.2, 0.2], "deformable_resolution": 10, "mass_kg": 8.0}
+  },
+  "designs": [
+    {"id": "P07", "kind": "falling", "title": "自由下落与落地响应", "question": "落高怎样影响首次撞击和回弹", "assets": ["ball20"],
+     "variants": [{"id": "low", "label": "底部落高 0.4 m", "height_m": 0.4}, {"id": "high", "label": "底部落高 0.8 m", "height_m": 0.8}]},
+    {"id": "P08", "kind": "balance", "title": "平衡受扰后的响应", "question": "同样有限推力，施力高度怎样改变滑移与倾转", "assets": ["tall_block"],
+     "variants": [{"id": "low", "label": "推板中心高 0.08 m", "push_height_m": 0.08}, {"id": "high", "label": "推板中心高 0.50 m", "push_height_m": 0.50}]},
+    {"id": "P09", "kind": "support_edge", "title": "越过支撑边缘", "question": "初始运动能否把物体带过固定支撑边缘", "assets": ["edge_block"],
+     "variants": [{"id": "slow", "label": "初速度 0.8 m/s", "speed_m_s": 0.8}, {"id": "fast", "label": "初速度 1.2 m/s", "speed_m_s": 1.2}]},
+    {"id": "P10", "kind": "collision_chain", "title": "多体碰撞传播", "question": "物体间距怎样改变碰撞传播的时序", "assets": ["ball20"],
+     "variants": [{"id": "close", "label": "表面间距 0.04 m", "gap_m": 0.04}, {"id": "apart", "label": "表面间距 0.24 m", "gap_m": 0.24}]},
+    {"id": "P11", "kind": "soft_confinement", "title": "受限变形与通过", "question": "有限推力下软块如何变形、通过或受阻", "assets": ["elastic20"],
+     "variants": [{"id": "wide", "label": "净宽 0.18 m / 块宽 0.20 m", "gap_m": 0.18}, {"id": "narrow", "label": "净宽 0.15 m / 块宽 0.20 m", "gap_m": 0.15}]},
+    {"id": "P12", "kind": "soft_impact", "title": "刚软撞击与卸载响应", "question": "撞击速度怎样改变局部形变和整体运动", "assets": ["elastic20"],
+     "variants": [{"id": "slow", "label": "刚球初速度 1.5 m/s", "speed_m_s": 1.5}, {"id": "fast", "label": "刚球初速度 3.0 m/s", "speed_m_s": 3.0}]}
+  ]
+}

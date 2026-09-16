@@ -315,7 +315,9 @@ def main():
                     body_states[oid] = causal_soft.capture(stage, actor, cache, output, step, dt, gravity,
                         body_states.get(actuator_id) if controllers else None,
                         resolved["bodies"][actuator_id]["geometry"] if controllers else None,
-                        numerics["contact_offset_m"])
+                        numerics["contact_offset_m"],
+                        {other: (state, resolved["bodies"][other]["geometry"])
+                         for other,state in body_states.items() if not actors[other].get("soft")})
             row = {"time_s": step * dt, "physics_step": step, "body_states": body_states}
             states.write(json.dumps(row, allow_nan=False) + "\n")
             if controllers:
@@ -369,7 +371,7 @@ def main():
                 "probe": "Public PhysxContactReportAPI enabled at rigid, soft root/collision and floor; explicit step callbacks",
                 "reason": "No reliable public flexible-side point impulse export; flexible reports are excluded from rigid contact supervision",
                 "rigid_point_count": contact_count, "substituted_soft_impulses": False,
-                "geometric_contact_source": "sampled collision-node signed distance to guided axis-aligned plate; derived, not solver report"}
+                "geometric_contact_source": "sampled collision-node signed distances to supported rigid boxes/spheres; derived, not solver reports"}
             write_json(output / "capability_probes/soft_contact_impulse.json", evidence)
         write_json(output / "native_report.json", {
             "status": "physics_completed", "runtime": "Isaac Sim 6.0.1 / PhysX 110.1.13",

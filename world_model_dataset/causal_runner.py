@@ -132,7 +132,7 @@ def package_physics(output):
         manifest["capabilities"]["soft_state"] = {"status": "native", "source": "native surface, simulation tet, collision nodes and nodal velocities in per-step hashed geometry records", "reason": None}
         manifest["capabilities"]["soft_material"] = {"status": "native", "source": "native_soft_material_readback.json sha256=" + file_hash(output / "native_soft_material_readback.json"), "reason": None}
         manifest["capabilities"]["soft_angular_velocity"] = {"status": "unavailable", "source": "volume deformable has nodal velocity, not a unique native angular velocity", "reason": "No fabricated rigid angular state for deformed bodies"}
-        manifest["capabilities"]["soft_geometric_contact"] = {"status": "derived", "source": "native collision-node signed distance to guided axis-aligned plate", "reason": None}
+        manifest["capabilities"]["soft_geometric_contact"] = {"status": "derived", "source": evidence.get("geometric_contact_source", "sampled collision-node distance to guided plate"), "reason": None}
     if manifest["control_program"]["primitive"] != "none":
         manifest["control_program"]["command_trace"] = artifact(output, "command_trace.jsonl", "declared command and active interval")
         for controller in manifest["control_program"]["controllers"]:

@@ -5,6 +5,31 @@ from world_model_dataset.phenomenon_batch import recipe
 
 
 class PhenomenonRecipeTests(unittest.TestCase):
+    def test_second_batch_preserves_causal_contract(self):
+        from world_model_dataset.causal_runner import ROOT
+        from world_model_dataset.io import read_json
+        spec = read_json(ROOT/"configs/dataset/v0_2/phenomena_batch02.json")
+        for design in spec["designs"]:
+            for variant in design["variants"]:
+                config, manifest = recipe(design,variant,spec["assets"][design["assets"][0]])
+                self.assertTrue(audit_causal_manifest(manifest)["accepted"],design["id"])
+                if design["kind"].startswith("soft_"):
+                    self.assertEqual(manifest["capabilities"]["soft_contact_impulse"]["status"],"unavailable")
+                    self.assertTrue(config["numerics"]["gpu_dynamics"])
+
+    def test_geometric_distances_are_derived_and_respect_rotation(self):
+        import numpy as np
+        from scipy.spatial.transform import Rotation
+        from world_model_dataset.causal_soft import sampled_rigid_contacts
+        state = {"position_m":[0,0,0],"orientation_xyzw":Rotation.from_euler("z",90,degrees=True).as_quat()}
+        shapes = {"wall":(state,{"shape":"box","size_m":[2,.2,1]}),
+                  "ball":(state,{"shape":"sphere","radius_m":.1})}
+        result = sampled_rigid_contacts(np.array([[0,.5,0]]),shapes,.002)
+        self.assertAlmostEqual(result["wall"]["sampled_penetration_m"],.1)
+        self.assertAlmostEqual(result["ball"]["minimum_node_gap_m"],.4)
+        self.assertEqual(result["wall"]["status"],"derived")
+        self.assertNotIn("impulse",result["wall"])
+
     def test_single_body_keeps_complete_participant_set(self):
         config, manifest = recipe({"kind": "sliding"}, {"friction": .15},
                                   {"shape": "box", "size_m": [.25,.2,.15], "mass_kg": 2})
