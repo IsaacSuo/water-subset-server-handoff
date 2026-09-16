@@ -11,6 +11,66 @@ from world_model_dataset.causal_finalize import finalize_none
 
 
 class CausalEpisodeTests(unittest.TestCase):
+    def test_small_variants_resolve_material_and_one_force_authority(self):
+        from world_model_dataset.causal_runner import load_config
+        base = load_config(ROOT / "configs/dataset/v0_2/c2_soft_compression.json")
+        stiffer = load_config(ROOT / "configs/dataset/v0_2/c2_soft_stiffer.json")
+        self.assertEqual(stiffer["physics_profiles"]["elastic_soft"]["youngs_modulus_pa"],100000)
+        self.assertEqual(base["physics_profiles"]["elastic_soft"]["youngs_modulus_pa"],30000)
+        with tempfile.TemporaryDirectory() as tmp:
+            manifest = prepare(ROOT / "configs/dataset/v0_2/c2_soft_force50.json",Path(tmp)/"force50")
+            self.assertEqual(manifest["control_program"]["controllers"][0]["max_force_n"],50)
+            self.assertTrue(all(c["limits"]["max_force_n"]==50 for c in manifest["control_program"]["commands"]))
+            self.assertEqual(manifest["counterfactual"]["baseline_episode_id"],"c2_soft_smoke02")
+
+    def test_soft_geometry_loader_and_finalizer_preserve_unavailable_impulse(self):
+        import json
+        import numpy as np
+        from world_model_dataset.causal_finalize import finalize_smoke
+        from world_model_dataset.probe_episode import artifact
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "c2_soft_loader_test"
+            manifest = prepare(ROOT / "configs/dataset/v0_2/c2_soft_compression.json", output)
+            initial = manifest["initial_state"]["body_states"]
+            write_json(output / "initial_state.json", {"time_s": 0, "body_states": initial})
+            write_json(output / "native_report.json", {"runtime": "synthetic soft loader/finalizer test"})
+            write_json(output / "native_soft_material_readback.json", {"source": "synthetic test, not physical evidence"})
+            write_json(output / "capability_probes/soft_contact_impulse.json", {"runtime": "synthetic test", "reason": "unavailable in this fixture"})
+            with (output / "soft.npz").open("xb") as stream:
+                np.savez_compressed(stream, surface_world_m=np.zeros((8,3)), time_s=0.0, physics_step=0)
+            metrics = {"height_m": .2, "axis_z_compression_fraction": 0, "minimum_j": 1,
+                "inverted_tets": 0, "nonrigid_rms_m": 0, "sampled_actuator_penetration_m": 0,
+                "geometric_contact": False, "volume_ratio": 1, "maximum_nodal_speed_m_s": 0}
+            bodies = {oid: dict(value, **({"mass_kg": 1} if oid != "floor" else {})) for oid,value in initial.items()}
+            bodies["soft"].update(metrics=metrics, geometry=artifact(output,"soft.npz","synthetic soft geometry"))
+            rows = {
+                "body_state_trace": {"time_s": 0, "physics_step": 0, "body_states": bodies},
+                "command_trace": dict(manifest["control_program"]["commands"][0], time_s=0),
+                "actuator_state_trace": {"time_s": 0, "controller_id": "plate_impedance"},
+                "actuator_effort_trace": {"time_s": 1/240, "controller_id": "plate_impedance",
+                    "command_active": True, "saturated": False, "applied_force_n": 0, "cumulative_work_j": 0},
+            }
+            for name,row in rows.items():
+                with (output / (name + ".jsonl")).open("x") as stream:
+                    stream.write(json.dumps(row) + "\n")
+            (output / "contacts.jsonl").touch()
+            package_physics(output)
+            episode = open_episode(output,False)
+            self.assertEqual(next(episode.soft_geometries("soft"))[1]["surface_world_m"].shape,(8,3))
+            with self.assertRaises(RuntimeError):
+                episode.capability("soft_contact_impulse")
+            with self.assertRaises(ValueError):
+                list(episode.soft_geometries("plate"))
+            write_json(output / "observations/index.json", {"render_backend": "synthetic test", "frames": [], "cameras": {}})
+            package_observations(output)
+            write_json(output / "human_review.json", {"physics_accepted": True, "observations_accepted": True,
+                                                      "scope": "synthetic unit test, not physical evidence"})
+            finalize_smoke(output)
+            completed = open_episode(output)
+            self.assertEqual(completed.outcomes()["soft_deformation"]["soft"]["minimum_j_all_steps"],1)
+            self.assertIn("unavailable",completed.outcomes()["soft_contact_impulse_supervision"])
+            self.assertEqual(completed.manifest["capabilities"]["soft_contact_impulse"]["status"],"unavailable")
+
     def test_push_preparation_and_controlled_stream_packaging(self):
         import json
         with tempfile.TemporaryDirectory() as tmp:

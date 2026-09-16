@@ -1,0 +1,49 @@
+{
+  "schema_version": "0.2.0-draft", "episode_id": "c2_soft_compression_draft01", "lifecycle": "draft",
+  "system": {
+    "bodies": [
+      {"instance_id": "plate", "role": "actuator", "physics_kind": "rigid", "geometry_id": "plate", "physics_profile_id": "actuator_1kg", "appearance_profile_id": "matte_orange", "physics_presence": "continuous", "collision_participation": "continuous", "render_presence": "continuous"},
+      {"instance_id": "soft", "role": "subject", "physics_kind": "volumetric", "geometry_id": "soft_box", "physics_profile_id": "elastic_soft", "appearance_profile_id": "matte_blue", "physics_presence": "continuous", "collision_participation": "continuous", "render_presence": "continuous"},
+      {"instance_id": "floor", "role": "environment", "physics_kind": "static", "geometry_id": "plane", "physics_profile_id": "fixture_reference", "appearance_profile_id": "matte_gray", "physics_presence": "continuous", "collision_participation": "continuous", "render_presence": "continuous"}
+    ], "fixed_connections": [],
+    "joints": [{"joint_id": "plate_slider", "kind": "prismatic", "body0_id": null, "body1_id": "plate", "axis": "Z", "lower_limit": -0.15, "upper_limit": 0.04}]
+  },
+  "environment": {"environment_id": "canonical_compression", "gravity_m_s2": [0.0, 0.0, -9.81], "environment_body_ids": ["floor"]},
+  "initial_state": {
+    "time_s": 0, "source": "fresh_simulation", "participant_ids": ["plate", "soft", "floor"],
+    "body_states": {
+      "plate": {"position_m": [0.0, 0.0, 0.26], "orientation_xyzw": [0,0,0,1], "linear_velocity_m_s": [0,0,0], "angular_velocity_rad_s": [0,0,0]},
+      "soft": {"position_m": [0.0, 0.0, 0.1], "orientation_xyzw": [0,0,0,1], "linear_velocity_m_s": [0,0,0], "angular_velocity_rad_s": [0,0,0]},
+      "floor": {"position_m": [0.0, 0.0, -0.025], "orientation_xyzw": [0,0,0,1], "linear_velocity_m_s": [0,0,0], "angular_velocity_rad_s": [0,0,0]}
+    }, "state": {"status": "pending", "path": null, "sha256": null, "bytes": null, "source": "native t0 capture", "reason": null}
+  },
+  "timing": {"physics_hz": 240, "capture_hz": 30, "duration_s": 5.0},
+  "control_program": {
+    "primitive": "impedance_control",
+    "controllers": [{"controller_id": "plate_impedance", "primitive": "impedance_control", "implementation": "dynamic_body_impedance", "actuator_instance_id": "plate", "max_force_n": 250.0, "max_torque_nm": null, "stiffness_n_m": 6000.0, "damping_n_s_m": 120.0, "reaction_observable": true,
+      "state_trace": {"status": "pending", "path": null, "sha256": null, "bytes": null, "source": "native actuator tensors", "reason": null},
+      "effort_trace": {"status": "pending", "path": null, "sha256": null, "bytes": null, "source": "bounded spring damper external force", "reason": null}}],
+    "commands": [
+      {"command_id": "initial_hold", "controller_id": "plate_impedance", "start_time_s": 0.0, "end_time_s": 1.0, "target": {"position_m": 0.26, "velocity_m_s": 0.0}, "limits": {"max_force_n": 250.0}},
+      {"command_id": "load", "controller_id": "plate_impedance", "start_time_s": 1.0, "end_time_s": 2.0, "target": {"trajectory": "smoothstep", "position_start_m": 0.26, "position_end_m": 0.16}, "limits": {"max_force_n": 250.0}},
+      {"command_id": "loaded_hold", "controller_id": "plate_impedance", "start_time_s": 2.0, "end_time_s": 2.75, "target": {"position_m": 0.16, "velocity_m_s": 0.0}, "limits": {"max_force_n": 250.0}},
+      {"command_id": "unload", "controller_id": "plate_impedance", "start_time_s": 2.75, "end_time_s": 3.75, "target": {"trajectory": "smoothstep", "position_start_m": 0.16, "position_end_m": 0.26}, "limits": {"max_force_n": 250.0}},
+      {"command_id": "final_hold", "controller_id": "plate_impedance", "start_time_s": 3.75, "end_time_s": 5.0, "target": {"position_m": 0.26, "velocity_m_s": 0.0}, "limits": {"max_force_n": 250.0}}
+    ], "command_trace": {"status": "pending", "path": null, "sha256": null, "bytes": null, "source": "declared control schedule", "reason": null}
+  },
+  "trajectory": {
+    "states": {"status": "pending", "path": null, "sha256": null, "bytes": null, "source": "native solver body and soft geometry state", "reason": null},
+    "contacts": {"status": "pending", "path": null, "sha256": null, "bytes": null, "source": "rigid-only native reports; flexible contact impulse unavailable", "reason": null},
+    "observations": {"status": "pending", "path": null, "sha256": null, "bytes": null, "source": "cache-only sensors", "reason": null},
+    "interaction_annotations": {"status": "pending", "path": null, "sha256": null, "bytes": null, "source": "explicitly derived geometric contact and deformation", "reason": null},
+    "outcomes": {"status": "pending", "path": null, "sha256": null, "bytes": null, "source": "derived deformation diagnostics", "reason": null}
+  },
+  "implementation": {"state_update_authority": "solver_only", "participant_set": "constant", "collision_participation": "constant", "render_presence": "constant", "post_t0_operations": [{"kind": "apply_force", "target": "plate", "time_s": 0, "reason": "finite impedance force on dynamic plate; target is reference only, not pose assignment"}]},
+  "lineage": {"derivation": "fresh_simulation", "parents": []},
+  "counterfactual": {"family_id": "c2_soft_compression", "baseline_episode_id": null, "changed_pointer": null},
+  "capabilities": {
+    "rigid_contact_impulse": {"status": "not_probed", "source": "rigid-only PhysX native reports", "reason": "runtime pending"},
+    "soft_contact_impulse": {"status": "unavailable", "source": "Isaac Sim 6.0.1 / PhysX 110.1.13 public contact API", "reason": "No reliable flexible-side point impulse export; no zero, empty substitute or estimated impulse"},
+    "actuator_applied_effort": {"status": "not_probed", "source": "bounded external-force input, not contact reaction measurement", "reason": "runtime pending"}
+  }
+}

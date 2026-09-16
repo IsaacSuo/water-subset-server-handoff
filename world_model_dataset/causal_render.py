@@ -34,6 +34,7 @@ def main():
         import omni.replicator.core as rep
         from PIL import Image
         from pxr import Gf, Sdf, UsdGeom, UsdLux, UsdShade, Semantics
+        from world_model_dataset.io import inside
 
         rep.orchestrator.set_capture_on_play(False)
         omni.usd.get_context().new_stage()
@@ -49,6 +50,7 @@ def main():
         key.AddRotateXYZOp().Set(Gf.Vec3f(-35, -25, -15))
         body_ids = {body["instance_id"]: index + 1 for index, body in enumerate(manifest["system"]["bodies"])}
         operations = {}
+        soft_meshes = {}
         for oid, definition in resolved["bodies"].items():
             geometry = definition["geometry"]
             if geometry["shape"] == "sphere":
@@ -57,6 +59,10 @@ def main():
             elif geometry["shape"] == "box":
                 shape = UsdGeom.Cube.Define(stage, "/World/" + oid)
                 shape.CreateSizeAttr(1.0)
+            elif geometry["shape"] == "soft_box":
+                shape = UsdGeom.Mesh.Define(stage, "/World/" + oid)
+                shape.CreateSubdivisionSchemeAttr(UsdGeom.Tokens.none)
+                soft_meshes[oid] = shape
             else:
                 raise ValueError(f"No renderer for {geometry['shape']}")
             translate = shape.AddTranslateOp()
@@ -109,6 +115,22 @@ def main():
                 raise ValueError("Physics and render participant sets differ")
             for oid, value in frame["body_states"].items():
                 translate, orient = operations[oid]
+                if oid in soft_meshes:
+                    record = value["geometry"]
+                    path = inside(output, record["path"])
+                    if file_hash(path) != record["sha256"] or path.stat().st_size != record["bytes"]:
+                        raise ValueError("Soft geometry changed before observation replay")
+                    with np.load(path, allow_pickle=False) as data:
+                        if float(data["time_s"]) != frame["time_s"] or int(data["physics_step"]) != frame["physics_step"]:
+                            raise ValueError("Soft and rigid replay time mismatch")
+                        mesh = soft_meshes[oid]
+                        mesh.CreatePointsAttr().Set([Gf.Vec3f(*map(float,p)) for p in data["surface_world_m"]])
+                        triangles = data["surface_triangles"]
+                        mesh.CreateFaceVertexCountsAttr().Set([3]*len(triangles))
+                        mesh.CreateFaceVertexIndicesAttr().Set(triangles.ravel().tolist())
+                    translate.Set(Gf.Vec3d(0.0))
+                    orient.Set(Gf.Quatf(1.0))
+                    continue
                 translate.Set(Gf.Vec3d(*value["position_m"]))
                 q = value["orientation_xyzw"]
                 orient.Set(Gf.Quatf(q[3], Gf.Vec3f(*q[:3])))
@@ -151,7 +173,7 @@ def main():
             "physics_rerun": False, "render_backend": "Isaac RTX RayTracedLighting",
             "depth_units": "metres along the OpenCV optical z axis", "segmentation": "stable body instance ID; zero is background",
             "source_state_sha256": file_hash(output / "body_state_trace.jsonl"),
-            "geometry_representation": "USD primitives tessellated by RTX; visible sphere triangles can differ from the exact PhysX sphere collider",
+            "geometry_representation": "Rigid USD primitives plus native deformed visual surface meshes; not exact analytical/cooked collider depth",
         })
         print("CAUSAL_OBSERVATIONS_COMPLETE", output, flush=True)
     except Exception as exc:

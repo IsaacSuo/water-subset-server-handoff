@@ -1,0 +1,10 @@
+{
+  "base_config": "configs/dataset/v0_2/c2_soft_compression.json",
+  "overrides": {
+    "controller_overrides": {"plate_impedance": {"max_force_n": 50.0}},
+    "counterfactual": {
+      "baseline_episode_id": "c2_soft_smoke02",
+      "changed_pointer": "/controller_overrides/plate_impedance/max_force_n"
+    }
+  }
+}

@@ -79,6 +79,25 @@ class CausalEpisode:
     def actuator_efforts(self, controller_id=None):
         return self.actuator_trace("effort_trace", controller_id)
 
+    def soft_geometries(self, instance_id):
+        import numpy as np
+        body = next((b for b in self.manifest["system"]["bodies"] if b["instance_id"] == instance_id), None)
+        if body is None or body["physics_kind"] != "volumetric":
+            raise ValueError("Expected a declared volumetric body")
+        for row in self.states():
+            path = self.record_path(row["body_states"][instance_id]["geometry"])
+            with np.load(path, allow_pickle=False) as data:
+                if float(data["time_s"]) != row["time_s"] or int(data["physics_step"]) != row["physics_step"]:
+                    raise ValueError("Soft geometry time metadata mismatch")
+                yield row, {key: data[key].copy() for key in data.files}
+
+    def soft_topology(self, instance_id):
+        first = next(self.states())
+        record = first["body_states"][instance_id].get("topology")
+        if record is None:
+            raise RuntimeError("This diagnostic cache has no hashed soft bind/topology record")
+        return read_json(self.record_path(record))
+
     def resolved_inputs(self):
         record = self.manifest["system"].get("resolved_inputs")
         if record is None:

@@ -1,0 +1,25 @@
+{
+  "prototype_id": "c2_soft_compression", "manifest_template": "configs/dataset/v0_2/examples/soft_compression_impedance.json",
+  "timing": {"physics_hz": 240, "capture_hz": 30, "duration_s": 5.0},
+  "numerics": {"backend": "PhysX", "gpu_dynamics": true, "solver": "TGS", "position_iterations": 16, "velocity_iterations": 4,
+    "deformable_position_iterations": 128, "external_forces_every_iteration": true,
+    "contact_offset_m": 0.002, "rest_offset_m": 0.0, "speculative_ccd": false},
+  "geometry_profiles": {
+    "plate": {"shape": "box", "size_m": [0.28, 0.28, 0.04]},
+    "soft_box": {"shape": "soft_box", "size_m": [0.2, 0.2, 0.2], "deformable_resolution": 10},
+    "plane": {"shape": "box", "size_m": [1.6, 1.6, 0.05]}
+  },
+  "physics_profiles": {
+    "actuator_1kg": {"mass_kg": 1.0, "static_friction": 0.4, "dynamic_friction": 0.3, "restitution": 0.0, "linear_damping": 0.0, "angular_damping": 0.0},
+    "elastic_soft": {"density_kg_m3": 1000.0, "static_friction": 0.4, "dynamic_friction": 0.3, "youngs_modulus_pa": 30000.0, "poissons_ratio": 0.35, "linear_damping": 0.1, "elasticity_damping": 0.005},
+    "fixture_reference": {"mass_kg": null, "static_friction": 0.4, "dynamic_friction": 0.3, "restitution": 0.0, "linear_damping": 0.0, "angular_damping": 0.0}
+  },
+  "appearance_profiles": {
+    "matte_orange": {"color": [0.95, 0.4, 0.08], "roughness": 0.5, "metallic": 0.0},
+    "matte_blue": {"color": [0.1, 0.45, 0.85], "roughness": 0.5, "metallic": 0.0},
+    "matte_gray": {"color": [0.35, 0.38, 0.42], "roughness": 0.7, "metallic": 0.0}
+  },
+  "initial_state_overrides": {},
+  "camera_set": {"id": "c2_compression_pair01", "resolution": [640, 480], "focal_length_mm": 35.0, "horizontal_aperture_mm": 36.0,
+    "cameras": [{"id": "front", "position_m": [0.65, -1.4, 0.8], "target_m": [0.0, 0.0, 0.14]}, {"id": "rear", "position_m": [-0.65, 1.4, 0.8], "target_m": [0.0, 0.0, 0.14]}]}
+}

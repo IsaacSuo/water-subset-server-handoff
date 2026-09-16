@@ -1,0 +1,10 @@
+{
+  "base_config": "configs/dataset/v0_2/c2_soft_compression.json",
+  "overrides": {
+    "physics_profiles": {"elastic_soft": {"youngs_modulus_pa": 100000.0}},
+    "counterfactual": {
+      "baseline_episode_id": "c2_soft_smoke02",
+      "changed_pointer": "/physics_profiles/elastic_soft/youngs_modulus_pa"
+    }
+  }
+}
