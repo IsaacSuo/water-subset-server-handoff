@@ -23,19 +23,19 @@
       "condition": "两个红薯形状与两个洋葱形状；初始排列整体向桌沿平移 7 cm，零初速度。原桌面和地面参与碰撞。",
       "outcome": "碰撞后洋葱滚出桌面，约 1.5 秒落到地面并继续滚动；其余三个留在桌上。",
       "limits": "PhysX / SDF256。真实扫描几何；实验质量和摩擦，未标定真实食品材料。",
-      "render": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/edge_replacement/desk_rearrangement_edge_v3"
+      "render": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/edge_replacement/desk_rearrangement_edge_v3",
+      "reuse_video": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/preview_delivery/clips/desk_rearrangement_edge_v3.mp4",
+      "reuse_video_sha256": "afffca624adcefb3f87f92c481e41828ae26d898691b5415a34a34cfc566177f"
     },
     {
-      "id": "chair_constraint_v1",
+      "id": "chair_orientation_comparison_v1",
       "group": 1,
-      "title": "原椅架下的受限运动",
-      "caption": "水壶初始动量遇到原低椅架",
-      "condition": "24 cm 水壶，0.55 kg，初速度 1.05 m/s；无持续驱动。",
-      "outcome": "与原椅架接触后略微转动并受阻，未穿过限制区。",
-      "limits": "PhysX / SDF256。保留原地面、椅架和其他全部导出场景几何；无运动学推板。",
-      "render": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/dynamic_preview/chair_constraint_v1",
-      "reuse_video": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/preview_delivery/clips/chair_constraint_v1.mp4",
-      "reuse_video_sha256": "a1a963af1acd3bde83b9171960e670a96e2631eed7319c1e876beaad6ef413d1"
+      "title": "原椅架下的姿态对比",
+      "caption": "同一水壶、同一初速：平放穿过，立放受阻",
+      "condition": "同一 22.5 cm 水壶，0.55 kg，向前初速度 2.2 m/s；只改变平放／立放姿态，均由原地面支承。",
+      "outcome": "上：平放穿过整段椅架；下：立放被入口低横杆挡住。相同机位与物理时刻同步展示。",
+      "limits": "PhysX / SDF256。两组保持相同网格、尺寸、质量、摩擦、起始水平位置与初速度；姿态造成支承高度不同。原场景全部导出几何参与碰撞；无持续驱动。平放厚约 13.7 cm、立放高约 17.3 cm，原通道最低净空约 14.5 cm。",
+      "render": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/chair_comparison_render"
     },
     {
       "id": "plastic_potato_v1",
@@ -57,7 +57,9 @@
       "condition": "64×43 cm 布；2925 个原生节点、5632 个三角面。无牵引或节点动画。",
       "outcome": "落到原桌面后铺展、形成褶皱并沿桌沿悬垂；新缓存明显减少持续跳动。",
       "limits": "PhysX 表面形变；原生拓扑与静止 UV、织物材质。原桌面及桌架碰撞。网格、求解频率、接触和阻尼共同调整，非单独分辨率对照；60 Hz 原缓存采样，无位移过滤或显示细分。",
-      "render": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/cloth_replacement/desk_cloth_dense_v1"
+      "render": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/cloth_replacement/desk_cloth_dense_v1",
+      "reuse_video": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/preview_delivery/clips/desk_cloth_dense_v1.mp4",
+      "reuse_video_sha256": "5083b699c5667d74e1a5ca359d9b68a5c486813a824ea60f0d8ca5e9bf74430d"
     },
     {
       "id": "rope_G01_v1",

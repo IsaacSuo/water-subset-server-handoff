@@ -46,10 +46,17 @@ def main():
         if abs(duration-expected)>.05:raise ValueError('Video timing mismatch')
         poster=out/'posters'/(shot['id']+'.jpg');im=Image.open(folder/frames[min(len(frames)-1,len(frames)//3)]['path']);im.convert('RGB').save(poster,quality=90)
         shutil.copyfile(folder/'replay.json',out/'evidence'/(shot['id']+'_replay.json'))
+        extra={}
+        if replay.get('kind')=='synchronized_comparison':
+            bundle=Path(replay['state_path'])
+            if file_hash(bundle)!=replay['state_sha256']:raise ValueError('Comparison sources changed')
+            target_bundle=out/'evidence'/(shot['id']+'_sources.json')
+            shutil.copyfile(bundle,target_bundle)
+            extra['comparison_sources']='evidence/'+target_bundle.name
         records.append(dict(shot,video='clips/'+target.name,poster='posters/'+poster.name,
             video_sha256=file_hash(target),duration_s=duration,overview_start_s=time,
             physical_duration_s=frames[-1]['time_s']-frames[0]['time_s'],rendered_frames=len(frames),
-            state_sha256=replay['state_sha256'],replay='evidence/'+shot['id']+'_replay.json'))
+            state_sha256=replay['state_sha256'],replay='evidence/'+shot['id']+'_replay.json',**extra))
         time+=duration
     concat=out/'evidence/concat.txt';concat.write_text(''.join("file '../"+r['video']+"'\n" for r in records))
     subprocess.run(['ffmpeg','-v','error','-f','concat','-safe','0','-i',str(concat),'-c','copy','-movflags','+faststart',str(out/'overview.mp4')],check=True)
@@ -66,9 +73,10 @@ def main():
         chunks.append(f'<h2 id="g{group}">{title}</h2><div class="grid">')
         for r in records:
             if r['group']!=group:continue
+            comparison_link=(' · <a href="'+r['comparison_sources']+'">两组对照来源</a>') if r.get('comparison_sources') else ''
             chunks.append(f'''<article><h3>{esc(r['title'])}</h3><video controls preload="none" poster="{r['poster']}" src="{r['video']}"></video>
 <p>{esc(r['condition'])}</p><p>观察：{esc(r['outcome'])}</p><button onclick="let v=document.getElementById('overview');v.currentTime={r['overview_start_s']};v.play();v.scrollIntoView()">总览中定位</button>
-<details><summary>物理与外观来源</summary><p>{esc(r['limits'])}</p><p>物理时长 {r['physical_duration_s']:.2f} 秒；{slow} 倍慢放；{r['rendered_frames']} 个缓存采样画面。</p><a href="{r['replay']}">缓存、原场景与外观对齐记录</a></details></article>''')
+<details><summary>物理与外观来源</summary><p>{esc(r['limits'])}</p><p>物理时长 {r['physical_duration_s']:.2f} 秒；{slow} 倍慢放；{r['rendered_frames']} 个缓存采样画面。</p><a href="{r['replay']}">缓存、原场景与外观对齐记录</a>{comparison_link}</details></article>''')
         chunks.append('</div>')
     chunks.append('<p>场景：Christophe Seux — Classroom。扫描资产：Poly Haven（CC0）；具体作者与文件哈希保存在资产包和回放记录。不同后端为独立实验；未做额外 split、模型训练或完整材料标定。</p></main></html>')
     (out/'index.html').write_text('\n'.join(chunks),encoding='utf-8')

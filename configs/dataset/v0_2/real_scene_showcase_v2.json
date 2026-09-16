@@ -150,30 +150,80 @@
       "revision": "User requested edge fall: translate entire initial arrangement +0.07 m in Y to preserve relative impact layout; no environment/material/velocity changes; observe 4.5 s."
     },
     {
-      "id": "chair_constraint_v1",
+      "id": "chair_pair_flat_v1",
       "group": 1,
-      "title": "原椅架约束：水壶的碰撞、转动与受阻",
+      "title": "原椅架姿态对比：flat",
       "phenomenon": "Finite initial momentum meets original low chair rails; observe rotation, obstruction or passage without prescribing the outcome.",
       "region": "G13",
-      "duration_s": 3.0,
+      "duration_s": 2.0,
       "camera": {
         "position_m": [
-          -0.55,
-          -1.68,
-          0.24
+          0.4,
+          -1.75,
+          0.32
         ],
         "target_m": [
-          -0.06,
-          -1.0,
-          0.13
+          0.4,
+          -1,
+          0.12
         ],
-        "ortho_scale_m": 0.85
+        "ortho_scale_m": 1.95
       },
       "bodies": [
         {
           "id": "jug",
           "asset": "ph_jug_01",
-          "size_m": 0.24,
+          "size_m": 0.225,
+          "rotation_deg": [
+            0,
+            0,
+            0
+          ],
+          "xy_m": [
+            -0.3,
+            -1.0
+          ],
+          "support_group": "room",
+          "ray_start_z_m": 0.1,
+          "velocity_m_s": [
+            2.2,
+            0,
+            0
+          ],
+          "mass_kg": 0.55,
+          "material": {
+            "static_friction": 0.25,
+            "dynamic_friction": 0.18
+          }
+        }
+      ],
+      "comparison": "Same scanned jug, scale, mass, material, start XY and initial linear velocity; orientation differs; height derived from ground support."
+    },
+    {
+      "id": "chair_pair_upright_v1",
+      "group": 1,
+      "title": "原椅架姿态对比：upright",
+      "phenomenon": "Finite initial momentum meets original low chair rails; observe rotation, obstruction or passage without prescribing the outcome.",
+      "region": "G13",
+      "duration_s": 2.0,
+      "camera": {
+        "position_m": [
+          0.4,
+          -1.75,
+          0.32
+        ],
+        "target_m": [
+          0.4,
+          -1,
+          0.12
+        ],
+        "ortho_scale_m": 1.95
+      },
+      "bodies": [
+        {
+          "id": "jug",
+          "asset": "ph_jug_01",
+          "size_m": 0.225,
           "rotation_deg": [
             90,
             0,
@@ -186,7 +236,7 @@
           "support_group": "room",
           "ray_start_z_m": 0.1,
           "velocity_m_s": [
-            1.05,
+            2.2,
             0,
             0
           ],
@@ -196,7 +246,8 @@
             "dynamic_friction": 0.18
           }
         }
-      ]
+      ],
+      "comparison": "Same scanned jug, scale, mass, material, start XY and initial linear velocity; orientation differs; height derived from ground support."
     }
   ]
 }

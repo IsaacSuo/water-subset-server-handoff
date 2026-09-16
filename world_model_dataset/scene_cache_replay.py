@@ -216,6 +216,7 @@ def main():
     original_objects=set(bpy.data.objects)
     for shot in plan['shots']:
         if a.ids and shot['id'] not in a.ids:continue
+        scene.render.resolution_x,scene.render.resolution_y=shot.get('resolution',plan.get('resolution',[640,400]))
         for obj in set(bpy.data.objects)-original_objects:bpy.data.objects.remove(obj,do_unlink=True)
         ep=Path(shot['episode']);kind=shot.get('kind','rigid')
         state_path=ep/('body_state_trace.jsonl' if kind=='rigid' else 'states.jsonl')

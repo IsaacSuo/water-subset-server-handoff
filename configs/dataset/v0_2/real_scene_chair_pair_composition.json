@@ -1,0 +1,29 @@
+{
+  "id": "chair_orientation_comparison_v1",
+  "panels": [
+    {
+      "label": "平放 · 穿过椅架",
+      "render": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/chair_pair_render/chair_pair_flat_v1"
+    },
+    {
+      "label": "立放 · 被横杆挡住",
+      "render": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/chair_pair_render/chair_pair_upright_v1"
+    }
+  ],
+  "comparison": {
+    "changed": "Initial orientation only; COM height follows floor support.",
+    "held_equal": [
+      "asset mesh",
+      "scale",
+      "mass",
+      "material",
+      "initial XY",
+      "initial velocity",
+      "original scene",
+      "camera",
+      "physical time"
+    ],
+    "audit": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/chair_pair_review.json",
+    "audit_sha256": "cc444893b1271a20d62e2b3dbfea2c61051831162fd83119f1d16304725c9f4f"
+  }
+}
