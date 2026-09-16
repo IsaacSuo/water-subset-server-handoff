@@ -1,0 +1,22 @@
+{
+  "batch_id": "phenomena_batch01",
+  "assets": {
+    "block20": {"shape": "box", "size_m": [0.2, 0.2, 0.2], "mass_kg": 1.0},
+    "ball20": {"shape": "sphere", "radius_m": 0.1, "mass_kg": 1.0},
+    "block30": {"shape": "box", "size_m": [0.3, 0.3, 0.3], "mass_kg": 0.5}
+  },
+  "designs": [
+    {"id": "P01", "title": "滑动与摩擦减速", "question": "摩擦改变多久停止、停在哪里", "kind": "sliding", "assets": ["block20"],
+     "variants": [{"id": "low", "label": "动摩擦 0.15", "friction": 0.15}, {"id": "high", "label": "动摩擦 0.35", "friction": 0.35}]},
+    {"id": "P02", "title": "滚滑转换", "question": "接触点的滑移如何消失", "kind": "rolling", "assets": ["ball20"],
+     "variants": [{"id": "slip", "label": "初始自转为零", "rolling_ratio": 0.0}, {"id": "roll", "label": "初始速度匹配纯滚动", "rolling_ratio": 1.0}]},
+    {"id": "P03", "title": "碰撞中的运动传递", "question": "目标质量怎样改变碰后的运动", "kind": "collision",
+     "variants": [{"id": "equal", "label": "目标质量 1 kg", "existing_episode": "output/world_model_dataset/v0_2/c2_none_smoke02"}, {"id": "heavy", "label": "目标质量 3 kg", "existing_episode": "output/world_model_dataset/v0_2/c2_collision_target3kg_01"}]},
+    {"id": "P04", "title": "持续接触下的运动传递", "question": "相同速度命令，推力不足时会怎样", "kind": "pushing",
+     "variants": [{"id": "strong", "label": "推力上限 8 N", "existing_episode": "output/world_model_dataset/v0_2/c2_push_smoke01"}, {"id": "weak", "label": "推力上限 1 N", "existing_episode": "output/world_model_dataset/v0_2/c2_push_force1_01"}]},
+    {"id": "P05", "title": "几何约束下的运动", "question": "同一有限推力下，通过还是受阻", "kind": "confinement", "assets": ["block30"],
+     "variants": [{"id": "wide", "label": "口宽 / 物体宽度 = 1.2", "gap_ratio": 1.2}, {"id": "narrow", "label": "口宽 / 物体宽度 = 0.8", "gap_ratio": 0.8}]},
+    {"id": "P06", "title": "压缩与卸载响应", "question": "相同有限阻抗下，刚度怎样影响压缩与恢复", "kind": "compression",
+     "variants": [{"id": "soft", "label": "弹性模量 30 kPa", "existing_episode": "output/world_model_dataset/v0_2/c2_soft_smoke02"}, {"id": "stiff", "label": "弹性模量 100 kPa", "existing_episode": "output/world_model_dataset/v0_2/c2_soft_stiffer01"}]}
+  ]
+}
