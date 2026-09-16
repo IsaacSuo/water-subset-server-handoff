@@ -125,7 +125,13 @@ def main():
                 elif geometry["collision_approximation"] == "sdf":
                     if not numerics["gpu_dynamics"]:
                         raise ValueError("Dynamic SDF mesh requires GPU dynamics; do not silently fall back to convex hull")
-                    PhysxSchema.PhysxSDFMeshCollisionAPI.Apply(prim).CreateSdfResolutionAttr(geometry["sdf_resolution"])
+                    sdf = PhysxSchema.PhysxSDFMeshCollisionAPI.Apply(prim)
+                    sdf.CreateSdfResolutionAttr(geometry["sdf_resolution"])
+                    # Optional source-recipe settings: old episodes retain their defaults.
+                    if "sdf_subgrid_resolution" in geometry:
+                        sdf.CreateSdfSubgridResolutionAttr(geometry["sdf_subgrid_resolution"])
+                        sdf.CreateSdfBitsPerSubgridPixelAttr(geometry["sdf_bits_per_subgrid_pixel"])
+                        sdf.CreateSdfTriangleCountReductionFactorAttr(geometry["sdf_triangle_count_reduction_factor"])
             collision_api = PhysxSchema.PhysxCollisionAPI.Apply(prim)
             collision_api.CreateContactOffsetAttr(numerics["contact_offset_m"])
             collision_api.CreateRestOffsetAttr(numerics["rest_offset_m"])
@@ -269,7 +275,8 @@ def main():
             actor["tensor_view"] = view
             readback[oid] = {"velocity_m_s_rad_s": view.get_velocities()[0].tolist(),
                              "mass_kg": float(np.asarray(view.get_masses()).ravel()[0]),
-                             "inertia_tensor_kg_m2": view.get_inertias()[0].tolist()}
+                             "inertia_tensor_kg_m2": view.get_inertias()[0].tolist(),
+                             "com_pose_body_xyz_xyzw": view.get_coms()[0].tolist()}
         write_json(output / "native_initialization_readback.json", {
             "phase": "pre_t0_native_initialization", "source": "PhysX rigid-body tensor API",
             "bodies": readback,
