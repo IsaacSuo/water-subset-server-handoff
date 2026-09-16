@@ -1,0 +1,7 @@
+{
+  "base_config": "configs/dataset/v0_2/c2_rigid_push.json",
+  "overrides": {
+    "controller_overrides": {"pusher_velocity_effort": {"max_force_n": 1.0}},
+    "counterfactual": {"baseline_episode_id": "c2_push_smoke01", "changed_pointer": "/controller_overrides/pusher_velocity_effort/max_force_n"}
+  }
+}

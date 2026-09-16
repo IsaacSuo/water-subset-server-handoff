@@ -1,0 +1,7 @@
+{
+  "base_config": "configs/dataset/v0_2/c2_none_collision.json",
+  "overrides": {
+    "initial_state_overrides": {"left": {"linear_velocity_m_s": [1.25, 0.0, 0.0]}},
+    "counterfactual": {"baseline_episode_id": "c2_none_smoke02", "changed_pointer": "/initial_state/body_states/left/linear_velocity_m_s/0"}
+  }
+}

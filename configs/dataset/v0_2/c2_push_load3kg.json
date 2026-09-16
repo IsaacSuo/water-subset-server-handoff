@@ -1,0 +1,7 @@
+{
+  "base_config": "configs/dataset/v0_2/c2_rigid_push.json",
+  "overrides": {
+    "physics_profiles": {"rigid_light": {"mass_kg": 3.0}},
+    "counterfactual": {"baseline_episode_id": "c2_push_smoke01", "changed_pointer": "/physics_profiles/rigid_light/mass_kg"}
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "base_config": "configs/dataset/v0_2/c2_none_collision.json",
+  "overrides": {
+    "physics_profiles": {
+      "rigid_target_3kg": {"mass_kg": 3.0, "static_friction": 0.3, "dynamic_friction": 0.2, "restitution": 0.4, "linear_damping": 0.0, "angular_damping": 0.0}
+    },
+    "body_profile_overrides": {"right": {"physics_profile_id": "rigid_target_3kg"}},
+    "counterfactual": {"baseline_episode_id": "c2_none_smoke02", "changed_pointer": "/resolved_inputs/bodies/right/physics/mass_kg"}
+  }
+}
