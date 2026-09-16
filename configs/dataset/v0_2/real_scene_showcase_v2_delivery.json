@@ -1,0 +1,67 @@
+{
+  "title": "真实场景物理现象 · 第一批",
+  "scope": "6 段新物理短片，按四类研究过程组织。原 Classroom 几何与材质；原灯光。排除黏弹性、流体、损伤及分离。 960×600 场景画面，2 倍慢放。",
+  "slowdown": 2,
+  "shots": [
+    {
+      "id": "desk_roll_slide_v2",
+      "group": 1,
+      "title": "滚动与滑动",
+      "caption": "洋葱带初始旋转；扳手仅初始平移",
+      "condition": "洋葱 10.5 cm，0.65 m/s、12 rad/s；扳手 20 cm，0.85 m/s。原教师桌连续支承。",
+      "outcome": "洋葱滚转后稳定，扳手滑移减速。",
+      "limits": "PhysX / SDF256。两种初态并列展示，不是只改变形状的严格对照；扫描资产保留原 glTF 贴图。",
+      "render": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/final_render/desk_roll_slide_v2"
+    },
+    {
+      "id": "desk_rearrangement_v1",
+      "group": 1,
+      "title": "多体重排与稳定",
+      "caption": "四个不规则物体从分层初态自然释放",
+      "condition": "两个红薯形状与两个洋葱形状；零初速度，原教师桌面与完整教室几何参与碰撞。",
+      "outcome": "相继发生物体间碰撞，接触排列改变，最终在桌面分散稳定。",
+      "limits": "PhysX / SDF256。真实扫描几何；实验质量和摩擦，未标定真实食品材料。",
+      "render": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/final_render/desk_rearrangement_v1"
+    },
+    {
+      "id": "chair_constraint_v1",
+      "group": 1,
+      "title": "原椅架下的受限运动",
+      "caption": "水壶初始动量遇到原低椅架",
+      "condition": "24 cm 水壶，0.55 kg，初速度 1.05 m/s；无持续驱动。",
+      "outcome": "与原椅架接触后略微转动并受阻，未穿过限制区。",
+      "limits": "PhysX / SDF256。保留原地面、椅架和其他全部导出场景几何；无运动学推板。",
+      "render": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/final_render/chair_constraint_v1"
+    },
+    {
+      "id": "plastic_potato_v1",
+      "group": 2,
+      "title": "冲击形变与塑性材料响应",
+      "caption": "扫描形状的弹塑性试件落到原桌面",
+      "condition": "18 cm 红薯扫描形状；初始最低点距桌面 12 cm；Newton 隐式 MPM，非食材实测参数。",
+      "outcome": "冲击后明显压扁，原生塑性体积历史发生变化，随后在重力支承下稳定。",
+      "limits": "2,000 Pa 屈服应力，100 kPa 弹性模量。原贴图表面通过材料点邻域派生回放，不是原生 MPM 表面；支承下残余形状不等于完全卸载塑性应变。",
+      "render": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/final_render/plastic_potato_v1"
+    },
+    {
+      "id": "desk_cloth_v1",
+      "group": 3,
+      "title": "桌沿铺展与悬垂",
+      "caption": "布料自然落下，接触原桌面和桌架",
+      "condition": "64×43 cm 布；221 个原生节点、384 个三角面。无牵引或节点动画。",
+      "outcome": "落到桌面后产生褶皱，越过桌沿的部分下垂并继续调整。",
+      "limits": "PhysX 表面形变；原生拓扑与静止 UV、织物材质。仅相关原教师桌碰撞网格；周围未参与碰撞的结构已检查净空。",
+      "render": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/final_render/desk_cloth_v1"
+    },
+    {
+      "id": "rope_G01_v1",
+      "group": 4,
+      "title": "绕杆接触与稳定",
+      "caption": "自由绳搭在原横管上，两端无固定约束",
+      "condition": "绳径 6 mm，47 个原生段；两端不等长。原三管束、梁及邻接结构参与碰撞。",
+      "outcome": "重力下轻微调整后稳定；最大站点位移约 2.6 cm，没有滑脱或打结。",
+      "limits": "Newton VBD；原生胶囊半径与段位姿，未加粗或平滑改形。显示网格是胶囊三角化，不是原生材料表面；接触力 unavailable。",
+      "render": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/final_render/rope_G01_v1"
+    }
+  ]
+}

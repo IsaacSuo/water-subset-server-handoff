@@ -1,0 +1,153 @@
+{
+  "scene_manifest": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/scene.json",
+  "resolution": [
+    960,
+    600
+  ],
+  "samples": 16,
+  "fps": 30,
+  "shots": [
+    {
+      "id": "desk_roll_slide_v2",
+      "episode": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/episodes/desk_roll_slide_v2",
+      "camera": {
+        "position_m": [
+          2.0,
+          0.55,
+          1.6
+        ],
+        "target_m": [
+          2.6,
+          1.53,
+          0.84
+        ],
+        "ortho_scale_m": 0.95
+      },
+      "output": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/final_render/desk_roll_slide_v2"
+    },
+    {
+      "id": "desk_rearrangement_v1",
+      "episode": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/episodes/desk_rearrangement_v1",
+      "camera": {
+        "position_m": [
+          2.0,
+          0.55,
+          1.6
+        ],
+        "target_m": [
+          2.65,
+          1.54,
+          1.0
+        ],
+        "ortho_scale_m": 1.15
+      },
+      "output": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/final_render/desk_rearrangement_v1"
+    },
+    {
+      "id": "chair_constraint_v1",
+      "episode": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/episodes/chair_constraint_v1",
+      "camera": {
+        "position_m": [
+          -0.55,
+          -1.68,
+          0.24
+        ],
+        "target_m": [
+          -0.06,
+          -1.0,
+          0.13
+        ],
+        "ortho_scale_m": 0.85
+      },
+      "output": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/final_render/chair_constraint_v1"
+    },
+    {
+      "id": "plastic_potato_v1",
+      "kind": "plastic",
+      "episode": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/material_runs/plastic_potato_v1/episode",
+      "appearance": {
+        "asset_package": "/home/fangsuo/isaacsim_work_flexible_explore/output/physical_assets/library_web_20260917_v2/ph_sweet_potato",
+        "size_m": 0.18,
+        "position_m": [
+          2.65,
+          1.52,
+          0.9914578335665817
+        ],
+        "rotation_xyzw": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "mapping": "derived material-point deformation of source appearance; not native surface topology",
+        "source_local_mesh": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/material_requests/potato_normalized.npz"
+      },
+      "camera": {
+        "position_m": [
+          2.0,
+          0.65,
+          1.42
+        ],
+        "target_m": [
+          2.65,
+          1.52,
+          0.95
+        ],
+        "ortho_scale_m": 0.65
+      },
+      "output": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/final_render/plastic_potato_v1",
+      "key_times_s": [
+        0,
+        0.17,
+        0.3,
+        1.2
+      ]
+    },
+    {
+      "id": "desk_cloth_v1",
+      "kind": "cloth",
+      "episode": "/home/fangsuo/isaacsim_work_material_response/output/scene_material/classroom_cloth_v1/episode",
+      "camera": {
+        "position_m": [
+          3.12,
+          0.8,
+          1.38
+        ],
+        "target_m": [
+          2.84,
+          1.52,
+          0.84
+        ],
+        "ortho_scale_m": 1.1
+      },
+      "output": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/final_render/desk_cloth_v1"
+    },
+    {
+      "id": "rope_G01_v1",
+      "kind": "rope",
+      "episode": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/material_runs/rope_G01_v1/episode",
+      "camera": {
+        "position_m": [
+          -2.085,
+          -0.833974596,
+          2.65
+        ],
+        "target_m": [
+          -1.585,
+          -1.7,
+          2.6
+        ],
+        "projection": "PERSP",
+        "focal_length_mm": 32.0
+      },
+      "output": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/final_render/rope_G01_v1",
+      "key_times_s": [
+        0,
+        0.3,
+        1.0,
+        3.0
+      ]
+    }
+  ],
+  "device": "CUDA"
+}

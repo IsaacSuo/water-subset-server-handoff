@@ -1,0 +1,200 @@
+{
+  "scene_id": "classroom_original",
+  "scene_export": "output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/scene.json",
+  "exploration_root": "/home/fangsuo/isaacsim_work_flexible_explore",
+  "library": "output/physical_assets/library_web_20260917_v2",
+  "scope": "Original scene, real asset appearance, fresh passive physics; development showcase, no training admission or measured material claims.",
+  "shots": [
+    {
+      "id": "desk_roll_slide_v2",
+      "group": 1,
+      "title": "滚动与滑动：不同接触形状的减速",
+      "phenomenon": "Rounded object with initial spin and translation versus a translating flat tool: separate motion examples, not a controlled shape-only comparison.",
+      "region": "N01_R0",
+      "duration_s": 2.5,
+      "camera": {
+        "position_m": [
+          2.0,
+          0.55,
+          1.6
+        ],
+        "target_m": [
+          2.6,
+          1.53,
+          0.84
+        ],
+        "ortho_scale_m": 0.95
+      },
+      "bodies": [
+        {
+          "id": "onion",
+          "asset": "ph_yellow_onion",
+          "size_m": 0.105,
+          "xy_m": [
+            2.35,
+            1.64
+          ],
+          "velocity_m_s": [
+            0.65,
+            0,
+            0
+          ],
+          "material": {
+            "static_friction": 0.35,
+            "dynamic_friction": 0.25
+          },
+          "angular_velocity_rad_s": [
+            0,
+            12,
+            0
+          ]
+        },
+        {
+          "id": "wrench",
+          "asset": "ph_combination_wrench",
+          "size_m": 0.2,
+          "rotation_deg": [
+            90,
+            0,
+            90
+          ],
+          "xy_m": [
+            2.38,
+            1.4
+          ],
+          "velocity_m_s": [
+            0.85,
+            0,
+            0
+          ],
+          "density_kg_m3": 7800,
+          "material": {
+            "static_friction": 0.35,
+            "dynamic_friction": 0.25
+          }
+        }
+      ]
+    },
+    {
+      "id": "desk_rearrangement_v1",
+      "group": 1,
+      "title": "多体重排：不规则物体堆叠后的稳定过程",
+      "phenomenon": "A separated, vertically layered initial arrangement collapses under gravity, exchanges contacts and settles on the original desk.",
+      "region": "N01_R0",
+      "duration_s": 3.0,
+      "camera": {
+        "position_m": [
+          2.0,
+          0.55,
+          1.6
+        ],
+        "target_m": [
+          2.65,
+          1.54,
+          1.0
+        ],
+        "ortho_scale_m": 1.15
+      },
+      "bodies": [
+        {
+          "id": "potato_a",
+          "asset": "ph_sweet_potato",
+          "size_m": 0.19,
+          "rotation_deg": [
+            0,
+            0,
+            70
+          ],
+          "xy_m": [
+            2.57,
+            1.5
+          ]
+        },
+        {
+          "id": "potato_b",
+          "asset": "ph_sweet_potato",
+          "size_m": 0.17,
+          "rotation_deg": [
+            0,
+            0,
+            -25
+          ],
+          "xy_m": [
+            2.68,
+            1.53
+          ],
+          "clearance_m": 0.16
+        },
+        {
+          "id": "onion_a",
+          "asset": "ph_yellow_onion",
+          "size_m": 0.1,
+          "xy_m": [
+            2.59,
+            1.48
+          ],
+          "clearance_m": 0.29
+        },
+        {
+          "id": "onion_b",
+          "asset": "ph_yellow_onion",
+          "size_m": 0.09,
+          "xy_m": [
+            2.68,
+            1.57
+          ],
+          "clearance_m": 0.4
+        }
+      ]
+    },
+    {
+      "id": "chair_constraint_v1",
+      "group": 1,
+      "title": "原椅架约束：水壶的碰撞、转动与受阻",
+      "phenomenon": "Finite initial momentum meets original low chair rails; observe rotation, obstruction or passage without prescribing the outcome.",
+      "region": "G13",
+      "duration_s": 3.0,
+      "camera": {
+        "position_m": [
+          -0.55,
+          -1.68,
+          0.24
+        ],
+        "target_m": [
+          -0.06,
+          -1.0,
+          0.13
+        ],
+        "ortho_scale_m": 0.85
+      },
+      "bodies": [
+        {
+          "id": "jug",
+          "asset": "ph_jug_01",
+          "size_m": 0.24,
+          "rotation_deg": [
+            90,
+            0,
+            0
+          ],
+          "xy_m": [
+            -0.3,
+            -1.0
+          ],
+          "support_group": "room",
+          "ray_start_z_m": 0.1,
+          "velocity_m_s": [
+            1.05,
+            0,
+            0
+          ],
+          "mass_kg": 0.55,
+          "material": {
+            "static_friction": 0.25,
+            "dynamic_friction": 0.18
+          }
+        }
+      ]
+    }
+  ]
+}
