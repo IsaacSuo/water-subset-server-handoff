@@ -13,7 +13,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from world_model_dataset.controllers import bounded_linear_impedance, bounded_velocity_effort, signed_work_increment
+from world_model_dataset.controllers import (bounded_angular_impedance, bounded_angular_velocity_effort,
+                                             bounded_linear_impedance, bounded_velocity_effort, signed_work_increment)
 from world_model_dataset.io import read_json, write_json
 from world_model_dataset.probe_episode import package_probe_episode
 
@@ -50,9 +51,15 @@ def main():
         timing = config["timing"]
         controller = config["controller"]
         law = controller.get("law", "velocity_effort")
-        if law not in ("velocity_effort", "linear_impedance"):
+        if law not in ("velocity_effort", "linear_impedance", "angular_velocity_effort", "angular_impedance"):
             raise ValueError(f"Unsupported controller law: {law}")
         actuator = config["actuator"]
+        rotary = actuator.get("joint_kind") == "revolute"
+        if rotary != law.startswith("angular_") or (rotary and not args.scenario):
+            raise ValueError("Angular control requires an independent revolute scenario")
+        effort_key = "applied_torque_nm" if rotary else "applied_force_n"
+        limit = controller["max_torque_nm" if rotary else "max_force_n"]
+        controller_id = "rotor_" + law if rotary else "pusher_velocity_effort"
         load = config["load"]
         hz = timing["physics_hz"]
         dt = 1.0 / hz
@@ -124,7 +131,7 @@ def main():
             y = scenario["lane_y_m"]
             root = f"/World/{sid}"
             UsdGeom.Xform.Define(stage, root)
-            initial = [actuator["initial_x_m"], y, 0.18]
+            initial = [actuator["initial_x_m"], y, actuator.get("height_m", 0.18)]
             anchor = UsdGeom.Xform.Define(stage, root + "/anchor")
             anchor.AddTranslateOp().Set(Gf.Vec3d(*initial))
             anchor_body = UsdPhysics.RigidBodyAPI.Apply(anchor.GetPrim())
@@ -136,21 +143,22 @@ def main():
                 root + "/pusher", initial, actuator["size_m"], [.95, .45, .10],
                 actuator["mass_kg"], disable_gravity=True,
             )
-            joint = UsdPhysics.PrismaticJoint.Define(stage, root + "/slider")
+            joint_type = UsdPhysics.RevoluteJoint if rotary else UsdPhysics.PrismaticJoint
+            joint = joint_type.Define(stage, root + ("/hinge" if rotary else "/slider"))
             joint.CreateBody0Rel().SetTargets([Sdf.Path(root + "/anchor")])
             joint.CreateBody1Rel().SetTargets([Sdf.Path(root + "/pusher")])
-            joint.CreateAxisAttr("X")
+            joint.CreateAxisAttr("Z" if rotary else "X")
             joint.CreateLocalPos0Attr().Set(Gf.Vec3f(0.0))
             joint.CreateLocalRot0Attr().Set(Gf.Quatf(1.0, 0.0, 0.0, 0.0))
             joint.CreateLocalPos1Attr().Set(Gf.Vec3f(0.0))
             joint.CreateLocalRot1Attr().Set(Gf.Quatf(1.0, 0.0, 0.0, 0.0))
-            joint.CreateLowerLimitAttr(0.0)
-            joint.CreateUpperLimitAttr(actuator["travel_limit_m"])
+            joint.CreateLowerLimitAttr(math.degrees(actuator["lower_limit_rad"]) if rotary else 0.0)
+            joint.CreateUpperLimitAttr(math.degrees(actuator["upper_limit_rad"]) if rotary else actuator["travel_limit_m"])
 
             force_api = PhysxSchema.PhysxForceAPI.Apply(pusher.GetPrim())
             force_attr = force_api.CreateForceAttr()
             force_attr.Set(Gf.Vec3f(0.0))
-            force_api.CreateTorqueAttr(Gf.Vec3f(0.0))
+            torque_attr = force_api.CreateTorqueAttr(Gf.Vec3f(0.0))
             force_api.CreateModeAttr("force")
             force_api.CreateForceEnabledAttr(True)
             force_api.CreateWorldFrameEnabledAttr(True)
@@ -158,21 +166,30 @@ def main():
             load_path = None
             if scenario["load"]:
                 load_path = root + "/load"
-                cube(load_path, [load["initial_x_m"], y, load["size_m"] / 2],
-                     [load["size_m"]] * 3, [.20, .55, .90], load["mass_kg"])
+                load_position = list(load["position_m"]) if rotary else [load["initial_x_m"], y, load["size_m"] / 2]
+                if rotary:
+                    load_position[1] += y
+                cube(load_path, load_position, [load["size_m"]] * 3,
+                     [.20, .55, .90], load["mass_kg"], disable_gravity=rotary)
             if scenario["blocking_wall"]:
-                wall_left = load["initial_x_m"] + load["size_m"] / 2
-                cube(root + "/wall", [wall_left + 0.05, y, 0.3], [0.1, 0.6, 0.6], [.45, .47, .50])
+                if rotary:
+                    wall_position = list(config["wall"]["position_m"])
+                    wall_position[1] += y
+                    cube(root + "/wall", wall_position, config["wall"]["size_m"], [.45, .47, .50])
+                else:
+                    wall_left = load["initial_x_m"] + load["size_m"] / 2
+                    cube(root + "/wall", [wall_left + 0.05, y, 0.3], [0.1, 0.6, 0.6], [.45, .47, .50])
 
             lanes[sid] = {
                 "scenario": scenario,
                 "pusher": pusher,
                 "body": pusher_body,
                 "force_attr": force_attr,
+                "torque_attr": torque_attr,
                 "pusher_path": root + "/pusher",
                 "load_path": load_path,
                 "initial_x_m": actuator["initial_x_m"],
-                "previous_x_m": actuator["initial_x_m"],
+                "previous_x_m": 0.0 if rotary else actuator["initial_x_m"],
                 "work_j": 0.0,
                 "peak_speed_m_s": 0.0,
                 "peak_applied_force_n": 0.0,
@@ -251,46 +268,72 @@ def main():
         for sid in lanes:
             command_stream.write(json.dumps({
                 "scenario_id": sid,
-                "controller_id": "pusher_velocity_effort",
+                "controller_id": controller_id,
                 "start_time_s": controller["start_time_s"],
                 "end_time_s": controller["end_time_s"],
-                "target_velocity_m_s": controller["target_velocity_m_s"],
-                "max_force_n": controller["max_force_n"],
+                ("target_angular_velocity_rad_s" if rotary else "target_velocity_m_s"):
+                    controller["target_angular_velocity_rad_s" if rotary else "target_velocity_m_s"],
+                ("max_torque_nm" if rotary else "max_force_n"): limit,
                 "law": law,
                 "parameters": {key: value for key, value in controller.items()
                                if key not in ("start_time_s", "end_time_s")},
             }, allow_nan=False) + "\n")
 
         start = time.monotonic()
+
+        def motion(lane, cache):
+            matrix = cache.GetLocalToWorldTransform(lane["pusher"].GetPrim())
+            if not rotary:
+                return float(matrix.ExtractTranslation()[0]), float(lane["body"].GetVelocityAttr().Get()[0])
+            quat = Gf.Transform(matrix).GetRotation().GetQuat()
+            qx, qy, qz = quat.GetImaginary()
+            qw = quat.GetReal()
+            angle = math.atan2(2 * (qw * qz + qx * qy), 1 - 2 * (qy * qy + qz * qz))
+            previous = lane["previous_x_m"]
+            unwrapped = previous + math.atan2(math.sin(angle - previous), math.cos(angle - previous))
+            return unwrapped, math.radians(float(lane["body"].GetAngularVelocityAttr().Get()[2]))
+
         for step in range(steps):
             t = step * dt
             command_active = controller["start_time_s"] <= t < controller["end_time_s"]
             decisions = {}
             pre_step_cache = UsdGeom.XformCache(Usd.TimeCode.Default())
             for sid, lane in lanes.items():
-                measured_vx = float(lane["body"].GetVelocityAttr().Get()[0])
-                measured_x = float(pre_step_cache.GetLocalToWorldTransform(lane["pusher"].GetPrim()).ExtractTranslation()[0])
+                measured_x, measured_vx = motion(lane, pre_step_cache)
                 if command_active:
                     if law == "velocity_effort":
                         decision = bounded_velocity_effort(
                             controller["target_velocity_m_s"], measured_vx,
                             controller["velocity_gain_n_s_m"], controller["max_force_n"],
                         )
-                    else:
+                    elif law == "linear_impedance":
                         decision = bounded_linear_impedance(
                             lane["initial_x_m"] + controller["target_offset_m"], 0.0,
                             measured_x, measured_vx, controller["stiffness_n_m"],
                             controller["damping_n_s_m"], controller["max_force_n"],
                         )
+                    elif law == "angular_velocity_effort":
+                        decision = bounded_angular_velocity_effort(
+                            controller["target_angular_velocity_rad_s"], measured_vx,
+                            controller["velocity_gain_nm_s_rad"], limit)
+                    else:
+                        decision = bounded_angular_impedance(
+                            controller["target_angle_rad"], controller["target_angular_velocity_rad_s"],
+                            measured_x, measured_vx, controller["stiffness_nm_rad"],
+                            controller["damping_nm_s_rad"], limit)
                     lane["command_steps"] += 1
                     lane["saturated_steps"] += int(decision["saturated"])
                     if t >= controller["end_time_s"] - 0.25 * (controller["end_time_s"] - controller["start_time_s"]):
                         lane["terminal_command_steps"] += 1
                         lane["terminal_saturated_steps"] += int(decision["saturated"])
                 else:
-                    decision = {"requested_force_n": 0.0, "applied_force_n": 0.0, "saturated": False}
-                lane["force_attr"].Set(Gf.Vec3f(decision["applied_force_n"], 0.0, 0.0))
-                lane["peak_applied_force_n"] = max(lane["peak_applied_force_n"], abs(decision["applied_force_n"]))
+                    decision = {("requested_torque_nm" if rotary else "requested_force_n"): 0.0,
+                                effort_key: 0.0, "saturated": False}
+                if rotary:
+                    lane["torque_attr"].Set(Gf.Vec3f(0.0, 0.0, decision[effort_key]))
+                else:
+                    lane["force_attr"].Set(Gf.Vec3f(decision[effort_key], 0.0, 0.0))
+                lane["peak_applied_force_n"] = max(lane["peak_applied_force_n"], abs(decision[effort_key]))
                 decisions[sid] = decision
 
             step_index = step + 1
@@ -303,23 +346,26 @@ def main():
                 body_stream.write(json.dumps({"time_s": state_time, "body_states": body_states()}, allow_nan=False) + "\n")
             for sid, lane in lanes.items():
                 position = cache.GetLocalToWorldTransform(lane["pusher"].GetPrim()).ExtractTranslation()
-                x = float(position[0])
+                x, vx = motion(lane, cache)
                 velocity = lane["body"].GetVelocityAttr().Get()
-                vx = float(velocity[0])
                 decision = decisions[sid]
-                work = signed_work_increment(decision["applied_force_n"], lane["previous_x_m"], x)
+                work = signed_work_increment(decision[effort_key], lane["previous_x_m"], x)
                 lane["work_j"] += work
                 lane["previous_x_m"] = x
                 lane["peak_speed_m_s"] = max(lane["peak_speed_m_s"], abs(vx))
-                state_stream.write(json.dumps({
+                state_record = {
                     "scenario_id": sid,
                     "time_s": state_time,
                     "position_m": [float(position[0]), float(position[1]), float(position[2])],
                     "linear_velocity_m_s": list(map(float, velocity)),
-                }, allow_nan=False) + "\n")
+                }
+                if rotary:
+                    state_record.update(angle_rad=x, angular_velocity_rad_s=vx)
+                state_stream.write(json.dumps(state_record, allow_nan=False) + "\n")
                 effort_stream.write(json.dumps({
                     "scenario_id": sid,
                     "time_s": state_time,
+                    "interval_start_s": t,
                     **decision,
                     "work_increment_j": work,
                     "cumulative_work_j": lane["work_j"],
@@ -347,13 +393,25 @@ def main():
                 "terminal_saturated_fraction": lane["terminal_saturated_steps"] / lane["terminal_command_steps"],
                 "pusher_contact_impulse_ns": lane["contact_impulse_ns"],
             }
-        displacement = {sid: row["command_displacement_m"] for sid, row in summaries.items()}
+            if rotary:
+                row = summaries[sid]
+                for old, new in (("initial_x_m", "initial_angle_rad"), ("command_end_x_m", "command_end_angle_rad"),
+                                 ("command_end_velocity_m_s", "command_end_angular_velocity_rad_s"),
+                                 ("command_displacement_m", "command_angle_rad"), ("final_x_m", "final_angle_rad"),
+                                 ("final_velocity_m_s", "final_angular_velocity_rad_s"),
+                                 ("peak_speed_m_s", "peak_angular_speed_rad_s"),
+                                 ("peak_applied_force_n", "peak_applied_torque_nm")):
+                    row[new] = row.pop(old)
+                row["initial_angle_rad"] = 0.0
+                row["command_angle_rad"] = command_end[1]
+        displacement = {sid: row["command_angle_rad" if rotary else "command_displacement_m"] for sid, row in summaries.items()}
         overload_limited = ("overload" in summaries and summaries["overload"]["terminal_saturated_fraction"] > 0.95 and
-                            abs(summaries["overload"]["command_end_velocity_m_s"]) < 0.01)
+                            abs(summaries["overload"]["command_end_angular_velocity_rad_s" if rotary else "command_end_velocity_m_s"]) < 0.01)
         if args.scenario:
-            behavior = {"force_bound_respected": all(lane["peak_applied_force_n"] <= controller["max_force_n"] for lane in lanes.values())}
+            behavior = {("torque_bound_respected" if rotary else "force_bound_respected"):
+                        all(lane["peak_applied_force_n"] <= limit for lane in lanes.values())}
             if args.scenario == "overload":
-                behavior["overload_is_force_limited"] = overload_limited
+                behavior["overload_is_torque_limited" if rotary else "overload_is_force_limited"] = overload_limited
         elif law == "velocity_effort":
             behavior = {
                 "free_exceeds_resisted": displacement["free"] > displacement["resisted"],
@@ -384,7 +442,9 @@ def main():
             "trace_semantics": {
                 "command": "one declared command per scenario",
                 "state": "native rigid-body state after each explicit physics step",
-                "effort": "requested and force-limited PhysxForceAPI input plus signed actuator work",
+                "effort": "bounded external PhysxForceAPI input over [interval_start_s, time_s]; signed F*dx or torque*dangle work",
+                "angular_units": "radians; USD revolute limits and angular velocity are converted from degrees",
+                "rotary_support": "rotor and movable load have gravity disabled in the horizontal capability probe" if rotary else None,
             },
         })
         stage.GetRootLayer().Export(str(args.output / "probe_final.usda"))

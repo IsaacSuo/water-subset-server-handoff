@@ -163,6 +163,8 @@
             {"type": "null"}
           ]
         },
+        "stiffness_nm_rad": {"type": ["number", "null"], "minimum": 0},
+        "damping_nm_s_rad": {"type": ["number", "null"], "minimum": 0},
         "reaction_observable": {"type": "boolean"},
         "state_trace": {"$ref": "#/$defs/record"},
         "effort_trace": {"$ref": "#/$defs/record"}

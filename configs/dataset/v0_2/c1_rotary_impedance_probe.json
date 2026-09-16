@@ -1,0 +1,23 @@
+{
+  "schema_version": "0.2.0-draft",
+  "probe_id": "c1_bounded_rotary_impedance01",
+  "timing": {"physics_hz": 240, "capture_hz": 60, "duration_s": 2.2},
+  "controller": {
+    "law": "angular_impedance",
+    "start_time_s": 0.2, "end_time_s": 1.7,
+    "target_angle_rad": 1.2, "target_angular_velocity_rad_s": 0.0,
+    "stiffness_nm_rad": 1.0, "damping_nm_s_rad": 0.3, "max_torque_nm": 0.2
+  },
+  "actuator": {
+    "joint_kind": "revolute", "mass_kg": 1.0, "size_m": [1.0, 0.1, 0.1],
+    "initial_x_m": 0.0, "height_m": 0.5,
+    "lower_limit_rad": -2.6179938779914944, "upper_limit_rad": 2.6179938779914944
+  },
+  "load": {"mass_kg": 0.5, "size_m": 0.15, "position_m": [0.4, 0.3, 0.5]},
+  "wall": {"position_m": [0.4, 0.45, 0.5], "size_m": [0.4, 0.15, 0.25]},
+  "scenarios": [
+    {"id": "free", "lane_y_m": 0.0, "load": false, "blocking_wall": false},
+    {"id": "resisted", "lane_y_m": 0.0, "load": true, "blocking_wall": false},
+    {"id": "overload", "lane_y_m": 0.0, "load": true, "blocking_wall": true}
+  ]
+}

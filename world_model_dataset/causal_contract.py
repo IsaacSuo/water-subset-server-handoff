@@ -218,7 +218,11 @@ def audit_causal_manifest(value, require_complete=False):
             if controller["max_force_n"] is None and controller["max_torque_nm"] is None:
                 errors.append(f"controller/{cid}: no finite force or torque authority is declared")
         if primitive == "impedance_control":
-            if not controller["stiffness_n_m"] or controller["damping_n_s_m"] is None:
+            linear = (controller["max_force_n"] is not None and bool(controller["stiffness_n_m"]) and
+                      controller["damping_n_s_m"] is not None)
+            angular = (controller["max_torque_nm"] is not None and bool(controller.get("stiffness_nm_rad")) and
+                       controller.get("damping_nm_s_rad") is not None)
+            if not (linear or angular):
                 errors.append(f"controller/{cid}: impedance gains are incomplete")
         for field in ("state_trace", "effort_trace"):
             if controller[field]["status"] in ("unavailable", "not_applicable"):

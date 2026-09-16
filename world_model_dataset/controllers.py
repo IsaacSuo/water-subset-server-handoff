@@ -46,3 +46,21 @@ def bounded_linear_impedance(target_position_m, target_velocity_m_s, measured_po
         "position_error_m": target_position_m - measured_position_m,
         "velocity_error_m_s": target_velocity_m_s - measured_velocity_m_s,
     }
+
+
+def bounded_angular_velocity_effort(target_rad_s, measured_rad_s, gain_nm_s_rad, max_torque_nm):
+    """Rotational velocity feedback, in radians, with finite external torque."""
+    result = bounded_velocity_effort(target_rad_s, measured_rad_s, gain_nm_s_rad, max_torque_nm)
+    return {"requested_torque_nm": result["requested_force_n"],
+            "applied_torque_nm": result["applied_force_n"], "saturated": result["saturated"]}
+
+
+def bounded_angular_impedance(target_angle_rad, target_rad_s, measured_angle_rad, measured_rad_s,
+                              stiffness_nm_rad, damping_nm_s_rad, max_torque_nm):
+    """Limited-angle joint spring/damper; no shortest-path wrapping across joint limits."""
+    result = bounded_linear_impedance(target_angle_rad, target_rad_s, measured_angle_rad, measured_rad_s,
+                                      stiffness_nm_rad, damping_nm_s_rad, max_torque_nm)
+    return {"requested_torque_nm": result["requested_force_n"],
+            "applied_torque_nm": result["applied_force_n"], "saturated": result["saturated"],
+            "angle_error_rad": result["position_error_m"],
+            "angular_velocity_error_rad_s": result["velocity_error_m_s"]}
