@@ -11,6 +11,62 @@ from world_model_dataset.causal_finalize import finalize_none
 
 
 class CausalEpisodeTests(unittest.TestCase):
+    def test_push_preparation_and_controlled_stream_packaging(self):
+        import json
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "c2_push_test"
+            manifest = prepare(ROOT / "configs/dataset/v0_2/c2_rigid_push.json", output)
+            self.assertTrue(audit_causal_manifest(manifest)["accepted"])
+            self.assertIsNone(manifest["system"]["joints"][0]["body0_id"])
+            self.assertEqual(manifest["initial_state"]["participant_ids"], ["pusher", "load", "floor"])
+            write_json(output / "initial_state.json", {"time_s": 0, "body_states": manifest["initial_state"]["body_states"]})
+            write_json(output / "native_report.json", {"runtime": "synthetic packaging test"})
+            (output / "contacts.jsonl").touch()
+            (output / "body_state_trace.jsonl").touch()
+            for name in ("command_trace", "actuator_state_trace", "actuator_effort_trace"):
+                with (output / (name + ".jsonl")).open("x") as stream:
+                    stream.write(json.dumps({"time_s": 0.2, "controller_id": "pusher_velocity_effort"}) + "\n")
+            package_physics(output)
+            episode = open_episode(output, require_complete=False)
+            self.assertEqual(len(list(episode.controls())), 1)
+            self.assertEqual(len(list(episode.actuator_states())), 1)
+            self.assertEqual(len(list(episode.actuator_efforts())), 1)
+            with self.assertRaises(KeyError):
+                episode.actuator_efforts("unknown")
+
+    def test_controlled_finalizer_derives_external_work_not_contact_force(self):
+        import json
+        from world_model_dataset.causal_finalize import finalize_smoke
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "c2_push_finalize_test"
+            manifest = prepare(ROOT / "configs/dataset/v0_2/c2_rigid_push.json", output)
+            initial = manifest["initial_state"]["body_states"]
+            write_json(output / "initial_state.json", {"time_s": 0, "body_states": initial})
+            write_json(output / "native_report.json", {"runtime": "synthetic finalizer unit test"})
+            (output / "contacts.jsonl").touch()
+            rows = {
+                "body_state_trace": {"time_s": 0, "physics_step": 0,
+                    "body_states": {oid: dict(value, **({"mass_kg": 1} if oid != "floor" else {})) for oid, value in initial.items()}},
+                "command_trace": dict(manifest["control_program"]["commands"][0], time_s=0.2),
+                "actuator_state_trace": {"time_s": 0, "controller_id": "pusher_velocity_effort"},
+                "actuator_effort_trace": {"time_s": 1/240, "controller_id": "pusher_velocity_effort",
+                    "command_active": False, "saturated": False, "applied_force_n": 0, "cumulative_work_j": 0},
+            }
+            for name, row in rows.items():
+                with (output / (name + ".jsonl")).open("x") as stream:
+                    stream.write(json.dumps(row) + "\n")
+            package_physics(output)
+            write_json(output / "observations/index.json", {"render_backend": "synthetic test", "frames": [], "cameras": {}})
+            package_observations(output)
+            write_json(output / "human_review.json", {"physics_accepted": True, "observations_accepted": True,
+                                                      "scope": "synthetic unit test, not physical evidence"})
+            finalize_smoke(output)
+            episode = open_episode(output)
+            self.assertEqual(episode.outcomes()["actuator_control"]["work_j"], 0)
+            self.assertIsNone(episode.outcomes()["horizontal_kinetic_energy_ratio"])
+            self.assertEqual(episode.annotations()["labels"], [])
+            self.assertFalse(read_json(output / "candidate_completion.json")["c2_prototype_matrix_accepted"])
+
     def test_completed_candidate_reads_all_streams_without_release_admission(self):
         import json
         import numpy as np

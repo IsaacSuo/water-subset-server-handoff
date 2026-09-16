@@ -62,6 +62,23 @@ class CausalEpisode:
             return iter(())
         return self.jsonl(self.manifest["control_program"]["command_trace"])
 
+    def actuator_trace(self, field, controller_id=None):
+        controllers = self.manifest["control_program"]["controllers"]
+        if controller_id is None:
+            if len(controllers) != 1:
+                raise ValueError("Specify a controller_id when there is not exactly one controller")
+            controller_id = controllers[0]["controller_id"]
+        controller = next((c for c in controllers if c["controller_id"] == controller_id), None)
+        if controller is None:
+            raise KeyError(controller_id)
+        return (row for row in self.jsonl(controller[field]) if row["controller_id"] == controller_id)
+
+    def actuator_states(self, controller_id=None):
+        return self.actuator_trace("state_trace", controller_id)
+
+    def actuator_efforts(self, controller_id=None):
+        return self.actuator_trace("effort_trace", controller_id)
+
     def resolved_inputs(self):
         record = self.manifest["system"].get("resolved_inputs")
         if record is None:

@@ -42,7 +42,8 @@ def prepare(config_path, output):
     manifest["system"]["resolved_inputs"] = artifact(output, "resolved_inputs.json", "resolved independent geometry, physics, appearance, numerics and camera profiles")
     write_json(output / "episode.prepared.json", manifest)
     source_paths = ("world_model_dataset/native_causal_rigid.py", "world_model_dataset/causal_runner.py",
-                    "world_model_dataset/causal_loader.py", "world_model_dataset/io.py", "configs/dataset/v0_2/schema.json")
+                    "world_model_dataset/causal_loader.py", "world_model_dataset/controllers.py",
+                    "world_model_dataset/io.py", "configs/dataset/v0_2/schema.json")
     write_json(output / "source_snapshot.json", {
         "files": {name: (ROOT / name).read_text(encoding="utf-8") for name in source_paths},
         "sha256": {name: file_hash(ROOT / name) for name in source_paths},
@@ -71,7 +72,13 @@ def package_physics(output):
     manifest["trajectory"]["contacts"] = artifact(output, "contacts.jsonl", "native PhysX point contact reports with vector impulse")
     manifest["capabilities"]["rigid_contact_impulse"] = {
         "status": "native", "source": report["runtime"] + " native contact reports", "reason": None}
-    manifest["capabilities"]["rigid_state"] = {"status": "native", "source": "PhysX state synchronized to USD", "reason": None}
+    manifest["capabilities"]["rigid_state"] = {"status": "native", "source": report.get("state_source", "PhysX native body state"), "reason": None}
+    if manifest["control_program"]["primitive"] != "none":
+        manifest["control_program"]["command_trace"] = artifact(output, "command_trace.jsonl", "declared command and active interval")
+        for controller in manifest["control_program"]["controllers"]:
+            controller["state_trace"] = artifact(output, "actuator_state_trace.jsonl", "native rigid actuator state at t0 and every step")
+            controller["effort_trace"] = artifact(output, "actuator_effort_trace.jsonl", "requested and bounded applied external force over explicit step intervals; derived F*dx work")
+        manifest["capabilities"]["actuator_applied_effort"] = {"status": "native", "source": "recorded PhysxForceAPI external input, not a contact reaction measurement", "reason": None}
     write_json(output / "episode.physics.json", manifest)
     audit = audit_causal_manifest(manifest)
     write_json(output / "contract_review.json", audit)

@@ -12,6 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from world_model_dataset.io import file_hash, read_json, write_json
+from world_model_dataset.controllers import bounded_velocity_effort, signed_work_increment
 
 
 def main():
@@ -21,8 +22,15 @@ def main():
     output = args.episode
     manifest = read_json(output / "episode.prepared.json")
     resolved = read_json(output / "resolved_inputs.json")
-    if manifest["control_program"]["primitive"] != "none" or manifest["system"]["joints"]:
-        raise ValueError("This first backend supports joint-free natural rigid evolution only")
+    program = manifest["control_program"]
+    if program["primitive"] not in ("none", "effort_control"):
+        raise ValueError("Rigid backend supports none and finite translational effort only")
+    controllers = program["controllers"]
+    if controllers and (len(controllers) != 1 or len(program["commands"]) != 1):
+        raise ValueError("Initial push backend requires one actuator and one command")
+    for joint in manifest["system"]["joints"]:
+        if joint["kind"] != "prismatic" or joint["body0_id"] is not None or joint["axis"] != "X":
+            raise ValueError("Push backend currently supports world-anchored X sliders only")
     snapshot = read_json(output / "source_snapshot.json")
     for name, checksum in snapshot["sha256"].items():
         if file_hash(ROOT / name) != checksum:
@@ -130,11 +138,50 @@ def main():
                 raise ValueError("Natural rigid backend cannot simulate flexible bodies")
             actors[oid] = {"prim": prim, "body": body, "mass": mass, "inertia": inertia}
 
+        for definition in manifest["system"]["joints"]:
+            oid = definition["body1_id"]
+            initial = manifest["initial_state"]["body_states"][oid]
+            if initial["orientation_xyzw"] != [0.0, 0.0, 0.0, 1.0]:
+                raise ValueError("World-slider initial frames currently require identity orientation")
+            joint = UsdPhysics.PrismaticJoint.Define(stage, "/World/" + definition["joint_id"])
+            joint.CreateBody1Rel().SetTargets([Sdf.Path("/World/" + oid)])
+            # No body0 means the world frame, not a hidden kinematic actor.
+            joint.CreateLocalPos0Attr(Gf.Vec3f(*initial["position_m"]))
+            joint.CreateLocalPos1Attr(Gf.Vec3f(0.0))
+            joint.CreateLocalRot0Attr(Gf.Quatf(1.0))
+            joint.CreateLocalRot1Attr(Gf.Quatf(1.0))
+            joint.CreateAxisAttr("X")
+            joint.CreateLowerLimitAttr(definition["lower_limit"])
+            joint.CreateUpperLimitAttr(definition["upper_limit"])
+
+        force_attr = None
+        if controllers:
+            controller, command = controllers[0], program["commands"][0]
+            actuator_id = controller["actuator_instance_id"]
+            if controller["implementation"] != "dynamic_body_effort" or controller["max_torque_nm"] is not None:
+                raise ValueError("Push controller must declare finite external linear force")
+            if not any(j["body1_id"] == actuator_id for j in manifest["system"]["joints"]):
+                raise ValueError("Push actuator requires a declared guide")
+            if command["limits"]["max_force_n"] != controller["max_force_n"]:
+                raise ValueError("Command and actuator force limits disagree")
+            force_api = PhysxSchema.PhysxForceAPI.Apply(actors[actuator_id]["prim"])
+            force_attr = force_api.CreateForceAttr(Gf.Vec3f(0.0))
+            force_api.CreateTorqueAttr(Gf.Vec3f(0.0))
+            force_api.CreateModeAttr("force")
+            force_api.CreateForceEnabledAttr(True)
+            force_api.CreateWorldFrameEnabledAttr(True)
+
         step_index = 0
         contact_count = 0
         contacts = (output / "contacts.jsonl").open("x", encoding="utf-8")
         states = (output / "body_state_trace.jsonl").open("x", encoding="utf-8")
         streams.extend([contacts, states])
+        if controllers:
+            command_stream = (output / "command_trace.jsonl").open("x", encoding="utf-8")
+            actuator_stream = (output / "actuator_state_trace.jsonl").open("x", encoding="utf-8")
+            effort_stream = (output / "actuator_effort_trace.jsonl").open("x", encoding="utf-8")
+            streams.extend([command_stream, actuator_stream, effort_stream])
+            command_stream.write(json.dumps(dict(command, time_s=command["start_time_s"]), allow_nan=False) + "\n")
 
         def on_contact(headers, data):
             nonlocal contact_count
@@ -209,6 +256,10 @@ def main():
                 body_states[oid] = value
             row = {"time_s": step * dt, "physics_step": step, "body_states": body_states}
             states.write(json.dumps(row, allow_nan=False) + "\n")
+            if controllers:
+                actuator_stream.write(json.dumps({"time_s": step * dt, "physics_step": step,
+                    "controller_id": controller["controller_id"], "actuator_instance_id": actuator_id,
+                    "state": body_states[actuator_id], "source": "PhysX native rigid-body tensors"}, allow_nan=False) + "\n")
             return row
 
         first = capture(0)
@@ -217,13 +268,36 @@ def main():
             for oid, value in first["body_states"].items()}})
         stage.GetRootLayer().Export(str(output / "native_initial.usda"))
         start = time.monotonic()
+        previous = first
+        cumulative_work = 0.0
         for step in range(round(timing["duration_s"] * hz)):
             step_index = step + 1
+            if controllers:
+                t = step * dt
+                measured = previous["body_states"][actuator_id]
+                active = command["start_time_s"] <= t < command["end_time_s"]
+                decision = bounded_velocity_effort(command["target"]["velocity_m_s"],
+                    measured["linear_velocity_m_s"][0], command["target"]["velocity_gain_n_s_m"],
+                    controller["max_force_n"]) if active else {
+                        "requested_force_n": 0.0, "applied_force_n": 0.0, "saturated": False}
+                force_attr.Set(Gf.Vec3f(decision["applied_force_n"], 0.0, 0.0))
             # No post-t0 velocity/pose writes, collision toggles, or actor changes.
             simulation.simulate(dt, step * dt)
             simulation.fetch_results()
             app.update()
-            capture(step_index)
+            current = capture(step_index)
+            if controllers:
+                work = signed_work_increment(decision["applied_force_n"], measured["position_m"][0],
+                                              current["body_states"][actuator_id]["position_m"][0])
+                cumulative_work += work
+                effort_stream.write(json.dumps(dict(decision, time_s=step_index * dt, physics_step=step_index,
+                    interval_start_s=step * dt, controller_id=controller["controller_id"],
+                    actuator_instance_id=actuator_id, command_active=active,
+                    feedback_velocity_m_s=measured["linear_velocity_m_s"][0],
+                    applied_force_vector_n=[decision["applied_force_n"], 0.0, 0.0],
+                    work_increment_j=work, cumulative_work_j=cumulative_work,
+                    source="bounded external force input; F*dx is derived work, not contact-force supervision"), allow_nan=False) + "\n")
+            previous = current
         for stream in streams:
             stream.close()
         streams.clear()
@@ -232,7 +306,8 @@ def main():
             "status": "physics_completed", "runtime": "Isaac Sim 6.0.1 / PhysX 110.1.13",
             "elapsed_seconds": time.monotonic() - start, "physics_steps": step_index,
             "dt_s": dt, "numerics": numerics, "contact_points": contact_count,
-            "state_update_authority": "solver_only_after_t0", "post_t0_control_writes": 0,
+            "state_update_authority": "solver_only_after_t0", "post_t0_control_writes": step_index if controllers else 0,
+            "post_t0_direct_state_writes": 0, "control_write_kind": "bounded actuator force only" if controllers else "none",
             "state_source": "PhysX rigid-body tensors; static fixtures from immutable USD",
             "mass_inertia_source": "explicit MassAPI authoring; state-derived energies are diagnostics, not calibrated physical truth",
         })

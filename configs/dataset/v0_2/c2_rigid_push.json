@@ -1,0 +1,23 @@
+{
+  "prototype_id": "c2_rigid_push", "manifest_template": "configs/dataset/v0_2/examples/rigid_push_effort.json",
+  "timing": {"physics_hz": 240, "capture_hz": 30, "duration_s": 2.0},
+  "numerics": {"backend": "PhysX", "gpu_dynamics": false, "solver": "TGS", "position_iterations": 16, "velocity_iterations": 4, "contact_offset_m": 0.002, "rest_offset_m": 0.0, "speculative_ccd": false},
+  "geometry_profiles": {
+    "pusher_pad": {"shape": "box", "size_m": [0.2, 0.5, 0.3]},
+    "cube": {"shape": "box", "size_m": [0.3, 0.3, 0.3]},
+    "plane": {"shape": "box", "size_m": [4.0, 2.0, 0.05]}
+  },
+  "physics_profiles": {
+    "actuator_1kg": {"mass_kg": 1.0, "static_friction": 0.3, "dynamic_friction": 0.2, "restitution": 0.0, "linear_damping": 0.0, "angular_damping": 0.0},
+    "rigid_light": {"mass_kg": 0.5, "static_friction": 0.3, "dynamic_friction": 0.2, "restitution": 0.0, "linear_damping": 0.0, "angular_damping": 0.0},
+    "fixture_reference": {"mass_kg": null, "static_friction": 0.3, "dynamic_friction": 0.2, "restitution": 0.0, "linear_damping": 0.0, "angular_damping": 0.0}
+  },
+  "appearance_profiles": {
+    "matte_orange": {"color": [0.95, 0.4, 0.08], "roughness": 0.5, "metallic": 0.0},
+    "matte_blue": {"color": [0.1, 0.45, 0.85], "roughness": 0.5, "metallic": 0.0},
+    "matte_gray": {"color": [0.35, 0.38, 0.42], "roughness": 0.7, "metallic": 0.0}
+  },
+  "initial_state_overrides": {},
+  "camera_set": {"id": "c2_fixed_pair01", "resolution": [640, 480], "focal_length_mm": 35.0, "horizontal_aperture_mm": 36.0,
+    "cameras": [{"id": "front", "position_m": [0.5, -2.8, 1.8], "target_m": [0.0, 0.0, 0.15]}, {"id": "rear", "position_m": [0.5, 2.8, 1.8], "target_m": [0.0, 0.0, 0.15]}]}
+}
