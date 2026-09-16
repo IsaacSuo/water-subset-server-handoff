@@ -240,7 +240,7 @@ def main():
         elif kind=='plastic':drivers,alignment['plastic_asset']=plastic_objects(ep,shot['appearance'])
         else:raise ValueError('Unsupported cache adapter: '+kind)
         out=Path(shot['output']);out.mkdir(parents=True,exist_ok=True)
-        fps=plan.get('fps',12)
+        fps=shot.get('fps',plan.get('fps',12))
         indices=sorted(set(np.argmin(abs(np.asarray([r['time_s'] for r in rows])-t)).item()
             for t in np.arange(0,rows[-1]['time_s']+1e-8,1/fps)))
         if a.keyframes:

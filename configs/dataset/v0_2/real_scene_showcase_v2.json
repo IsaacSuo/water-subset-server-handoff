@@ -76,24 +76,25 @@
       ]
     },
     {
-      "id": "desk_rearrangement_v1",
+      "id": "desk_rearrangement_edge_v3",
       "group": 1,
-      "title": "多体重排：不规则物体堆叠后的稳定过程",
-      "phenomenon": "A separated, vertically layered initial arrangement collapses under gravity, exchanges contacts and settles on the original desk.",
+      "title": "多体重排与桌沿掉落",
+      "phenomenon": "A layered initial arrangement collapses under gravity; collisions scatter the bodies and one onion rolls off the original desk onto the original floor.",
       "region": "N01_R0",
-      "duration_s": 3.0,
+      "duration_s": 4.5,
       "camera": {
-        "position_m": [
-          2.0,
-          0.55,
-          1.6
-        ],
+        "projection": "PERSP",
         "target_m": [
-          2.65,
-          1.54,
-          1.0
+          2.82,
+          1.52,
+          0.68
         ],
-        "ortho_scale_m": 1.15
+        "position_m": [
+          3.15,
+          0.3,
+          1.3
+        ],
+        "focal_length_mm": 22
       },
       "bodies": [
         {
@@ -107,7 +108,7 @@
           ],
           "xy_m": [
             2.57,
-            1.5
+            1.57
           ]
         },
         {
@@ -121,7 +122,7 @@
           ],
           "xy_m": [
             2.68,
-            1.53
+            1.6
           ],
           "clearance_m": 0.16
         },
@@ -131,7 +132,7 @@
           "size_m": 0.1,
           "xy_m": [
             2.59,
-            1.48
+            1.55
           ],
           "clearance_m": 0.29
         },
@@ -141,11 +142,12 @@
           "size_m": 0.09,
           "xy_m": [
             2.68,
-            1.57
+            1.6400000000000001
           ],
           "clearance_m": 0.4
         }
-      ]
+      ],
+      "revision": "User requested edge fall: translate entire initial arrangement +0.07 m in Y to preserve relative impact layout; no environment/material/velocity changes; observe 4.5 s."
     },
     {
       "id": "chair_constraint_v1",

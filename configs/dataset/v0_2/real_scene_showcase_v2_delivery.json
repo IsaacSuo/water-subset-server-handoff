@@ -1,6 +1,6 @@
 {
-  "title": "真实场景物理现象 · 第一批",
-  "scope": "6 段新物理短片，按四类研究过程组织。原 Classroom 几何与材质；原灯光。排除黏弹性、流体、损伤及分离。 960×600 场景画面，2 倍慢放。",
+  "title": "真实场景物理现象 · 完整外观短片",
+  "scope": "6 段新物理短片，按四类研究过程组织。原 Classroom 几何与材质；原灯光。排除黏弹性、流体、损伤及分离。",
   "slowdown": 2,
   "shots": [
     {
@@ -11,17 +11,19 @@
       "condition": "洋葱 10.5 cm，0.65 m/s、12 rad/s；扳手 20 cm，0.85 m/s。原教师桌连续支承。",
       "outcome": "洋葱滚转后稳定，扳手滑移减速。",
       "limits": "PhysX / SDF256。两种初态并列展示，不是只改变形状的严格对照；扫描资产保留原 glTF 贴图。",
-      "render": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/final_render/desk_roll_slide_v2"
+      "render": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/dynamic_preview/desk_roll_slide_v2",
+      "reuse_video": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/preview_delivery/clips/desk_roll_slide_v2.mp4",
+      "reuse_video_sha256": "b5aefd4f0e036e7734159b42ed1b345480d92553d7620370cd81a1951c9b5f68"
     },
     {
-      "id": "desk_rearrangement_v1",
+      "id": "desk_rearrangement_edge_v3",
       "group": 1,
-      "title": "多体重排与稳定",
-      "caption": "四个不规则物体从分层初态自然释放",
-      "condition": "两个红薯形状与两个洋葱形状；零初速度，原教师桌面与完整教室几何参与碰撞。",
-      "outcome": "相继发生物体间碰撞，接触排列改变，最终在桌面分散稳定。",
+      "title": "多体重排与桌沿掉落",
+      "caption": "四个物体碰撞分散，一颗洋葱滚出桌沿",
+      "condition": "两个红薯形状与两个洋葱形状；初始排列整体向桌沿平移 7 cm，零初速度。原桌面和地面参与碰撞。",
+      "outcome": "碰撞后洋葱滚出桌面，约 1.5 秒落到地面并继续滚动；其余三个留在桌上。",
       "limits": "PhysX / SDF256。真实扫描几何；实验质量和摩擦，未标定真实食品材料。",
-      "render": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/final_render/desk_rearrangement_v1"
+      "render": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/edge_replacement/desk_rearrangement_edge_v3"
     },
     {
       "id": "chair_constraint_v1",
@@ -31,7 +33,9 @@
       "condition": "24 cm 水壶，0.55 kg，初速度 1.05 m/s；无持续驱动。",
       "outcome": "与原椅架接触后略微转动并受阻，未穿过限制区。",
       "limits": "PhysX / SDF256。保留原地面、椅架和其他全部导出场景几何；无运动学推板。",
-      "render": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/final_render/chair_constraint_v1"
+      "render": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/dynamic_preview/chair_constraint_v1",
+      "reuse_video": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/preview_delivery/clips/chair_constraint_v1.mp4",
+      "reuse_video_sha256": "a1a963af1acd3bde83b9171960e670a96e2631eed7319c1e876beaad6ef413d1"
     },
     {
       "id": "plastic_potato_v1",
@@ -41,17 +45,19 @@
       "condition": "18 cm 红薯扫描形状；初始最低点距桌面 12 cm；Newton 隐式 MPM，非食材实测参数。",
       "outcome": "冲击后明显压扁，原生塑性体积历史发生变化，随后在重力支承下稳定。",
       "limits": "2,000 Pa 屈服应力，100 kPa 弹性模量。原贴图表面通过材料点邻域派生回放，不是原生 MPM 表面；支承下残余形状不等于完全卸载塑性应变。",
-      "render": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/final_render/plastic_potato_v1"
+      "render": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/dynamic_preview/plastic_potato_v1",
+      "reuse_video": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/preview_delivery/clips/plastic_potato_v1.mp4",
+      "reuse_video_sha256": "dd29531c21729ecc8b491cb42fd8921e38a50652ecd3ad705140f0710ef82698"
     },
     {
-      "id": "desk_cloth_v1",
+      "id": "desk_cloth_dense_v1",
       "group": 3,
       "title": "桌沿铺展与悬垂",
       "caption": "布料自然落下，接触原桌面和桌架",
-      "condition": "64×43 cm 布；221 个原生节点、384 个三角面。无牵引或节点动画。",
-      "outcome": "落到桌面后产生褶皱，越过桌沿的部分下垂并继续调整。",
-      "limits": "PhysX 表面形变；原生拓扑与静止 UV、织物材质。仅相关原教师桌碰撞网格；周围未参与碰撞的结构已检查净空。",
-      "render": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/final_render/desk_cloth_v1"
+      "condition": "64×43 cm 布；2925 个原生节点、5632 个三角面。无牵引或节点动画。",
+      "outcome": "落到原桌面后铺展、形成褶皱并沿桌沿悬垂；新缓存明显减少持续跳动。",
+      "limits": "PhysX 表面形变；原生拓扑与静止 UV、织物材质。原桌面及桌架碰撞。网格、求解频率、接触和阻尼共同调整，非单独分辨率对照；60 Hz 原缓存采样，无位移过滤或显示细分。",
+      "render": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/cloth_replacement/desk_cloth_dense_v1"
     },
     {
       "id": "rope_G01_v1",
@@ -61,7 +67,9 @@
       "condition": "绳径 6 mm，47 个原生段；两端不等长。原三管束、梁及邻接结构参与碰撞。",
       "outcome": "重力下轻微调整后稳定；最大站点位移约 2.6 cm，没有滑脱或打结。",
       "limits": "Newton VBD；原生胶囊半径与段位姿，未加粗或平滑改形。显示网格是胶囊三角化，不是原生材料表面；接触力 unavailable。",
-      "render": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/final_render/rope_G01_v1"
+      "render": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/dynamic_preview_corrected/rope_G01_v1",
+      "reuse_video": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/preview_delivery/clips/rope_G01_v1.mp4",
+      "reuse_video_sha256": "17b9ffe86518e5f84d9531328c27963a30dbbc9ddd0101d6cac99ed7d909182f"
     }
   ]
 }
