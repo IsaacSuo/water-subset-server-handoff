@@ -17,6 +17,10 @@ from .local import idle
 
 def run(plan_path, output, ids=None):
     plan_path=Path(plan_path).resolve();plan=read_json(plan_path)
+    if plan.get('material_sources') and any(j['backend']=='material' and (not ids or j['id'] in ids) for j in plan['jobs']):
+        folder=Path(plan['material_entry']).parent
+        for name,expected in plan['material_sources'].items():
+            if file_hash(folder/name)!=expected:raise ValueError('Pinned material source changed: '+name)
     output=Path(output).resolve();output.mkdir(parents=True,exist_ok=True)
     record=output/'batch.json'
     if record.exists():

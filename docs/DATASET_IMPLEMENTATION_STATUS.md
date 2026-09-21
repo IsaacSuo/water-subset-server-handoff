@@ -1,5 +1,14 @@
 # Dataset implementation status
 
+## Mainline update — 2026-09-21
+
+The accepted showcase is complete. The current milestone is reusable generation,
+small condition comparisons and unified readable data across all four process groups.
+The 14-episode pilot supersedes the old rigid-only subset as the coverage reference;
+cloth stability adoption and asset/material reuse follow in [Progress v2](PHENOMENON_PROGRESS_V2.md).
+C3 and C4 remain in progress. C5, new splits and model training remain paused.
+The dated tables below are historical and do not override this priority or the linked delivery records.
+
 Updated: 2026-09-17. Branch: `dataset/interaction-world-model-m4`.
 Local-only work. No GitHub push or server submission. Fluid baseline unchanged.
 

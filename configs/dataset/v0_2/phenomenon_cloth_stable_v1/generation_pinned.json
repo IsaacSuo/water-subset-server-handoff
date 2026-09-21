@@ -1,0 +1,75 @@
+{
+  "version": "phenomenon-batch/1",
+  "purpose": "Adopt independently verified cloth collision winding and solver profile; two original support overlaps, five seconds; no training or split",
+  "material_entry": "/mnt/y/isaacsim_work_cloth_stability/experiments/material_response/scene_input/material_entry.py",
+  "material_runtime": "configs/dataset/v0_2/phenomenon_pilot_v1/runtime.json",
+  "jobs": [
+    {
+      "id": "cloth_edge_273_stable_v1",
+      "backend": "material",
+      "family": "cloth_support_overlap",
+      "group": 3,
+      "condition": 2.73,
+      "config": "configs/dataset/v0_2/phenomenon_cloth_stable_v1/cloth_edge_273_stable_v1.json",
+      "comparison_variable": "cloth initial X translation m",
+      "observation_camera": {
+        "position_m": [
+          3.35,
+          0.65,
+          1.4
+        ],
+        "target_m": [
+          2.75,
+          1.52,
+          0.83
+        ],
+        "ortho_scale_m": 1.0
+      },
+      "observation_hz": 10
+    },
+    {
+      "id": "cloth_edge_283_stable_v1",
+      "backend": "material",
+      "family": "cloth_support_overlap",
+      "group": 3,
+      "condition": 2.83,
+      "config": "configs/dataset/v0_2/phenomenon_cloth_stable_v1/cloth_edge_283_stable_v1.json",
+      "comparison_variable": "cloth initial X translation m",
+      "observation_camera": {
+        "position_m": [
+          3.35,
+          0.65,
+          1.4
+        ],
+        "target_m": [
+          2.75,
+          1.52,
+          0.83
+        ],
+        "ortho_scale_m": 1.0
+      },
+      "observation_hz": 10
+    }
+  ],
+  "material_source_commit": "ec7e904640deefa524ba107c9271572ebd1a2bcf",
+  "upstream_evidence": "/mnt/y/isaacsim_work_cloth_stability/experiments/material_response/scene_input/CLOTH_STABILITY.md",
+  "material_sources": {
+    "check_entry.py": "dc7ba3d4f49c15630f383b72c643caa9757aa660c11628b82508cff7b359c534",
+    "cloth_edge_audit.py": "b95e1e27b291a3cb8c4c40c0863c433423ca59bead0dbe5aca2bf2b1f94287d5",
+    "cloth_edge_plots.py": "e73ff91f2e3370205f74d1b30616f35a7c82988d8a512b8a3e5b7ae6a8b1fb1f",
+    "cloth_edge_preview.py": "8fc04396263801ed8a4b26e1adc172750d7557f57c7111ce6747a97ccf7b26e6",
+    "cloth_motion.py": "15bad5a9903b57b92f644ba861a5ffba1def077cade8ae72aa312340ea0250d7",
+    "cloth_scene.py": "2884c31ffca16f2246de0d129ebaf5aa25e03800e72bdc7051d3c9c592085530",
+    "cloth_winding.py": "6019520fc701c104f99d1a7427183353931468d91a46b32361891d269f7c2be6",
+    "input_contract.py": "6616db91b91dfb28c1e1e9f572f88b8674607d1512afe4eed3ddeba26380e8cc",
+    "material_entry.py": "97f7622e9b3d3e14334b7e423f014ba68511755d2e2c048ab42a221a091c78c5",
+    "material_io.py": "23594c1890f1361515916a2d1b7ff5ac6509c286148da105bf575e5d7bd33d6e",
+    "native_cloth.py": "968ec17578ef5d7d3e55bb621a92ea56ab2770ca0e3518f9210aa8f3f2f15443",
+    "native_plastic.py": "f7a37aea2b99fda30bfb73961bbf18c1f0c5a3364a7ae3508fce2a797770c834",
+    "native_rope.py": "aa5c09b7cb1aaa15caff32745fd7b909eb4abc2ddefe32dbbe6c64abce8544da",
+    "package_cloth.py": "af85bebfae31f0209a437712eedb3389555a54a4617819775ecfe24ec39d11ea",
+    "package_scene.py": "8be461fe82810ed3951b90017a31a8267c4210705df9a5e735a805454bec32f5",
+    "scene_episode.py": "2eec6895c883de23b4c242a1fde9d79344a9efd083abb57db69db9a4ea0a4fdd",
+    "test_cloth_winding.py": "5148e3fea589279f3c85c2f447dce2ee6ab04ea45733722e361db29d05066bb9"
+  }
+}

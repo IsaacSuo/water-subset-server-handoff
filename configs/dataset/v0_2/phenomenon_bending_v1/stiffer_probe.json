@@ -1,0 +1,29 @@
+{
+  "version": "phenomenon-batch/1",
+  "purpose": "single bounded cantilever capability probe before claiming bending coverage",
+  "jobs": [
+    {
+      "id": "beam_contact_clamp_E3MPa_15N",
+      "backend": "native",
+      "family": "elastic_contact_clamp_bending",
+      "group": 2,
+      "condition": 3000000,
+      "comparison_variable": "youngs_modulus 0.3 -> 3 MPa; correction for excessive self-weight deflection, same geometry/control",
+      "config": "configs/dataset/v0_2/phenomenon_bending_v1/beam_contact_clamp_E3MPa_15N.json",
+      "observation_camera": {
+        "position_m": [
+          3.6,
+          0.82,
+          1.15
+        ],
+        "target_m": [
+          2.980139970779419,
+          1.52,
+          0.81
+        ],
+        "ortho_scale_m": 0.65
+      },
+      "observation_hz": 10
+    }
+  ]
+}

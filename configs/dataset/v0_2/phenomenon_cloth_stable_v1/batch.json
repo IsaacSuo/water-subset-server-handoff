@@ -1,0 +1,56 @@
+{
+  "version": "phenomenon-batch/1",
+  "purpose": "Adopt independently verified cloth collision winding and solver profile; two original support overlaps, five seconds; no training or split",
+  "material_entry": "/mnt/y/isaacsim_work_cloth_stability/experiments/material_response/scene_input/material_entry.py",
+  "material_runtime": "configs/dataset/v0_2/phenomenon_pilot_v1/runtime.json",
+  "jobs": [
+    {
+      "id": "cloth_edge_273_stable_v1",
+      "backend": "material",
+      "family": "cloth_support_overlap",
+      "group": 3,
+      "condition": 2.73,
+      "config": "configs/dataset/v0_2/phenomenon_cloth_stable_v1/cloth_edge_273_stable_v1.json",
+      "comparison_variable": "cloth initial X translation m",
+      "observation_camera": {
+        "position_m": [
+          3.35,
+          0.65,
+          1.4
+        ],
+        "target_m": [
+          2.75,
+          1.52,
+          0.83
+        ],
+        "ortho_scale_m": 1.0
+      },
+      "observation_hz": 10
+    },
+    {
+      "id": "cloth_edge_283_stable_v1",
+      "backend": "material",
+      "family": "cloth_support_overlap",
+      "group": 3,
+      "condition": 2.83,
+      "config": "configs/dataset/v0_2/phenomenon_cloth_stable_v1/cloth_edge_283_stable_v1.json",
+      "comparison_variable": "cloth initial X translation m",
+      "observation_camera": {
+        "position_m": [
+          3.35,
+          0.65,
+          1.4
+        ],
+        "target_m": [
+          2.75,
+          1.52,
+          0.83
+        ],
+        "ortho_scale_m": 1.0
+      },
+      "observation_hz": 10
+    }
+  ],
+  "material_source_commit": "ec7e904640deefa524ba107c9271572ebd1a2bcf",
+  "upstream_evidence": "/mnt/y/isaacsim_work_cloth_stability/experiments/material_response/scene_input/CLOTH_STABILITY.md"
+}

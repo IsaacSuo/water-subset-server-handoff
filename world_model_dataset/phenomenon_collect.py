@@ -19,7 +19,7 @@ from .probe_episode import artifact
 from .phenomenon_observations import camera, GeometryView
 
 
-def audit(ep):
+def audit(ep, family=None):
     rows=list(ep.states());first=rows[0];last=rows[-1]
     fixed=[b['instance_id'] for b in ep.manifest['system']['bodies'] if b['physics_kind']=='static']
     for row in rows:
@@ -80,20 +80,22 @@ def audit(ep):
         ctrl=ep.manifest['control_program']['controllers'][0]
         peak=max(abs(r['applied_force_n']) for r in efforts)
         if peak>ctrl['max_force_n']+1e-4:raise ValueError('Actuator force exceeds declared limit')
-        soft=next(oid for oid in info if 'minimum_tet_J' in info[oid])
-        metric=[r['body_states'][soft]['metrics'] for r in rows]
-        initial_height=next(r['body_states'][soft]['metrics']['height_m'] for r in rows if r['time_s']>=.5)
-        min_height=min(m['height_m'] for m in metric);last_metric=metric[-1]
-        clear=[r['time_s'] for r in rows if r['time_s']>=2 and r['body_states'][soft]['metrics']['sampled_actuator_gap_m']>.004]
         result['actuator']=dict(commands=len(controls),state_records=len(states),effort_records=len(efforts),
             max_force_n=ctrl['max_force_n'],peak_applied_force_n=peak,
             saturated_step_fraction=sum(bool(r['saturated']) for r in efforts)/len(efforts),
-            initial_loaded_reference_height_m=initial_height,minimum_height_m=min_height,final_height_m=last_metric['height_m'],
-            final_sampled_actuator_gap_m=last_metric['sampled_actuator_gap_m'],first_clearance_after_unload_s=clear[0] if clear else None,
-            recovery_fraction=(last_metric['height_m']-min_height)/(initial_height-min_height) if initial_height>min_height else None,
-            effort_semantics='applied bounded controller force, not measured contact reaction',
-            unload_verified=last_metric['sampled_actuator_gap_m']>.004)
-        if not result['actuator']['unload_verified']:warnings.append('Unloading command did not establish final physical clearance')
+            effort_semantics='applied bounded controller force, not measured contact reaction')
+        if family in (None, 'elastic_finite_load_hold_unload'):
+            soft=next(oid for oid in info if 'minimum_tet_J' in info[oid])
+            metric=[r['body_states'][soft]['metrics'] for r in rows]
+            initial_height=next(r['body_states'][soft]['metrics']['height_m'] for r in rows if r['time_s']>=.5)
+            min_height=min(m['height_m'] for m in metric);last_metric=metric[-1]
+            clear=[r['time_s'] for r in rows if r['time_s']>=2 and r['body_states'][soft]['metrics']['sampled_actuator_gap_m']>.004]
+            result['actuator'].update(
+                initial_loaded_reference_height_m=initial_height,minimum_height_m=min_height,final_height_m=last_metric['height_m'],
+                final_sampled_actuator_gap_m=last_metric['sampled_actuator_gap_m'],first_clearance_after_unload_s=clear[0] if clear else None,
+                recovery_fraction=(last_metric['height_m']-min_height)/(initial_height-min_height) if initial_height>min_height else None,
+                unload_verified=last_metric['sampled_actuator_gap_m']>.004)
+            if not result['actuator']['unload_verified']:warnings.append('Unloading command did not establish final physical clearance')
     else:
         assert not list(ep.controls())
     if ep.manifest['trajectory']['contacts']['status']=='available' and ep.manifest['capabilities'].get('rigid_contact_impulse',{}).get('status')=='native':
@@ -102,13 +104,30 @@ def audit(ep):
     return result
 
 
+def apply_quality_evidence(ep, review, evidence):
+    """Accept an explicit local review only for the exact recorded state stream."""
+    path=Path(evidence['path'])
+    if file_hash(path)!=evidence['sha256']:raise ValueError('Quality evidence hash mismatch')
+    result=read_json(path)
+    if result.get('source_states_sha256')!=ep.manifest['trajectory']['states']['sha256']:
+        raise ValueError('Quality evidence belongs to a different physical cache')
+    if result.get('format')!='cloth-stability-review/1':raise ValueError('Unsupported quality evidence')
+    review['local_stability_review']=result
+    if result['status']=='local_stability_checked' and result.get('checks') and all(result['checks'].values()):
+        review['warnings']=[w for w in review['warnings'] if not w.startswith('Cloth contact stability')]
+        review['warnings'].append('Local cloth stability checked for this cache only; no convergence or material calibration claim')
+    return review
+
+
 def collect(job,destination):
     source=Path(job['episode']).resolve();destination=Path(destination).resolve()
-    ep=open_episode(source,require_complete=False);review=audit(ep)
+    ep=open_episode(source,require_complete=False);review=audit(ep, job['family'])
+    if job.get('quality_evidence'):apply_quality_evidence(ep,review,job['quality_evidence'])
     destination.mkdir(parents=True,exist_ok=False)
     out=destination/'episode';shutil.copytree(source,out)
     ep=open_episode(out,require_complete=False)
     write_json(destination/'cache_review.json',review)
+    if job.get('quality_evidence'):write_json(destination/'quality_evidence.json',review['local_stability_review'])
     write_json(out/'source_manifest.json',ep.manifest)
     view=GeometryView(ep);cam=camera(job['observation_camera']);static=view.render_static(cam)
     obs=out/'observations';obs.mkdir(exist_ok=False)
@@ -166,7 +185,9 @@ def refresh_review(destination):
     destination=Path(destination);out=destination/'episode';ep=open_episode(out)
     result=read_json(destination/'result.json')
     if file_hash(out/'episode.json')!=result['manifest_sha256']:raise ValueError('Manifest changed before review refresh')
-    review=audit(ep)
+    review=audit(ep, result['family'])
+    evidence=destination/'quality_evidence.json'
+    if evidence.exists():apply_quality_evidence(ep,review,dict(path=str(evidence),sha256=file_hash(evidence)))
     for path in (destination/'cache_review.json',out/'pilot_outcomes.json',out/'episode.json',destination/'result.json'):
         backup=path.with_name(path.name+'.before_review_refresh')
         if not backup.exists():shutil.copyfile(path,backup)
@@ -185,7 +206,13 @@ def refresh_review(destination):
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--batch',type=Path,required=True);p.add_argument('--output',type=Path,required=True)
     p.add_argument('--ids',nargs='+');p.add_argument('--refresh-review',action='store_true')
+    p.add_argument('--quality-evidence',action='append',default=[],metavar='ID=REVIEW_JSON')
     a=p.parse_args();batch=read_json(a.batch);a.output=a.output.resolve();a.output.mkdir(parents=True,exist_ok=True)
+    for assignment in a.quality_evidence:
+        oid,separator,value=assignment.partition('=')
+        if not separator or oid not in batch['jobs']:p.error('--quality-evidence requires an existing job ID and a review path')
+        path=Path(value).resolve()
+        batch['jobs'][oid]['quality_evidence']=dict(path=str(path),sha256=file_hash(path))
     records=[]
     for job in batch['jobs'].values():
         if job['status']!='generated' or (a.ids and job['id'] not in a.ids):continue

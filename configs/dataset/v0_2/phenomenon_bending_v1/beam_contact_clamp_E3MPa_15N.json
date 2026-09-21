@@ -1,0 +1,11 @@
+{
+  "base_config": "configs/dataset/v0_2/phenomenon_bending_v1/beam_contact_clamp_15N.json",
+  "overrides": {
+    "prototype_id": "beam_contact_clamp_E3MPa_15N",
+    "physics_profiles": {
+      "elastic_soft": {
+        "youngs_modulus_pa": 3000000
+      }
+    }
+  }
+}

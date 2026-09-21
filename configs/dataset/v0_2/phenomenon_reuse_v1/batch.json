@@ -1,0 +1,77 @@
+{
+  "version": "phenomenon-batch/1",
+  "purpose": "Small cross-asset and material-input reuse checks; no videos, training or grid expansion",
+  "material_entry": "/home/fangsuo/isaacsim_work_material_response/experiments/material_response/scene_input/material_entry.py",
+  "material_runtime": "configs/dataset/v0_2/phenomenon_pilot_v1/runtime.json",
+  "jobs": [
+    {
+      "id": "roll_reuse_ph_yellow_onion",
+      "backend": "rigid",
+      "family": "rolling_asset_reuse",
+      "group": 1,
+      "condition": "ph_yellow_onion",
+      "config": "configs/dataset/v0_2/phenomenon_reuse_v1/roll_reuse_ph_yellow_onion.json",
+      "comparison_variable": "scan geometry at common .105m characteristic size, .12kg mass, friction, initial velocity; support placement derived",
+      "observation_camera": {
+        "position_m": [
+          2.0,
+          0.55,
+          1.6
+        ],
+        "target_m": [
+          2.6,
+          1.53,
+          0.84
+        ],
+        "ortho_scale_m": 0.95
+      },
+      "observation_hz": 10
+    },
+    {
+      "id": "roll_reuse_ph_sweet_potato",
+      "backend": "rigid",
+      "family": "rolling_asset_reuse",
+      "group": 1,
+      "condition": "ph_sweet_potato",
+      "config": "configs/dataset/v0_2/phenomenon_reuse_v1/roll_reuse_ph_sweet_potato.json",
+      "comparison_variable": "scan geometry at common .105m characteristic size, .12kg mass, friction, initial velocity; support placement derived",
+      "observation_camera": {
+        "position_m": [
+          2.0,
+          0.55,
+          1.6
+        ],
+        "target_m": [
+          2.6,
+          1.53,
+          0.84
+        ],
+        "ortho_scale_m": 0.95
+      },
+      "observation_hz": 10
+    },
+    {
+      "id": "plastic_yield_pressure_12000",
+      "backend": "material",
+      "family": "plastic_yield_pressure",
+      "group": 2,
+      "condition": 12000.0,
+      "config": "configs/dataset/v0_2/phenomenon_reuse_v1/plastic_yield_pressure_12000.json",
+      "comparison_variable": "yield_pressure only; baseline plastic_drop_12_v2 has 4000 Pa",
+      "observation_camera": {
+        "position_m": [
+          3.35,
+          0.65,
+          1.4
+        ],
+        "target_m": [
+          2.75,
+          1.52,
+          0.83
+        ],
+        "ortho_scale_m": 1.0
+      },
+      "observation_hz": 10
+    }
+  ]
+}
