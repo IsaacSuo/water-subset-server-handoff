@@ -7,16 +7,25 @@ from .io import file_hash, read_json, write_json
 
 
 def build(indices, supersede, output, verify_streams=False):
-    episodes={};sources=[]
+    episodes={};sources=[];history=[]
     for path in indices:
         path=Path(path).resolve();index=read_json(path)
         sources.append(dict(path=str(path),sha256=file_hash(path)))
+        for entry in index.get('superseded',[]):
+            previous=next((r for r in history if r['old_episode']['id']==entry['old_episode']['id']),None)
+            if previous is not None and previous!=entry:
+                raise ValueError('Conflicting supersession: '+entry['old_episode']['id'])
+            if previous is None:history.append(entry)
         for item in index['episodes']:
             if item.get('status')=='failed_collection':continue
             if item['id'] in episodes and episodes[item['id']]!=item:
                 raise ValueError('Conflicting episode ID: '+item['id'])
             episodes[item['id']]=item
-    history=[]
+    for entry in history:
+        old=entry['old_episode']['id']
+        if old in episodes:
+            if episodes[old]!=entry['old_episode']:raise ValueError('Changed superseded episode: '+old)
+            episodes.pop(old)
     for old,new in supersede:
         if old==new or old not in episodes or new not in episodes:
             raise ValueError('Supersession must name distinct existing old and new episodes')

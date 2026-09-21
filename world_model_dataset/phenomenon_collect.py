@@ -19,6 +19,25 @@ from .probe_episode import artifact
 from .phenomenon_observations import camera, GeometryView
 
 
+def effort_summary(efforts, limit):
+    """Read recorded scalar or world-vector forces; missing clipping flags stay missing."""
+    magnitudes=[]
+    for row in efforts:
+        if 'applied_force_n' in row:magnitude=abs(float(row['applied_force_n']))
+        elif 'force_world_n' in row:
+            vector=np.asarray(row['force_world_n'],float)
+            if vector.shape!=(3,):raise ValueError('Expected world XYZ applied force')
+            magnitude=float(np.linalg.norm(vector))
+        else:raise ValueError('No recorded applied force')
+        if not np.isfinite(magnitude) or magnitude>limit+1e-4:raise ValueError('Actuator force exceeds declared limit or is nonfinite')
+        magnitudes.append(magnitude)
+    flags=all('saturated' in r for r in efforts)
+    return dict(max_force_n=limit,peak_applied_force_n=max(magnitudes),
+                saturated_step_fraction=sum(bool(r['saturated']) for r in efforts)/len(efforts) if flags else None,
+                saturation_record_status='recorded' if flags else 'unavailable',
+                effort_semantics='applied bounded controller force, not measured contact reaction')
+
+
 def audit(ep, family=None):
     rows=list(ep.states());first=rows[0];last=rows[-1]
     fixed=[b['instance_id'] for b in ep.manifest['system']['bodies'] if b['physics_kind']=='static']
@@ -31,7 +50,7 @@ def audit(ep, family=None):
     info={};warnings=[]
     for oid in carriers:
         topology=ep.soft_topology(oid);entry=dict(topology_representation=topology.get('representation','native_tetrahedral_volume'),frames=0)
-        initial=None;end=None;peak_displacement=0.;min_area=float('inf');min_j=float('inf');jp=[]
+        initial=None;end=None;peak_displacement=0.;min_area=float('inf');min_j=float('inf');jp=[];rest_det=None
         for row,g in ep.geometries(oid):
             entry['frames']+=1
             entry.setdefault('native_fields',list(g))
@@ -54,6 +73,14 @@ def audit(ep, family=None):
                     entry['last_half_second_peak_nodal_speed_m_s']=max(speed,entry.get('last_half_second_peak_nodal_speed_m_s',0.))
             metrics=row['body_states'][oid].get('metrics',{})
             if 'minimum_j' in metrics:min_j=min(min_j,metrics['minimum_j'])
+            elif 'simulation_tets' in g:
+                tets=g['simulation_tets'];p=g['simulation_world_m'][tets]
+                det=np.einsum('ij,ij->i',np.cross(p[:,1]-p[:,0],p[:,2]-p[:,0]),p[:,3]-p[:,0])
+                if rest_det is None:
+                    rest=np.asarray(topology['simulation_bind_points_world_m'])[tets]
+                    rest_det=np.einsum('ij,ij->i',np.cross(rest[:,1]-rest[:,0],rest[:,2]-rest[:,0]),rest[:,3]-rest[:,0])
+                    if np.any(abs(rest_det)<1e-15):raise ValueError('Degenerate bind Tet')
+                min_j=min(min_j,float((det/rest_det).min()))
         if initial is not None:
             entry.update(initial_bounds_m=[initial.min(0).tolist(),initial.max(0).tolist()],final_bounds_m=[end.min(0).tolist(),end.max(0).tolist()],
                          max_corresponding_point_displacement_m=peak_displacement)
@@ -78,12 +105,8 @@ def audit(ep, family=None):
         controls=list(ep.controls());states=list(ep.actuator_states());efforts=list(ep.actuator_efforts())
         if not controls or not states or not efforts:raise ValueError('Missing active control stream')
         ctrl=ep.manifest['control_program']['controllers'][0]
-        peak=max(abs(r['applied_force_n']) for r in efforts)
-        if peak>ctrl['max_force_n']+1e-4:raise ValueError('Actuator force exceeds declared limit')
         result['actuator']=dict(commands=len(controls),state_records=len(states),effort_records=len(efforts),
-            max_force_n=ctrl['max_force_n'],peak_applied_force_n=peak,
-            saturated_step_fraction=sum(bool(r['saturated']) for r in efforts)/len(efforts),
-            effort_semantics='applied bounded controller force, not measured contact reaction')
+            **effort_summary(efforts,ctrl['max_force_n']))
         if family in (None, 'elastic_finite_load_hold_unload'):
             soft=next(oid for oid in info if 'minimum_tet_J' in info[oid])
             metric=[r['body_states'][soft]['metrics'] for r in rows]
@@ -109,8 +132,15 @@ def apply_quality_evidence(ep, review, evidence):
     path=Path(evidence['path'])
     if file_hash(path)!=evidence['sha256']:raise ValueError('Quality evidence hash mismatch')
     result=read_json(path)
-    if result.get('source_states_sha256')!=ep.manifest['trajectory']['states']['sha256']:
+    state_hashes=result.get('source_states_sha256')
+    if not isinstance(state_hashes,list):state_hashes=[state_hashes]
+    if ep.manifest['trajectory']['states']['sha256'] not in state_hashes:
         raise ValueError('Quality evidence belongs to a different physical cache')
+    if result.get('format')=='beam-pair-review/1':
+        if result['status']!='paired_bending_checked' or not result.get('checks') or not all(result['checks'].values()):
+            raise ValueError('Beam pair review did not pass; retain as diagnostic probe')
+        review['beam_pair_review']=result
+        return review
     if result.get('format')!='cloth-stability-review/1':raise ValueError('Unsupported quality evidence')
     review['local_stability_review']=result
     if result['status']=='local_stability_checked' and result.get('checks') and all(result['checks'].values()):
@@ -121,36 +151,40 @@ def apply_quality_evidence(ep, review, evidence):
 
 def collect(job,destination):
     source=Path(job['episode']).resolve();destination=Path(destination).resolve()
+    source_manifest=source/job.get('manifest','episode.json')
+    if file_hash(source_manifest)!=job['manifest_sha256']:raise ValueError('Source manifest changed since batch registration')
     ep=open_episode(source,require_complete=False);review=audit(ep, job['family'])
     if job.get('quality_evidence'):apply_quality_evidence(ep,review,job['quality_evidence'])
     destination.mkdir(parents=True,exist_ok=False)
     out=destination/'episode';shutil.copytree(source,out)
     ep=open_episode(out,require_complete=False)
     write_json(destination/'cache_review.json',review)
-    if job.get('quality_evidence'):write_json(destination/'quality_evidence.json',review['local_stability_review'])
+    if job.get('quality_evidence'):write_json(destination/'quality_evidence.json',read_json(job['quality_evidence']['path']))
     write_json(out/'source_manifest.json',ep.manifest)
     view=GeometryView(ep);cam=camera(job['observation_camera']);static=view.render_static(cam)
     obs=out/'observations';obs.mkdir(exist_ok=False)
     stride=ep.manifest['timing']['physics_hz']//job['observation_hz'];frames=[]
     source_hash=ep.manifest['trajectory']['states']['sha256']
-    visibility={oid:0 for oid in view.subjects}
+    visibility={oid:0 for oid in view.body_ids}
     for row in ep.states():
         if row['physics_step']%stride:continue
         raster=copy.copy(static);raster.depth=static.depth.copy();raster.rgb=static.rgb.copy();raster.seg=static.seg.copy()
         view.render(raster,row);name=f"{row['physics_step']:06d}"
         Image.fromarray(raster.rgb).save(obs/(name+'.png'))
         np.savez_compressed(obs/(name+'.npz'),**raster.arrays(),time_s=row['time_s'],physics_step=row['physics_step'])
-        for oid in view.subjects:visibility[oid]+=int(np.count_nonzero(raster.seg==view.body_ids[oid]))
+        for oid in visibility:visibility[oid]+=int(np.count_nonzero(raster.seg==view.body_ids[oid]))
         frames.append(dict(time_s=row['time_s'],physics_step=row['physics_step'],camera_id='main',rgb=name+'.png',data=name+'.npz',
                            rgb_sha256=file_hash(obs/(name+'.png')),data_sha256=file_hash(obs/(name+'.npz'))))
-    if not frames or not any(visibility.values()):raise ValueError('No observed subject')
+    if not frames or not any(visibility[oid] for oid in view.subjects):raise ValueError('No observed subject')
+    for oid in job.get('required_visible_ids',[]):
+        if not visibility.get(oid):raise ValueError('Required participant not visible: '+oid)
     write_json(obs/'index.json',dict(frames=frames,cameras={'main':cam},segmentation_ids=view.body_ids,
         render_backend='mainline CPU perspective z-buffer; native cached geometry',source_state_sha256=source_hash,
         observation_hz=job['observation_hz'],geometry_representation=dict(kind=view.kind,
-            rigid='source physical mesh or declared box',surface='native triangles',volume='native cached display surface; simulation Tet fields remain authoritative',
+            rigid='source physical mesh or declared box',surface='native triangles',volume=view.volume_representation,
             rope='tessellation of native collision capsules; not material surface topology',plastic='recorded initial-radius particle glyph union; not continuum surface'),
         appearance='diagnostic flat colors and shading, not source asset texture',physics_rerun=False,hidden_plane=False,
-        subject_visible_pixel_sum=visibility))
+        subject_visible_pixel_sum={oid:visibility[oid] for oid in view.subjects},participant_visible_pixel_sum=visibility))
     if ep.manifest['trajectory']['interaction_annotations']['status']=='available':annotations=ep.annotations()
     else:annotations=dict(labels=[],reason='native contact stream retained; no unverified phenomenon labels')
     if ep.manifest['trajectory']['outcomes']['status']=='available':outcomes=ep.outcomes()

@@ -91,13 +91,28 @@ def posed(vertices,state):
     return Rotation.from_quat(state['orientation_xyzw']).apply(vertices)+state['position_m']
 
 
+def tet_boundary(tets, points):
+    """Extract the exterior faces of recorded Tets, without adding vertices."""
+    tets=np.asarray(tets,dtype=int);points=np.asarray(points)
+    faces=np.concatenate([tets[:,f] for f in ((1,2,3),(0,3,2),(0,1,3),(0,2,1))])
+    opposite=np.concatenate([tets[:,i] for i in range(4)])
+    _,inverse,counts=np.unique(np.sort(faces,axis=1),axis=0,return_inverse=True,return_counts=True)
+    if np.any(counts>2):raise ValueError('Nonmanifold Tet boundary')
+    keep=counts[inverse]==1;faces=faces[keep];opposite=opposite[keep]
+    tri=points[faces]
+    inward=np.einsum('ij,ij->i',np.cross(tri[:,1]-tri[:,0],tri[:,2]-tri[:,0]),points[opposite]-tri[:,0])>0
+    faces[inward]=faces[inward][:,[0,2,1]]
+    return faces
+
+
 class GeometryView:
     def __init__(self,episode):
         self.ep=episode;self.resolved=episode.resolved_inputs();self.first=next(episode.states());self.fixed={};self.local={}
         self.body_ids={b['instance_id']:i+1 for i,b in enumerate(episode.manifest['system']['bodies'])}
         self.subjects=[b['instance_id'] for b in episode.manifest['system']['bodies'] if b['role']=='subject']
-        self.native=None;self.particle_radii=None
-        if 'config' in self.resolved:
+        self.native=None;self.particle_radii=None;self.boundaries={}
+        self.volume_representation='native cached display surface; simulation Tet fields remain authoritative'
+        if 'config' in self.resolved and 'bodies' not in self.resolved:
             self.kind=self.resolved['config']['kind']
             for oid,record in self.resolved['static_geometries'].items():
                 with np.load(episode.record_path(record)) as z:self.fixed[oid]=(z['vertices'],z['triangles'])
@@ -113,10 +128,15 @@ class GeometryView:
                 top=episode.soft_topology('mpm_block')
                 with np.load(episode.record_path(top['static'])) as z:self.particle_radii=z['particle_radius_m']
         else:
-            self.kind='volume' if any(b['physics_kind']=='volumetric' for b in episode.manifest['system']['bodies']) else 'rigid'
+            self.kind=self.resolved.get('config',{}).get('kind') or ('volume' if any(b['physics_kind']=='volumetric' for b in episode.manifest['system']['bodies']) else 'rigid')
+            if self.kind=='beam':self.volume_representation='exterior faces extracted from native simulation Tets; original node identities, no smoothing or reconstructed surface'
             for oid,definition in self.resolved['bodies'].items():
                 g=definition['geometry'];state=self.first['body_states'][oid]
-                if g['shape']=='soft_box':continue
+                if g['shape']=='soft_box':
+                    if self.kind=='beam':
+                        with np.load(episode.record_path(state['geometry'])) as z:
+                            self.boundaries[oid]=tet_boundary(z['simulation_tets'],z['simulation_world_m'])
+                    continue
                 if g['shape']=='mesh':
                     with np.load(episode.record_path(g['mesh'])) as z:v,f=z['vertices'],z['triangles']
                 elif g['shape']=='box':
@@ -137,6 +157,7 @@ class GeometryView:
             state=row['body_states'][oid]
             if 'geometry' not in state or oid.startswith('segment_'):continue
             with np.load(self.ep.record_path(state['geometry'])) as g:
-                if 'surface_world_m' in g:raster.mesh(g['surface_world_m'],g['surface_triangles'],self.body_ids[oid],[.15,.5,.7])
+                if oid in self.boundaries:raster.mesh(g['simulation_world_m'],self.boundaries[oid],self.body_ids[oid],[.15,.5,.7])
+                elif 'surface_world_m' in g:raster.mesh(g['surface_world_m'],g['surface_triangles'],self.body_ids[oid],[.15,.5,.7])
                 elif 'particle_world_m' in g:raster.spheres(g['particle_world_m'],self.particle_radii,self.body_ids[oid],[.8,.32,.13])
         return raster

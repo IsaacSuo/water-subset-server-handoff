@@ -1,0 +1,75 @@
+{
+  "format": "phenomenon-cache-collection/1",
+  "physics_rerun": false,
+  "source_commit": "147bf4e",
+  "jobs": {
+    "beam_load_delivery": {
+      "id": "beam_load_delivery",
+      "status": "generated",
+      "episode": "/mnt/y/isaacsim_work_beam_attachment/output/material_entry/beam_load_delivery/episode",
+      "manifest": "episode.json",
+      "manifest_sha256": "c5ba454217ae5ad60e5b2ff55785466dc9ffce9f17b73022d4b831d4a29a8ffd",
+      "family": "elastic_beam_attachment",
+      "group": 2,
+      "condition": "load_hold_retract",
+      "comparison_variable": "plate.schedule only",
+      "observation_hz": 10,
+      "observation_camera": {
+        "target_m": [
+          3.0,
+          1.52,
+          0.8
+        ],
+        "ortho_scale_m": 0.65,
+        "position_m": [
+          3.55,
+          0.85,
+          1.15
+        ]
+      },
+      "required_visible_ids": [
+        "Beam",
+        "Plate",
+        "Fixture"
+      ],
+      "quality_evidence": {
+        "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_beam_data_v3/pair_review.json",
+        "sha256": "94bdef1d764111c0bb41e7b3a72a5d0dfdccc27bbadb6addf30437f9954bdae3"
+      }
+    },
+    "beam_hold_delivery": {
+      "id": "beam_hold_delivery",
+      "status": "generated",
+      "episode": "/mnt/y/isaacsim_work_beam_attachment/output/material_entry/beam_hold_delivery/episode",
+      "manifest": "episode.json",
+      "manifest_sha256": "e83d90f29441ec2039b694836116b673ea5072c47fe0a337d9c4b789e6dc57a2",
+      "family": "elastic_beam_attachment",
+      "group": 2,
+      "condition": "plate_stays_high",
+      "comparison_variable": "plate.schedule only",
+      "observation_hz": 10,
+      "observation_camera": {
+        "target_m": [
+          3.0,
+          1.52,
+          0.8
+        ],
+        "ortho_scale_m": 0.65,
+        "position_m": [
+          3.55,
+          0.85,
+          1.15
+        ]
+      },
+      "required_visible_ids": [
+        "Beam",
+        "Plate",
+        "Fixture"
+      ],
+      "quality_evidence": {
+        "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_beam_data_v3/pair_review.json",
+        "sha256": "94bdef1d764111c0bb41e7b3a72a5d0dfdccc27bbadb6addf30437f9954bdae3"
+      }
+    }
+  }
+}
