@@ -1,0 +1,41 @@
+{
+  "format": "phenomenon-cache-collection/1",
+  "physics_rerun": false,
+  "source_commit": "ca39d3875c933c9ad759a0e6c9c52fbf22d159e2",
+  "jobs": {
+    "c_travel24_v1": {
+      "id": "c_travel24_v1",
+      "status": "generated",
+      "episode": "/mnt/y/isaacsim_work_rope_load/output/rope_load_c/c_travel24_v1/episode",
+      "manifest": "episode.json",
+      "manifest_sha256": "01f2574cbd7c6edfbbc9657d71d64f86f63817ad1af5f9fbf70037d534b66030",
+      "family": "rope_slack_to_taut_load_transfer",
+      "group": 4,
+      "condition": "travel24",
+      "comparison_variable": "target travel 0.24 m; original failed 0.12 m retained in adoption review",
+      "observation_hz": 10,
+      "observation_camera": {
+        "target_m": [
+          2.5,
+          1.57,
+          0.84
+        ],
+        "ortho_scale_m": 0.8,
+        "position_m": [
+          3.1,
+          0.7,
+          1.6
+        ]
+      },
+      "required_visible_ids": [
+        "front_load",
+        "rear_load",
+        "segment_8"
+      ],
+      "quality_evidence": {
+        "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_rope_load_data_v6/adoption_review.json",
+        "sha256": "93f32b79dd183689b2bea767de2593ddd353c2bc30b84f126d0fe09121636d2d"
+      }
+    }
+  }
+}

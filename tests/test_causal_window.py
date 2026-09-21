@@ -67,6 +67,11 @@ class WindowTests(unittest.TestCase):
         self.assertEqual(len(window['controls']),10)
         self.assertEqual(len(window['actuator_efforts']['c']),10)
         self.assertEqual(window['controls'][1]['time_s'],.55)
+        ep.actuator_states=lambda oid:iter(commands)
+        window=read_window(ep,.5,1.)
+        self.assertEqual(len(window['actuator_states']['c']),10)
+        self.assertEqual(window['actuator_states']['c'][1]['time_s'],.55)
+        self.assertEqual(len(window['states']),2)
         commands[11]['time_s']=.551
         with self.assertRaisesRegex(ValueError,'physics clock'):read_window(ep,.5,1.)
 

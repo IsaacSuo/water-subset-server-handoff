@@ -117,13 +117,30 @@ class GeometryView:
             for oid,record in self.resolved['static_geometries'].items():
                 with np.load(episode.record_path(record)) as z:self.fixed[oid]=(z['vertices'],z['triangles'])
             if self.kind=='rope':
-                with np.load(episode.record_path(self.resolved['raw_native'])) as z:self.native={key:z[key] for key in ('shape_body','shape_transform','shape_scale','body_ids')}
-                for b in self.native['body_ids']:
-                    idx=np.flatnonzero(self.native['shape_body']==b)[0];r,half=self.native['shape_scale'][idx,:2]
-                    mesh=trimesh.creation.capsule(radius=r,height=2*half,count=[8,12])
+                with np.load(episode.record_path(self.resolved['raw_native'])) as z:
+                    self.native={key:z[key] for key in ('shape_body','shape_transform','shape_scale','body_ids')}
+                    for key in ('segment_body_ids','load_body_ids','shape_type'):
+                        if key in z:self.native[key]=z[key]
+                segments=self.native.get('segment_body_ids',self.native['body_ids'])
+                names={int(b):'segment_'+str(b) for b in segments}
+                loads=self.resolved['config'].get('loads',[])
+                load_ids=self.native.get('load_body_ids',[])
+                if len(loads)!=len(load_ids):raise ValueError('Native load identity count mismatch')
+                names.update({int(b):obj['id'] for b,obj in zip(load_ids,loads)})
+                for b,oid in names.items():
+                    indices=np.flatnonzero(self.native['shape_body']==b)
+                    if len(indices)!=1:raise ValueError('Expected one recorded shape per rope/load body')
+                    idx=indices[0]
+                    if b in segments:
+                        r,half=self.native['shape_scale'][idx,:2]
+                        mesh=trimesh.creation.capsule(radius=r,height=2*half,count=[8,12])
+                    else:
+                        # Recorded Newton GeoType.BOX, scale stores half extents.
+                        if self.native['shape_type'][idx]!=7:raise ValueError('Unsupported native load shape')
+                        mesh=trimesh.creation.box(extents=2*self.native['shape_scale'][idx])
                     # trimesh capsule is centred on Z; retain recorded shape pose.
                     transform=self.native['shape_transform'][idx]
-                    self.local['segment_'+str(b)]=(Rotation.from_quat(transform[3:]).apply(mesh.vertices)+transform[:3],mesh.faces)
+                    self.local[oid]=(Rotation.from_quat(transform[3:]).apply(mesh.vertices)+transform[:3],mesh.faces)
             if self.kind=='plastic':
                 top=episode.soft_topology('mpm_block')
                 with np.load(episode.record_path(top['static'])) as z:self.particle_radii=z['particle_radius_m']

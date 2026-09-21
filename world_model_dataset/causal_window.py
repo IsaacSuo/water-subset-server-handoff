@@ -60,7 +60,7 @@ def read_window(episode, start_s, end_s):
     controls=trace(episode.controls(),False);actual={};efforts={}
     for controller in episode.manifest['control_program']['controllers']:
         oid=controller['controller_id']
-        actual[oid]=trace(episode.actuator_states(oid))
+        actual[oid]=trace(episode.actuator_states(oid),False)
         efforts[oid]=trace(episode.actuator_efforts(oid),False)
     observations=[];index=None
     record=episode.manifest['trajectory']['observations']
@@ -74,7 +74,7 @@ def read_window(episode, start_s, end_s):
         observations=observations,observation_index=index,
         control_primitive=episode.manifest['control_program']['primitive'],
         observation_availability=record,
-        semantics='Closed interval; native samples at their recorded rates, controls/efforts align to physics clock, observations/actual actuator states align to saved states; no resampling, interpolation or command carry-forward; effort is not contact reaction')
+        semantics='Closed interval; native samples at their recorded rates, controls/efforts/actual actuator traces align to physics clock, observations align to saved states; no resampling, interpolation or command carry-forward; effort is not contact reaction')
 
 
 def describe(window):

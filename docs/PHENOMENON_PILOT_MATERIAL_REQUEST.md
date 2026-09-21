@@ -1,6 +1,6 @@
 # 主线现象数据首批：材料接口需求（2026-09-21）
 
-最新采用（2026-09-22）：B 动态夹头拖布的自由/受阻/低力三条已完成主线缓存核对、诊断观测及统一读取，见 [B 接入 v5](PHENOMENON_CLOTH_GRIPPER_INTEGRATION_V5.md)。用户已认可正常速度预览，残留局部颤动和 training_admission=false 保留。A/B 已有工程数据交付，C 仍由材料线推进；下文保留最初需求与历史状态。
+最新采用（2026-09-22）：A/B/C 均已完成主线工程数据接入。B 自由/受阻/低力见 [B 接入 v5](PHENOMENON_CLOTH_GRIPPER_INTEGRATION_V5.md)；C 绳索连接动态负载见 [C 接入 v6](PHENOMENON_ROPE_LOAD_INTEGRATION_V6.md)，成功 24 cm 目标及旧 12 cm 失败证据均保留。当前统一目录 27 条、13599 状态、771 诊断观测。B 用户视觉认可与残留颤动分开记录；C 穿透、连接间隙及用途人审待定保留；training_admission=false。生成入口仍在独立材料工作区，模板扩展继续暂停。下文保留最初需求与历史状态，不代表当前仍阻塞。
 
 2026-09-22：用户确认 B/C 正由材料线推进。主线同步完成 [模板与条件对照 v4](PHENOMENON_TEMPLATES_V4.md)，没有修改材料线工作区；待 B/C 交付后再做主线采用审核。
 

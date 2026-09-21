@@ -24,8 +24,8 @@ def effort_summary(efforts, limit):
     magnitudes=[]
     for row in efforts:
         if 'applied_force_n' in row:magnitude=abs(float(row['applied_force_n']))
-        elif 'force_world_n' in row:
-            vector=np.asarray(row['force_world_n'],float)
+        elif 'force_world_n' in row or 'applied_force_world_n' in row:
+            vector=np.asarray(row.get('force_world_n',row.get('applied_force_world_n')),float)
             if vector.shape!=(3,):raise ValueError('Expected world XYZ applied force')
             magnitude=float(np.linalg.norm(vector))
         else:raise ValueError('No recorded applied force')
@@ -147,6 +147,13 @@ def apply_quality_evidence(ep, review, evidence):
         review['cloth_gripper_adoption']=result
         review['warnings'].append('Residual local chatter remains; functional or separately recorded visual acceptance does not upgrade numerical quality or training admission')
         return review
+    if result.get('format')=='rope-load-adoption/1':
+        if result.get('status')!='functional_cache_checked' or not result.get('checks') or not all(result['checks'].values()):
+            raise ValueError('Rope load functional cache check failed')
+        review['rope_load_adoption']=result
+        review['fixed_configuration_state_use']=result['use_review']
+        review['warnings'].append('Newton fixed-configuration state candidate only; sampled box penetration and joint gaps retained, no convergence or bit-exact repeatability claim; tension/contact supervision unavailable')
+        return review
     if result.get('format')!='cloth-stability-review/1':raise ValueError('Unsupported quality evidence')
     review['local_stability_review']=result
     if result['status']=='local_stability_checked' and result.get('checks') and all(result['checks'].values()):
@@ -216,6 +223,7 @@ def collect(job,destination):
         source_states_sha256=source_hash,observations=observations,states=review['states'],
         representations=review['representations'],quality='needs_stability_review' if any('Cloth contact stability' in w for w in review['warnings']) else 'cache_checked_with_declared_limits',training_admission=False,
         observation_representation='diagnostic RGB-depth-IDs, no source textures',review='cache_review.json')
+    if 'fixed_configuration_state_use' in review:result['fixed_configuration_state_use']=review['fixed_configuration_state_use']
     write_json(destination/'result.json',result)
     return result
 
