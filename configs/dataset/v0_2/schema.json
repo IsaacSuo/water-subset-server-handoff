@@ -75,7 +75,7 @@
       "properties": {
         "instance_id": {"$ref": "#/$defs/id"},
         "role": {"enum": ["subject", "actuator", "environment"]},
-        "physics_kind": {"enum": ["rigid", "volumetric", "static", "articulation"]},
+        "physics_kind": {"enum": ["rigid", "volumetric", "surface", "static", "articulation"]},
         "geometry_id": {"$ref": "#/$defs/id"},
         "physics_profile_id": {"$ref": "#/$defs/id"},
         "appearance_profile_id": {"$ref": "#/$defs/id"},

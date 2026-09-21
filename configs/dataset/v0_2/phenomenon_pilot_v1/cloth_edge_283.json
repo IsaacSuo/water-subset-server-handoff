@@ -1,0 +1,94 @@
+{
+  "cloth": {
+    "kind": "rectangle",
+    "size_m": [
+      0.64,
+      0.43
+    ],
+    "cells": [
+      64,
+      44
+    ],
+    "world_from_mesh": [
+      [
+        0.9659258262890683,
+        -0.25881904510252074,
+        0.0,
+        2.83
+      ],
+      [
+        0.25881904510252074,
+        0.9659258262890683,
+        0.0,
+        1.52
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        1.03
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  "environment": [
+    {
+      "id": "tabletop",
+      "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/support.npz"
+    },
+    {
+      "id": "desk_frame",
+      "path": "/home/fangsuo/isaacsim_work_material_response/experiments/material_response/scene_input/examples/desk_frame.npz"
+    }
+  ],
+  "initial_velocity_m_s": [
+    0,
+    0,
+    0
+  ],
+  "duration_s": 2.0,
+  "physics_hz": 1200,
+  "state_hz": 60,
+  "iterations": 32,
+  "material": {
+    "density_kg_m3": 480.0,
+    "youngs_modulus_Pa": 20000.0,
+    "poisson_ratio": 0.3,
+    "thickness_m": 0.001,
+    "stretch_stiffness": 20000.0,
+    "shear_stiffness": 20000.0,
+    "bend_stiffness": 0.02,
+    "friction": 0.6,
+    "elasticity_damping": 0.005,
+    "bend_damping": 0.005
+  },
+  "collision": {
+    "contact_offset_m": 0.003,
+    "rest_offset_m": 0.001
+  },
+  "scene_request": {
+    "goal": "passive drape over original teacher desk right edge",
+    "source_scene": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/scene.json",
+    "units": "metres",
+    "up_axis": "Z",
+    "geometry_frame": "already in original Blender world; identity environment transform",
+    "selection": "whole original tabletop and whole original teacherDesk frame; no proxies",
+    "nearby_excluded": "Only the supplied tabletop and complete desk frame participate; other classroom geometry is outside this local episode scope."
+  },
+  "source_records": {
+    "scene": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/scene.json",
+    "desk_frame": "/home/fangsuo/isaacsim_work_material_response/experiments/material_response/scene_input/examples/desk_frame_source.json"
+  },
+  "collision_pair_updates": 4,
+  "collision_iteration_multiplier": 2,
+  "speculative_ccd": true,
+  "linear_damping_per_s": 0.5,
+  "change_reason": "Dense native mesh and stronger contact solving with explicit damping for post-impact jitter; no filtering, state freezing or prescribed motion.",
+  "format": "material-scene/1",
+  "kind": "cloth"
+}

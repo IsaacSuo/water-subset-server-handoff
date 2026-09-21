@@ -1,0 +1,54 @@
+{
+  "version": "phenomenon-batch/1",
+  "purpose": "four-process condition pilot, no training or split",
+  "material_entry": "/home/fangsuo/isaacsim_work_material_response/experiments/material_response/scene_input/material_entry.py",
+  "material_runtime": "configs/dataset/v0_2/phenomenon_pilot_v1/runtime.json",
+  "jobs": [
+    {
+      "id": "plastic_drop_4_v2",
+      "backend": "material",
+      "family": "plastic_impact_height",
+      "group": 2,
+      "condition": 0.04,
+      "config": "configs/dataset/v0_2/phenomenon_pilot_v1/plastic_drop_4_v2.json",
+      "comparison_variable": "initial lowest-point clearance m",
+      "observation_camera": {
+        "position_m": [
+          3.35,
+          0.65,
+          1.4
+        ],
+        "target_m": [
+          2.75,
+          1.52,
+          0.83
+        ],
+        "ortho_scale_m": 1.0
+      },
+      "observation_hz": 10
+    },
+    {
+      "id": "plastic_drop_12_v2",
+      "backend": "material",
+      "family": "plastic_impact_height",
+      "group": 2,
+      "condition": 0.12,
+      "config": "configs/dataset/v0_2/phenomenon_pilot_v1/plastic_drop_12_v2.json",
+      "comparison_variable": "initial lowest-point clearance m",
+      "observation_camera": {
+        "position_m": [
+          3.35,
+          0.65,
+          1.4
+        ],
+        "target_m": [
+          2.75,
+          1.52,
+          0.83
+        ],
+        "ortho_scale_m": 1.0
+      },
+      "observation_hz": 10
+    }
+  ]
+}

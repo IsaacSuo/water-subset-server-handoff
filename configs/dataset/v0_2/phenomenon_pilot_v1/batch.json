@@ -1,0 +1,332 @@
+{
+  "version": "phenomenon-batch/1",
+  "purpose": "four-process condition pilot, no training or split",
+  "material_entry": "/home/fangsuo/isaacsim_work_material_response/experiments/material_response/scene_input/material_entry.py",
+  "material_runtime": "configs/dataset/v0_2/phenomenon_pilot_v1/runtime.json",
+  "jobs": [
+    {
+      "id": "roll_spin_0",
+      "backend": "rigid",
+      "family": "rolling_initial_spin",
+      "group": 1,
+      "condition": 0,
+      "config": "configs/dataset/v0_2/phenomenon_pilot_v1/roll_spin_0.json",
+      "comparison_variable": "onion initial Y angular velocity rad/s",
+      "observation_camera": {
+        "position_m": [
+          2.0,
+          0.55,
+          1.6
+        ],
+        "target_m": [
+          2.6,
+          1.53,
+          0.84
+        ],
+        "ortho_scale_m": 0.95
+      },
+      "observation_hz": 10
+    },
+    {
+      "id": "roll_spin_12",
+      "backend": "rigid",
+      "family": "rolling_initial_spin",
+      "group": 1,
+      "condition": 12,
+      "config": "configs/dataset/v0_2/phenomenon_pilot_v1/roll_spin_12.json",
+      "comparison_variable": "onion initial Y angular velocity rad/s",
+      "observation_camera": {
+        "position_m": [
+          2.0,
+          0.55,
+          1.6
+        ],
+        "target_m": [
+          2.6,
+          1.53,
+          0.84
+        ],
+        "ortho_scale_m": 0.95
+      },
+      "observation_hz": 10
+    },
+    {
+      "id": "rearrange_count_3",
+      "backend": "rigid",
+      "family": "multibody_count",
+      "group": 1,
+      "condition": 3,
+      "config": "configs/dataset/v0_2/phenomenon_pilot_v1/rearrange_count_3.json",
+      "comparison_variable": "presence of top onion; remaining bodies unchanged",
+      "observation_camera": {
+        "projection": "PERSP",
+        "target_m": [
+          2.82,
+          1.52,
+          0.68
+        ],
+        "position_m": [
+          3.15,
+          0.3,
+          1.3
+        ],
+        "focal_length_mm": 22
+      },
+      "observation_hz": 10
+    },
+    {
+      "id": "rearrange_count_4",
+      "backend": "rigid",
+      "family": "multibody_count",
+      "group": 1,
+      "condition": 4,
+      "config": "configs/dataset/v0_2/phenomenon_pilot_v1/rearrange_count_4.json",
+      "comparison_variable": "presence of top onion; remaining bodies unchanged",
+      "observation_camera": {
+        "projection": "PERSP",
+        "target_m": [
+          2.82,
+          1.52,
+          0.68
+        ],
+        "position_m": [
+          3.15,
+          0.3,
+          1.3
+        ],
+        "focal_length_mm": 22
+      },
+      "observation_hz": 10
+    },
+    {
+      "id": "passage_flat",
+      "backend": "rigid",
+      "family": "orientation_passage",
+      "group": 1,
+      "condition": "flat",
+      "config": "configs/dataset/v0_2/phenomenon_pilot_v1/passage_flat.json",
+      "comparison_variable": "initial orientation, with COM height derived from original floor support",
+      "observation_camera": {
+        "position_m": [
+          0.4,
+          -1.75,
+          0.32
+        ],
+        "target_m": [
+          0.4,
+          -1,
+          0.12
+        ],
+        "ortho_scale_m": 1.95
+      },
+      "observation_hz": 10
+    },
+    {
+      "id": "passage_upright",
+      "backend": "rigid",
+      "family": "orientation_passage",
+      "group": 1,
+      "condition": "upright",
+      "config": "configs/dataset/v0_2/phenomenon_pilot_v1/passage_upright.json",
+      "comparison_variable": "initial orientation, with COM height derived from original floor support",
+      "observation_camera": {
+        "position_m": [
+          0.4,
+          -1.75,
+          0.32
+        ],
+        "target_m": [
+          0.4,
+          -1,
+          0.12
+        ],
+        "ortho_scale_m": 1.95
+      },
+      "observation_hz": 10
+    },
+    {
+      "id": "cloth_edge_273",
+      "backend": "material",
+      "family": "cloth_support_overlap",
+      "group": 3,
+      "condition": 2.73,
+      "config": "configs/dataset/v0_2/phenomenon_pilot_v1/cloth_edge_273.json",
+      "comparison_variable": "cloth initial X translation m",
+      "observation_camera": {
+        "position_m": [
+          3.35,
+          0.65,
+          1.4
+        ],
+        "target_m": [
+          2.75,
+          1.52,
+          0.83
+        ],
+        "ortho_scale_m": 1.0
+      },
+      "observation_hz": 10
+    },
+    {
+      "id": "cloth_edge_283",
+      "backend": "material",
+      "family": "cloth_support_overlap",
+      "group": 3,
+      "condition": 2.83,
+      "config": "configs/dataset/v0_2/phenomenon_pilot_v1/cloth_edge_283.json",
+      "comparison_variable": "cloth initial X translation m",
+      "observation_camera": {
+        "position_m": [
+          3.35,
+          0.65,
+          1.4
+        ],
+        "target_m": [
+          2.75,
+          1.52,
+          0.83
+        ],
+        "ortho_scale_m": 1.0
+      },
+      "observation_hz": 10
+    },
+    {
+      "id": "plastic_drop_4",
+      "backend": "material",
+      "family": "plastic_impact_height",
+      "group": 2,
+      "condition": 0.04,
+      "config": "configs/dataset/v0_2/phenomenon_pilot_v1/plastic_drop_4.json",
+      "comparison_variable": "initial lowest-point clearance m",
+      "observation_camera": {
+        "position_m": [
+          3.35,
+          0.65,
+          1.4
+        ],
+        "target_m": [
+          2.75,
+          1.52,
+          0.83
+        ],
+        "ortho_scale_m": 1.0
+      },
+      "observation_hz": 10
+    },
+    {
+      "id": "plastic_drop_12",
+      "backend": "material",
+      "family": "plastic_impact_height",
+      "group": 2,
+      "condition": 0.12,
+      "config": "configs/dataset/v0_2/phenomenon_pilot_v1/plastic_drop_12.json",
+      "comparison_variable": "initial lowest-point clearance m",
+      "observation_camera": {
+        "position_m": [
+          3.35,
+          0.65,
+          1.4
+        ],
+        "target_m": [
+          2.75,
+          1.52,
+          0.83
+        ],
+        "ortho_scale_m": 1.0
+      },
+      "observation_hz": 10
+    },
+    {
+      "id": "rope_end_free",
+      "backend": "material",
+      "family": "rope_end_constraint",
+      "group": 4,
+      "condition": "free",
+      "config": "configs/dataset/v0_2/phenomenon_pilot_v1/rope_end_free.json",
+      "comparison_variable": "free versus first whole segment fixed at initial pose",
+      "observation_camera": {
+        "position_m": [
+          -2.085,
+          -0.833974596,
+          2.65
+        ],
+        "target_m": [
+          -1.585,
+          -1.7,
+          2.6
+        ],
+        "ortho_scale_m": 0.85
+      },
+      "observation_hz": 10
+    },
+    {
+      "id": "rope_end_first_clamped",
+      "backend": "material",
+      "family": "rope_end_constraint",
+      "group": 4,
+      "condition": "first_clamped",
+      "config": "configs/dataset/v0_2/phenomenon_pilot_v1/rope_end_first_clamped.json",
+      "comparison_variable": "free versus first whole segment fixed at initial pose",
+      "observation_camera": {
+        "position_m": [
+          -2.085,
+          -0.833974596,
+          2.65
+        ],
+        "target_m": [
+          -1.585,
+          -1.7,
+          2.6
+        ],
+        "ortho_scale_m": 0.85
+      },
+      "observation_hz": 10
+    },
+    {
+      "id": "elastic_unload_force_50",
+      "backend": "native",
+      "family": "elastic_finite_load_hold_unload",
+      "group": 2,
+      "condition": 50.0,
+      "config": "configs/dataset/v0_2/phenomenon_pilot_v1/elastic_unload_force_50.json",
+      "comparison_variable": "actuator maximum force N; identical reference trajectory",
+      "observation_camera": {
+        "position_m": [
+          3.35,
+          0.65,
+          1.4
+        ],
+        "target_m": [
+          2.75,
+          1.52,
+          0.83
+        ],
+        "ortho_scale_m": 1.0
+      },
+      "observation_hz": 10
+    },
+    {
+      "id": "elastic_unload_force_150",
+      "backend": "native",
+      "family": "elastic_finite_load_hold_unload",
+      "group": 2,
+      "condition": 150.0,
+      "config": "configs/dataset/v0_2/phenomenon_pilot_v1/elastic_unload_force_150.json",
+      "comparison_variable": "actuator maximum force N; identical reference trajectory",
+      "observation_camera": {
+        "position_m": [
+          3.35,
+          0.65,
+          1.4
+        ],
+        "target_m": [
+          2.75,
+          1.52,
+          0.83
+        ],
+        "ortho_scale_m": 1.0
+      },
+      "observation_hz": 10
+    }
+  ]
+}

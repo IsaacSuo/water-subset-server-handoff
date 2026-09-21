@@ -80,15 +80,31 @@ class CausalEpisode:
         return self.actuator_trace("effort_trace", controller_id)
 
     def soft_geometries(self, instance_id):
-        import numpy as np
         body = next((b for b in self.manifest["system"]["bodies"] if b["instance_id"] == instance_id), None)
-        if body is None or body["physics_kind"] != "volumetric":
-            raise ValueError("Expected a declared volumetric body")
+        if body is None or body["physics_kind"] not in ("volumetric", "surface"):
+            raise ValueError("Expected a declared volumetric or surface body")
+        yield from self.geometries(instance_id)
+
+    def geometries(self, instance_id):
+        """Read a declared body's native geometry stream without coercing its representation.
+
+        Surface meshes, volume nodes, material points and a cable's segment-array
+        carrier retain their own fields. Other rigid bodies use states(), not this API.
+        """
+        import numpy as np
+        if not any(b["instance_id"] == instance_id for b in self.manifest["system"]["bodies"]):
+            raise ValueError("Unknown physical participant: " + instance_id)
         for row in self.states():
-            path = self.record_path(row["body_states"][instance_id]["geometry"])
+            state = row["body_states"][instance_id]
+            if "geometry" not in state:
+                raise RuntimeError("Body has no native geometry stream; use states() for rigid poses")
+            path = self.record_path(state["geometry"])
             with np.load(path, allow_pickle=False) as data:
                 if float(data["time_s"]) != row["time_s"] or int(data["physics_step"]) != row["physics_step"]:
-                    raise ValueError("Soft geometry time metadata mismatch")
+                    raise ValueError("Geometry time metadata mismatch")
+                for key in data.files:
+                    if np.issubdtype(data[key].dtype, np.number) and not np.isfinite(data[key]).all():
+                        raise ValueError("Nonfinite native geometry field: " + key)
                 yield row, {key: data[key].copy() for key in data.files}
 
     def soft_topology(self, instance_id):

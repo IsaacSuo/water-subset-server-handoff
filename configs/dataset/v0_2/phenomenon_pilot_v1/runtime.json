@@ -1,0 +1,23 @@
+{
+  "format": "material-runtime/1",
+  "cloth": {
+    "transport": "powershell",
+    "python": "Y:\\isaacsim\\python.bat"
+  },
+  "rope": {
+    "transport": "powershell",
+    "python": "Y:\\isaacsim\\python.bat",
+    "pythonpath": [
+      "Y:\\isaacsim\\exts\\isaacsim.pip.newton\\pip_prebundle",
+      "Y:\\isaacsim\\extscache\\omni.warp.core-1.13.0+wx64",
+      "Y:\\isaacsim\\extscache\\omni.usd.libs-1.0.3+f9bf0dda.wx64.r.cp312"
+    ],
+    "path_prepend": [
+      "Y:\\isaacsim\\extscache\\omni.usd.libs-1.0.3+f9bf0dda.wx64.r.cp312\\bin"
+    ]
+  },
+  "plastic": {
+    "transport": "native",
+    "python": "/home/fangsuo/program_files/newton/.venv/bin/python"
+  }
+}

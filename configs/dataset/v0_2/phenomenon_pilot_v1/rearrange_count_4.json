@@ -1,0 +1,83 @@
+{
+  "scene_id": "classroom_original",
+  "scene_export": "output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/scene.json",
+  "exploration_root": "/home/fangsuo/isaacsim_work_flexible_explore",
+  "library": "output/physical_assets/library_web_20260917_v2",
+  "scope": "Original scene, real asset appearance, fresh passive physics; development showcase, no training admission or measured material claims.",
+  "shots": [
+    {
+      "id": "rearrange_count_4",
+      "group": 1,
+      "title": "多体重排与桌沿掉落",
+      "phenomenon": "A layered initial arrangement collapses under gravity; collisions scatter the bodies and one onion rolls off the original desk onto the original floor.",
+      "region": "N01_R0",
+      "duration_s": 2.0,
+      "camera": {
+        "projection": "PERSP",
+        "target_m": [
+          2.82,
+          1.52,
+          0.68
+        ],
+        "position_m": [
+          3.15,
+          0.3,
+          1.3
+        ],
+        "focal_length_mm": 22
+      },
+      "bodies": [
+        {
+          "id": "potato_a",
+          "asset": "ph_sweet_potato",
+          "size_m": 0.19,
+          "rotation_deg": [
+            0,
+            0,
+            70
+          ],
+          "xy_m": [
+            2.57,
+            1.57
+          ]
+        },
+        {
+          "id": "potato_b",
+          "asset": "ph_sweet_potato",
+          "size_m": 0.17,
+          "rotation_deg": [
+            0,
+            0,
+            -25
+          ],
+          "xy_m": [
+            2.68,
+            1.6
+          ],
+          "clearance_m": 0.16
+        },
+        {
+          "id": "onion_a",
+          "asset": "ph_yellow_onion",
+          "size_m": 0.1,
+          "xy_m": [
+            2.59,
+            1.55
+          ],
+          "clearance_m": 0.29
+        },
+        {
+          "id": "onion_b",
+          "asset": "ph_yellow_onion",
+          "size_m": 0.09,
+          "xy_m": [
+            2.68,
+            1.6400000000000001
+          ],
+          "clearance_m": 0.4
+        }
+      ],
+      "revision": "User requested edge fall: translate entire initial arrangement +0.07 m in Y to preserve relative impact layout; no environment/material/velocity changes; observe 4.5 s."
+    }
+  ]
+}
