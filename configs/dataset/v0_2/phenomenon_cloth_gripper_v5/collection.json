@@ -1,0 +1,108 @@
+{
+  "format": "phenomenon-cache-collection/1",
+  "physics_rerun": false,
+  "source_commit": "f985b5c",
+  "preview_commit": "2f12001",
+  "jobs": {
+    "depen005_hold5s": {
+      "id": "depen005_hold5s",
+      "status": "generated",
+      "episode": "/mnt/y/isaacsim_work_cloth_gripper/output/cloth_gripper_substeps/depen005_hold5s/episode",
+      "manifest": "episode.json",
+      "manifest_sha256": "c137863d46442533a1f842a7d2201cc23d23aedd088fdcbd2cfdf07f545773e5",
+      "family": "cloth_finite_gripper",
+      "group": 3,
+      "condition": "hold",
+      "comparison_variable": "blocked adds opposing fixture; low changes max_force_n to 0.2; otherwise identical candidate config, original scene, initial nodes and topology",
+      "observation_hz": 10,
+      "observation_camera": {
+        "target_m": [
+          2.75,
+          1.52,
+          0.83
+        ],
+        "ortho_scale_m": 1.0,
+        "position_m": [
+          3.35,
+          0.65,
+          1.4
+        ]
+      },
+      "required_visible_ids": [
+        "cloth",
+        "Gripper"
+      ],
+      "quality_evidence": {
+        "sha256": "7813661c165cbf25e38f4063174748029f08153350b8841341c0582bfc376001",
+        "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_cloth_gripper_data_v5/adoption_review.json"
+      }
+    },
+    "depen005_blocked5s": {
+      "id": "depen005_blocked5s",
+      "status": "generated",
+      "episode": "/mnt/y/isaacsim_work_cloth_gripper/output/cloth_gripper_substeps/depen005_blocked5s/episode",
+      "manifest": "episode.json",
+      "manifest_sha256": "dd722d3f940abdfa1db18aa44f5264c4a873793444a77f7fcb38083900bd6eb4",
+      "family": "cloth_finite_gripper",
+      "group": 3,
+      "condition": "blocked",
+      "comparison_variable": "blocked adds opposing fixture; low changes max_force_n to 0.2; otherwise identical candidate config, original scene, initial nodes and topology",
+      "observation_hz": 10,
+      "observation_camera": {
+        "target_m": [
+          2.75,
+          1.52,
+          0.83
+        ],
+        "ortho_scale_m": 1.0,
+        "position_m": [
+          3.35,
+          0.65,
+          1.4
+        ]
+      },
+      "required_visible_ids": [
+        "cloth",
+        "Gripper",
+        "OpposingFixture"
+      ],
+      "quality_evidence": {
+        "sha256": "7813661c165cbf25e38f4063174748029f08153350b8841341c0582bfc376001",
+        "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_cloth_gripper_data_v5/adoption_review.json"
+      }
+    },
+    "depen005_low5s": {
+      "id": "depen005_low5s",
+      "status": "generated",
+      "episode": "/mnt/y/isaacsim_work_cloth_gripper/output/cloth_gripper_substeps/depen005_low5s/episode",
+      "manifest": "episode.json",
+      "manifest_sha256": "2baec41288f73dc1adaf286396b8ca0c43048ef5a2cd7303d0db48407f0819e3",
+      "family": "cloth_finite_gripper",
+      "group": 3,
+      "condition": "low",
+      "comparison_variable": "blocked adds opposing fixture; low changes max_force_n to 0.2; otherwise identical candidate config, original scene, initial nodes and topology",
+      "observation_hz": 10,
+      "observation_camera": {
+        "target_m": [
+          2.75,
+          1.52,
+          0.83
+        ],
+        "ortho_scale_m": 1.0,
+        "position_m": [
+          3.35,
+          0.65,
+          1.4
+        ]
+      },
+      "required_visible_ids": [
+        "cloth",
+        "Gripper"
+      ],
+      "quality_evidence": {
+        "sha256": "7813661c165cbf25e38f4063174748029f08153350b8841341c0582bfc376001",
+        "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_cloth_gripper_data_v5/adoption_review.json"
+      }
+    }
+  }
+}

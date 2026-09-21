@@ -11,7 +11,7 @@ from world_model_dataset.causal_window import read_window
 class WindowTests(unittest.TestCase):
     def episode(self):
         rows=[dict(time_s=k*.5,physics_step=k,body_states={}) for k in range(3)]
-        manifest=dict(control_program=dict(primitive='none',controllers=[]),
+        manifest=dict(timing=dict(physics_hz=2),control_program=dict(primitive='none',controllers=[]),
                       trajectory=dict(observations=dict(status='unavailable')))
         return SimpleNamespace(manifest=manifest,states=lambda:iter(rows),controls=lambda:iter([]))
 
@@ -53,6 +53,22 @@ class WindowTests(unittest.TestCase):
             window=read_window(ep,0,1.)
             self.assertEqual(window['geometries'],{})
             self.assertIn('table',window['geometry_assets'])
+
+    def test_substep_commands_are_preserved_without_fabricating_saved_states(self):
+        ep=self.episode();rows=list(ep.states())
+        for row in rows:row['physics_step']*=10
+        ep.states=lambda:iter(rows);ep.manifest['timing']['physics_hz']=20
+        ep.manifest['control_program']=dict(primitive='impedance_control',controllers=[dict(controller_id='c')])
+        commands=[dict(physics_step=k,time_s=k/20) for k in range(20)]
+        ep.controls=lambda:iter(commands);ep.actuator_efforts=lambda oid:iter(commands)
+        ep.actuator_states=lambda oid:iter(rows)
+        window=read_window(ep,.5,1.)
+        self.assertEqual(len(window['states']),2)
+        self.assertEqual(len(window['controls']),10)
+        self.assertEqual(len(window['actuator_efforts']['c']),10)
+        self.assertEqual(window['controls'][1]['time_s'],.55)
+        commands[11]['time_s']=.551
+        with self.assertRaisesRegex(ValueError,'physics clock'):read_window(ep,.5,1.)
 
 
 if __name__=='__main__':unittest.main()

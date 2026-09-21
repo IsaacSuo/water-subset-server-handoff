@@ -141,6 +141,12 @@ def apply_quality_evidence(ep, review, evidence):
             raise ValueError('Beam pair review did not pass; retain as diagnostic probe')
         review['beam_pair_review']=result
         return review
+    if result.get('format')=='cloth-gripper-adoption/1':
+        if result.get('status')!='functional_cache_checked' or not result.get('checks') or not all(result['checks'].values()):
+            raise ValueError('Cloth gripper functional cache check failed')
+        review['cloth_gripper_adoption']=result
+        review['warnings'].append('Residual local chatter remains; functional or separately recorded visual acceptance does not upgrade numerical quality or training admission')
+        return review
     if result.get('format')!='cloth-stability-review/1':raise ValueError('Unsupported quality evidence')
     review['local_stability_review']=result
     if result['status']=='local_stability_checked' and result.get('checks') and all(result['checks'].values()):

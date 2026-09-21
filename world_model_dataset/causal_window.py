@@ -22,12 +22,19 @@ def read_window(episode, start_s, end_s):
     selected=[r for r in rows if start_s<=r['time_s']<=end_s]
     if not selected:raise ValueError('Window contains no recorded state samples')
     times={r['physics_step']:r['time_s'] for r in selected}
-    def aligned(row):
+    def aligned(row, require_saved=True):
+        if not require_saved:
+            hz=episode.manifest['timing']['physics_hz']
+            step=row['physics_step']
+            expected=rows[0]['time_s']+(step-rows[0]['physics_step'])/hz
+            if int(step)!=step or not rows[0]['physics_step']<=step<=rows[-1]['physics_step'] or abs(row['time_s']-expected)>1e-9:
+                raise ValueError('Control record does not align with the physics clock')
+            return
         if row['physics_step'] not in times or abs(row['time_s']-times[row['physics_step']])>1e-9:
             raise ValueError('Record does not align with a state sample')
-    def trace(iterator):
+    def trace(iterator, require_saved=True):
         values=[r for r in iterator if start_s<=r['time_s']<=end_s]
-        for row in values:aligned(row)
+        for row in values:aligned(row,require_saved)
         return values
     geometry={};geometry_assets={}
     for row in selected:
@@ -50,11 +57,11 @@ def read_window(episode, start_s, end_s):
                     if np.issubdtype(data[key].dtype,np.number) and not np.isfinite(data[key]).all():
                         raise ValueError('Nonfinite native geometry field: '+key)
                 geometry.setdefault(oid,[]).append((row,{key:data[key].copy() for key in data.files}))
-    controls=trace(episode.controls());actual={};efforts={}
+    controls=trace(episode.controls(),False);actual={};efforts={}
     for controller in episode.manifest['control_program']['controllers']:
         oid=controller['controller_id']
         actual[oid]=trace(episode.actuator_states(oid))
-        efforts[oid]=trace(episode.actuator_efforts(oid))
+        efforts[oid]=trace(episode.actuator_efforts(oid),False)
     observations=[];index=None
     record=episode.manifest['trajectory']['observations']
     if record['status']=='available':
@@ -67,7 +74,7 @@ def read_window(episode, start_s, end_s):
         observations=observations,observation_index=index,
         control_primitive=episode.manifest['control_program']['primitive'],
         observation_availability=record,
-        semantics='Closed interval; native samples only, no resampling, interpolation or command carry-forward; effort is not contact reaction')
+        semantics='Closed interval; native samples at their recorded rates, controls/efforts align to physics clock, observations/actual actuator states align to saved states; no resampling, interpolation or command carry-forward; effort is not contact reaction')
 
 
 def describe(window):
