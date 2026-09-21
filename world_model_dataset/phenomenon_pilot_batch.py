@@ -17,6 +17,8 @@ from .local import idle
 
 def run(plan_path, output, ids=None):
     plan_path=Path(plan_path).resolve();plan=read_json(plan_path)
+    for name,expected in plan.get('input_sources',{}).items():
+        if file_hash(ROOT/name)!=expected:raise ValueError('Pinned experiment input changed: '+name)
     if plan.get('material_sources') and any(j['backend']=='material' and (not ids or j['id'] in ids) for j in plan['jobs']):
         folder=Path(plan['material_entry']).parent
         for name,expected in plan['material_sources'].items():
@@ -39,6 +41,8 @@ def run(plan_path, output, ids=None):
         item=dict(job,status='running');report['jobs'][job['id']]=item
         record.write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
         try:
+            for name,expected in plan.get('input_sources',{}).items():
+                if file_hash(ROOT/name)!=expected:raise ValueError('Pinned experiment input changed: '+name)
             if run_dir.exists():raise FileExistsError('Partial run preserved; choose a new job/output for retry: '+str(run_dir))
             config=ROOT/job['config']
             if job['backend']=='rigid':

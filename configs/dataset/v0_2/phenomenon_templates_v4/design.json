@@ -1,0 +1,33 @@
+{
+  "version": "phenomenon-template-design/1",
+  "purpose": "Two small condition pairs through reusable real-asset templates; original scene fixed, no outcome filtering, training or splits",
+  "templates": [
+    {
+      "id": "roll_friction_supported",
+      "family": "rolling_friction",
+      "title": "Original teacher desk: friction comparison",
+      "base_spec": "configs/dataset/v0_2/phenomenon_reuse_v1/roll_reuse_ph_yellow_onion.json",
+      "subject_id": "subject",
+      "assets": ["ph_yellow_onion"],
+      "body_defaults": {"velocity_m_s": [0.45, 0, 0]},
+      "comparison_variable": "subject static/dynamic friction pair only; original scene friction and all initial conditions fixed; coefficients are input parameters, not measured effective contact friction",
+      "conditions": [
+        {"id": "low", "body": {"material": {"static_friction": 0.05, "dynamic_friction": 0.03}}},
+        {"id": "high", "body": {"material": {"static_friction": 0.9, "dynamic_friction": 0.7}}}
+      ]
+    },
+    {
+      "id": "passage_scale",
+      "family": "passage_asset_scale",
+      "title": "Original chair rails: upright jug scale comparison",
+      "base_spec": "configs/dataset/v0_2/phenomenon_pilot_v1/passage_upright.json",
+      "subject_id": "jug",
+      "assets": ["ph_jug_01"],
+      "comparison_variable": "uniform asset size only at fixed .55 kg mass, upright pose, XY, initial velocity and friction; support Z, density and inertia are derived and change with size; environment fixed",
+      "conditions": [
+        {"id": "small", "body": {"size_m": 0.12}},
+        {"id": "large", "body": {"size_m": 0.225}}
+      ]
+    }
+  ]
+}
