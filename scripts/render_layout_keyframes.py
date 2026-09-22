@@ -35,7 +35,7 @@ def main():
     camera=doc['observations']['camera'];cd=bpy.data.cameras.new('cache_camera');cam=bpy.data.objects.new('cache_camera',cd);scene.collection.objects.link(cam)
     cam.location=camera['position_m'];cam.rotation_euler=(Vector(camera['target_m'])-cam.location).to_track_quat('-Z','Y').to_euler()
     cd.type='ORTHO';cd.ortho_scale=camera['ortho_scale_m'];scene.camera=cam
-    state_path=ep/('body_state_trace.jsonl' if kind in ('rigid','beam') else 'states.jsonl')
+    state_path=ep/('body_state_trace.jsonl' if kind=='rigid' else 'states.jsonl')
     rows=[json.loads(l) for l in state_path.read_text().splitlines()];resolved=replay.read(ep/'resolved_inputs.json')
     objects={};alignment={};cfg=doc['input'];drivers=[]
     if kind=='rigid':
@@ -62,10 +62,9 @@ def main():
     elif kind=='beam':
         for oid in ('Fixture','Plate'):objects[oid]=(box_actor(oid,cfg[oid.lower()]['size_m']),'rigid')
         with np.load(replay.checked(ep/rows[0]['body_states']['Beam']['geometry']['path'],rows[0]['body_states']['Beam']['geometry']['sha256'])) as z:
-            points=z['simulation_world_m'];tet=z['simulation_tets']
-        faces=np.concatenate([tet[:,slots] for slots in ((0,1,2),(0,2,3),(0,3,1),(1,3,2))]);_,idx,count=np.unique(np.sort(faces,axis=1),axis=0,return_index=True,return_counts=True);faces=faces[idx[count==1]]
+            points=z['surface_world_m'];faces=z['surface_triangles']
         mesh=bpy.data.meshes.new('native_beam');mesh.from_pydata(points.tolist(),[],faces.tolist());o=bpy.data.objects.new('Beam',mesh);scene.collection.objects.link(o)
-        mesh.materials.append(material('beam',(.47,.24,.09)));objects['Beam']=(o,'simulation')
+        mesh.materials.append(material('beam',(.47,.24,.09)));objects['Beam']=(o,'surface')
     elif kind=='plastic':
         # Declared synthetic box: map its original surface using existing MLS;
         # this is a display surface, never claimed as native material topology.

@@ -64,6 +64,13 @@ def material(obj, cond, profile, geo, support, phenomenon):
         require(.05<=cf<=.3 and df<=.3,'beam_fraction','clamp 0.05..0.3; deflection 0..0.3')
         require(length>=4*max(width,thickness),'beam_shape','cantilever rule requires length >= 4 * cross-section')
         clamp=length*cf; gap=cfg['contact_offset_m']*2
+        # Necessary applicability screen for this open-loop plate design.
+        # Linear self-weight deflection is only an estimate, never physical proof.
+        mat=profile['beam_properties']['material'];young=number(mat,'youngs_modulus_pa');density=number(mat,'density_kg_m3')
+        free=length-clamp;second_moment=width*thickness**3/12
+        self_weight_tip=density*width*thickness*9.81*free**4/(8*young*second_moment)
+        require(self_weight_tip<=.08*free,'beam_self_weight',
+                f'linear gravity sag estimate {self_weight_tip:.6g} m exceeds 8% of free span; current open-loop plate layout requires a shorter/thicker/stiffer caller-selected beam')
         root=edge-clamp
         footprint=rectangle([edge-clamp/2,cy],[clamp,width])
         require(surface.buffer(1e-7).covers(footprint),'root_support','clamped root footprint not on original support')
@@ -92,6 +99,8 @@ def material(obj, cond, profile, geo, support, phenomenon):
                           guide_limits_m=[-travel-gap,gap])
         return cfg,dict(support_edge_x_m=edge,clamp_length_m=clamp,free_span_m=length-clamp,
                         observation_camera=camera,
+                        linear_self_weight_tip_estimate_m=float(self_weight_tip),
+                        self_weight_screen='uniform cantilever under gravity, <=8% free span; necessary bounded-design screen, not prediction of native outcome',
                         requested_deflection_m=drop,plate_travel_m=travel,
                         edge_contact_band_m=[edge,clear_start],edge_contact_effect='unverified',
                         constraint='native -X ideal attachment to visible world-fixed fixture; finite Z plate',

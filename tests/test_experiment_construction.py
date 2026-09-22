@@ -106,7 +106,7 @@ class ConstructionTests(unittest.TestCase):
     def test_other_material_rules_resize_and_condition_invariants(self):
         examples={
             'plastic':('plastic_impact',dict(kind='box',size_m=[.12,.08,.06],density_kg_m3=900),dict(drop_height_m=.1)),
-            'beam':('beam_load_hold_withdraw',dict(size_m=[.3,.04,.02]),dict(clamp_fraction=.2,deflection_fraction=.1,max_force_n=10)),
+            'beam':('beam_load_hold_withdraw',dict(size_m=[.22,.04,.03]),dict(clamp_fraction=.2,deflection_fraction=.1,max_force_n=10)),
             'rope':('rope_passive',dict(length_m=.3,radius_m=.003,density_kg_m3=800),dict(clamp_fraction=.2))}
         for name,(phenomenon,obj,condition) in examples.items():
             with self.subTest(name=name):

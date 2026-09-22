@@ -11,6 +11,14 @@ class AutomaticLayouts(unittest.TestCase):
     mesh=fixtures.ConstructionTests.mesh
     request=fixtures.ConstructionTests.request
 
+    def test_beam_self_weight_rejects_open_loop_miss(self):
+        r=self.request('beam_load_hold_withdraw');r['object']=dict(size_m=[.38,.05,.025])
+        r['conditions']=dict(clamp_fraction=.13,deflection_fraction=.2,max_force_n=15.)
+        p=read_json(fixtures.PROFILES/'beam.json')
+        with self.assertRaisesRegex(ValueError,'beam_self_weight'):construct(r,p)
+        r['object']['size_m']=[.22,.05,.03];_,_,report=construct(r,p)
+        self.assertLess(report['calculations']['linear_self_weight_tip_estimate_m'],.008)
+
     def test_wrap_preserves_bar_and_rejects_impossible_length(self):
         r=self.request('rope_wrap');bar=self.mesh('rod',[.4,.006,.006],[0,0,.3])
         from world_model_dataset.io import write_json,file_hash
