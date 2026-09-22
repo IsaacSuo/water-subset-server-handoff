@@ -149,6 +149,20 @@ def drape(obj, cond, profile, geo, support):
 def rigid(obj, cond, profile, geo, support, phenomenon):
     objects = obj if isinstance(obj, list) else [obj]
     library = profile['asset_library']
+    stable_poses=[]
+    if phenomenon=='multibody_collision_propagation' and profile.get('support_pose_policy')=='convex_stable':
+        import trimesh
+        objects=copy.deepcopy(objects)
+        for obj in objects:
+            path=Path(library['exploration_root'])/library['library']/obj['asset']
+            meta=read_json(path/'asset.json');geo.pin(path/'asset.json');geo.pin(path/meta['geometry'])
+            with np.load(path/meta['geometry']) as arrays:vertices=arrays['vertices'].astype(float)*obj['size_m']
+            hull=trimesh.convex.convex_hull(vertices)
+            poses,probability=trimesh.poses.compute_stable_poses(hull,sigma=0,n_samples=1)
+            require(len(poses)>0,'support_pose','no convex stable pose found')
+            i=int(np.argmax(probability));obj['rotation_deg']=Rotation.from_matrix(poses[i,:3,:3]).as_euler('xyz',degrees=True).tolist()
+            stable_poses.append(dict(id=obj['id'],rotation_deg=obj['rotation_deg'],quasistatic_probability=float(probability[i]),
+                limits='convex support equilibrium only; dynamic stability/contact transfer must be observed'))
     bounds = [body_geometry(o, library, geo) for o in objects]
     z, surface = geo.support(support); lo, hi = geo.bounds
     margin = .005
@@ -225,6 +239,7 @@ def rigid(obj, cond, profile, geo, support, phenomenon):
             cursor += high[0]-low[0]+gap
         details = dict(layout='single +X collision chain', interbody_gap_m=gap,
                        driven_initial_body=objects[0]['id'])
+        if stable_poses:details['derived_support_poses']=stable_poses
     else:
         keys(cond, {'speed_m_s', 'spin_ratio'}, {'speed_m_s', 'spin_ratio'}, 'roll conditions')
         require(len(objects) == 1, 'participants', 'roll rule takes one object')
@@ -254,7 +269,7 @@ def rigid(obj, cond, profile, geo, support, phenomenon):
     return dict(participants=bodies, asset_library=copy.deepcopy(library)), details
 
 
-def construct(request, profile):
+def construct(request, profile, calibration_episode=None):
     """Pure CPU construction; caller chooses profile, objects, region and intent."""
     keys(request, {'format','id','phenomenon','profile','scene','support_group','object','conditions'},
          {'format','id','phenomenon','profile','scene','support_group','object','conditions'}, 'construction request')
@@ -283,11 +298,14 @@ def construct(request, profile):
     else:
         from .experiment_construct_material import material
         inputs, calculations = material(*args, phenomenon)
+    if phenomenon=='beam_load_hold_withdraw' and 'calibration' in profile:
+        from .experiment_beam_calibration import adapt
+        inputs,calculations=adapt(inputs,calculations,profile,geo,calibration_episode)
     lo, hi = geo.bounds; target = (lo+hi)/2; span = float(max(hi-lo))
     doc = dict(format=VERSION, id=request['id'], phenomenon=phenomenon,
                backend=copy.deepcopy(profile['backend']), scene=copy.deepcopy(request['scene']), input=inputs,
                control=copy.deepcopy(profile['control']), actuation=copy.deepcopy(profile['actuation']),
-               timing=copy.deepcopy(profile['timing']),
+               timing=copy.deepcopy(calculations.get('derived_timing',profile['timing'])),
                observations=dict(hz=10, camera=calculations.get('observation_camera',dict(target_m=target.tolist(),
                    position_m=(target + span*np.array([1,-1,.8])).tolist(), ortho_scale_m=span*1.5))),
                conditions=[dict(id='baseline', changes={}, derived_impacts=[])])
@@ -340,12 +358,13 @@ def main():
     p.add_argument('--request', type=Path, required=True)
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--reference', type=Path, help='Same-region baseline request; compile baseline and derived variant conditions')
+    p.add_argument('--calibration-episode',type=Path,help='Unloaded beam probe; exact physical compatibility and native geometry checked')
     p.add_argument('--reuse-physics-cache',type=Path,
                    help='Bind an existing native run after metadata-only reconstruction; executor verifies physical equivalence')
     a=p.parse_args(); request=read_json(a.request)
     profile_path=(a.request.parent/request['profile']).resolve()
     profile=read_json(profile_path)
-    doc, compiled, report=construct(request, profile)
+    doc, compiled, report=construct(request, profile,a.calibration_episode)
     if a.reuse_physics_cache:
         require(a.reference is None,'cache_scope','cache reuse currently accepts one baseline only')
         cache=a.reuse_physics_cache.resolve()
@@ -372,7 +391,7 @@ def main():
         report['source_pins'][doc['backend']['runtime']]=file_hash(doc['backend']['runtime'])
     report['source_pins'][str(profile_path)]=file_hash(profile_path)
     report['source_pins'][str(a.request.resolve())]=file_hash(a.request)
-    for name in ('experiment_construct.py','experiment_construct_material.py','experiment_geometry.py','experiment_contract.py','experiment_layouts.py'):
+    for name in ('experiment_construct.py','experiment_construct_material.py','experiment_geometry.py','experiment_contract.py','experiment_layouts.py','experiment_beam_calibration.py'):
         path=Path(__file__).with_name(name)
         if path.exists(): report['source_pins'][str(path)]=file_hash(path)
     a.output.mkdir(parents=True, exist_ok=False)
