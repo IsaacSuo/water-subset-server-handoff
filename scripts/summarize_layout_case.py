@@ -15,11 +15,23 @@ def summarize(folder,output):
     times=np.array([r['time_s'] for r in rows]);tail=times>=times[-1]-.5;subjects={}
     for b in ep.manifest['system']['bodies']:
         if b['physics_kind']=='static':continue
-        oid=b['instance_id'];p=np.array([r['body_states'][oid]['position_m'] for r in rows]);v=np.array([r['body_states'][oid]['linear_velocity_m_s'] for r in rows])
-        w=np.array([r['body_states'][oid]['angular_velocity_rad_s'] for r in rows])
+        oid=b['instance_id'];p=np.array([r['body_states'][oid]['position_m'] for r in rows])
+        velocities=[r['body_states'][oid].get('linear_velocity_m_s') for r in rows]
+        angular=[r['body_states'][oid].get('angular_velocity_rad_s') for r in rows]
+        v=np.array(velocities) if all(x is not None for x in velocities) else None
+        w=np.array(angular) if all(x is not None for x in angular) else None
         subjects[oid]=dict(initial_position_m=p[0].tolist(),final_position_m=p[-1].tolist(),displacement_m=(p[-1]-p[0]).tolist(),
-            last_half_second_position_range_m=np.ptp(p[tail],axis=0).tolist(),last_half_second_peak_speed_m_s=float(np.linalg.norm(v[tail],axis=1).max()),
-            last_half_second_peak_angular_speed_rad_s=float(np.linalg.norm(w[tail],axis=1).max()))
+            pose_semantics=rows[-1]['body_states'][oid].get('pose_semantics','native body pose'),
+            last_half_second_position_range_m=np.ptp(p[tail],axis=0).tolist(),last_half_second_peak_speed_m_s=float(np.linalg.norm(v[tail],axis=1).max()) if v is not None else None,
+            last_half_second_peak_angular_speed_rad_s=float(np.linalg.norm(w[tail],axis=1).max()) if w is not None else None)
+        if 'geometry' in rows[0]['body_states'][oid]:
+            start=None;end=None
+            for _,g in ep.geometries(oid):
+                field=next((k for k in ('surface_world_m','simulation_world_m','particle_world_m','centerline') if k in g),None)
+                if field:
+                    if start is None:start=g[field]
+                    end=g[field]
+            if start is not None:subjects[oid]['native_point_centroid_displacement_m']=(end.mean(0)-start.mean(0)).tolist()
     pairs={}
     if ep.manifest['trajectory']['contacts']['status']=='available':
         for c in ep.contacts():

@@ -261,6 +261,9 @@ def construct(request, profile):
     if phenomenon == 'multibody_rearrangement':
         from .experiment_layouts import rearrange
         inputs,calculations=rearrange(*args)
+    elif phenomenon == 'cloth_drag':
+        from .experiment_layouts import cloth_drag
+        inputs,calculations=cloth_drag(*args)
     elif phenomenon == 'cloth_drape':
         inputs, calculations = drape(*args)
     elif phenomenon in ('geometry_constrained_motion', 'rigid_roll_slide', 'multibody_collision_propagation'):

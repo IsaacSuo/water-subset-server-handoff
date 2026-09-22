@@ -22,3 +22,21 @@ result.json 为逐体末段速度/位置与接触变化，reuse_checks 为跨资
 原生资产、原场景三角网格与既有运行记录均保留。具体来源/缓存哈希在工作流封存和生成报告中。
 
 轻量 GPU 容量保护按实际可用显存检查，保留进程和利用率快照，不因其他进程或少量占用直接拒绝，不终止其他作业。
+
+## 2. 有限夹头拖布
+
+构造输入是矩形布尺寸、原支承区域、夹持比例、拖动距离、力上限与 free/blocked/low_force 条件。
+系统推导平展初态、有限局部 attachment 选区与节点数、夹头尺寸/位置、行程、导轨及分段命令，检查原场景扫掠空间。
+blocked 使用已有可见固定 opposing_fixture 与另一端局部 attachment，动态夹头仍有质量、力上限与实际状态。
+仅支持世界 XY 矩形、+X 拖动，不支持任意衣物抓取；过短选区、行程越界/受原几何阻碍会拒绝。
+自由/受阻的输入只差 opposing_fixture，低力只改 max_force_n；三者及换尺寸、BlueWall 支承的合同/几何检查通过。
+
+新物理仅一条自由拖动：601 状态、6000 command/effort、601 actual，51 帧统一诊断。
+目标 +180 mm，夹头实际 +176.42 mm，原生布节点均值 X 变化 +169.83 mm；目标未冒充实际状态。
+20 kPa 被动悬垂与此处 **200 kPa** 拖布始终分开。布料根位姿是参考系，不用其不动值推断布不动。
+末段夹头峰值速度约 1.51 mm/s；仍保留材料线已有局部抖动限制，不声称完全静止或收敛。
+接触力、attachment 反力 unavailable；用途 human_use_review_pending，training_admission=false。
+
+公开源只读核对 `2f12001`，未修改材料代码。请求 `construction/cloth_drag.json`；
+输出 `output/layout_completion_v1/cloth_drag/`，`result_complete.json` 为含观测的最终读取摘要，
+早先物理阶段摘要保留。原材质三帧抽查包含实际有限夹头，没有省略执行器。

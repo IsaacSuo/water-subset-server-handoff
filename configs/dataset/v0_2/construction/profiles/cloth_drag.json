@@ -1,0 +1,61 @@
+{
+  "control": {
+    "mode": "impedance_control",
+    "enabled": true
+  },
+  "timing": {
+    "duration_s": 5.0,
+    "physics_hz": 1200,
+    "state_hz": 120
+  },
+  "backend": {
+    "kind": "cloth",
+    "entry": "/mnt/y/isaacsim_work_cloth_gripper/experiments/material_response/scene_input/material_entry.py",
+    "runtime": "/mnt/y/isaacsim_work/configs/dataset/v0_2/phenomenon_pilot_v1/runtime.json"
+  },
+  "discretization_m": 0.01,
+  "phenomenon": "cloth_drag",
+  "input": {
+    "initial_velocity_m_s": [
+      0,
+      0,
+      0
+    ],
+    "iterations": 8,
+    "material": {
+      "density_kg_m3": 480.0,
+      "youngs_modulus_Pa": 200000,
+      "poisson_ratio": 0.3,
+      "thickness_m": 0.001,
+      "stretch_stiffness": 200000,
+      "shear_stiffness": 200000,
+      "bend_stiffness": 0.02,
+      "friction": 0.6,
+      "elasticity_damping": 0.005,
+      "bend_damping": 0.005
+    },
+    "collision": {
+      "contact_offset_m": 0.003,
+      "rest_offset_m": 0.001
+    },
+    "collision_pair_updates": 4,
+    "collision_iteration_multiplier": 2,
+    "speculative_ccd": true,
+    "linear_damping_per_s": 0.5,
+    "diagnostic_substeps": true,
+    "max_depenetration_velocity_m_s": 0.05
+  },
+  "prior_physics": "Existing nearby configurations only; not evidence for this constructed configuration",
+  "actuation": {
+    "kind": "finite_gripper",
+    "instance_ids": [
+      "Gripper"
+    ]
+  },
+  "gripper_properties": {
+    "mass_kg": 0.15,
+    "kp": 100.0,
+    "kd": 3.0
+  },
+  "low_force_limit_n": 0.2
+}
