@@ -54,8 +54,8 @@ def check_gpu():
         ['nvidia-smi', '--query-compute-apps=pid,process_name,used_memory', '--format=csv,noheader'], text=True)
     stats = subprocess.check_output(
         ['nvidia-smi', '--query-gpu=memory.free,utilization.gpu', '--format=csv,noheader,nounits'], text=True)
-    if processes.strip() or any(int(row.split(',')[1]) > 10 for row in stats.splitlines()):
-        raise RuntimeError('GPU busy; prepared inputs preserved; retry simulate after current job finishes')
+    # User-authorized lightweight concurrency: allocation/utilization alone is
+    # not a capacity failure. Preserve the actual snapshot; never kill a job.
     if not any(int(row.split(',')[0]) >= 4096 for row in stats.splitlines()):
         raise RuntimeError('GPU has less than 4096 MiB free; inputs preserved')
     return dict(compute_processes=processes, memory_free_and_utilization=stats)

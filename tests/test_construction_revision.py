@@ -28,8 +28,14 @@ class RevisionTests(unittest.TestCase):
 
     def test_rearrangement_not_alias_for_collision_chain(self):
         r,p=self.rigid_request(); r['phenomenon']='multibody_rearrangement';p['phenomenon']=r['phenomenon']
-        with self.assertRaisesRegex(ValueError,'construction_missing: rearrangement'):
-            construct(r,p)
+        r['object']=[dict(r['object'],id='a'),dict(r['object'],id='b')]
+        r['conditions']=dict(layer_gap_m=.008,offset_fraction=.2)
+        doc,_,report=construct(r,p)
+        placements=report['calculations']['placements']
+        self.assertGreater(placements[1]['bounds_m'][0][2],placements[0]['bounds_m'][1][2])
+        self.assertGreater(placements[1]['projected_overlap_fraction'],.25)
+        self.assertEqual(doc['input']['participants'][0]['velocity_m_s'],[0,0,0])
+        self.assertEqual(placements[1]['potential_support'],'a')
         legacy=load_experiment(ROOT/'configs/dataset/v0_2/experiment_api_v1/multibody.json')
         self.assertEqual(legacy['phenomenon'],'multibody_rearrangement')
 

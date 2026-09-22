@@ -1,0 +1,70 @@
+{
+  "format": "phenomenon-construction/1",
+  "id": "layout_rearrange_v1",
+  "phenomenon": "multibody_rearrangement",
+  "profile": "profiles/rearrangement.json",
+  "scene": {
+    "id": "classroom_original",
+    "units": "m",
+    "up_axis": "Z",
+    "frame": "original_world",
+    "region_bounds_m": [
+      [
+        2.3,
+        1.2,
+        0.6
+      ],
+      [
+        2.9,
+        1.8,
+        1.5
+      ]
+    ],
+    "collision": {
+      "scene_export": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/scene.json"
+    },
+    "source_records": {
+      "scene": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/scene.json"
+    }
+  },
+  "support_group": "support",
+  "object": [
+    {
+      "id": "base",
+      "asset": "ph_sweet_potato",
+      "size_m": 0.19,
+      "density_kg_m3": 700,
+      "rotation_deg": [
+        0,
+        0,
+        70
+      ]
+    },
+    {
+      "id": "middle",
+      "asset": "ph_sweet_potato",
+      "size_m": 0.17,
+      "density_kg_m3": 700,
+      "rotation_deg": [
+        0,
+        0,
+        -25
+      ]
+    },
+    {
+      "id": "top",
+      "asset": "ph_yellow_onion",
+      "size_m": 0.1,
+      "density_kg_m3": 700,
+      "rotation_deg": [
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "conditions": {
+    "layer_gap_m": 0.008,
+    "offset_fraction": 0.25
+  }
+}

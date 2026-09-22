@@ -255,13 +255,13 @@ def construct(request, profile):
     require(request['format'] == 'phenomenon-construction/1', 'format', 'unsupported request')
     identifier(request['id'])
     phenomenon = request['phenomenon']
-    require(phenomenon!='multibody_rearrangement','construction_missing',
-            'rearrangement needs support-aware unstable packing and settling layout rules; '
-            'collision propagation is a separate phenomenon, not a replacement')
     require(profile['phenomenon'] == phenomenon, 'profile', 'wrong phenomenon')
     geo = Geometry(request['scene'])
     args = (request['object'], request['conditions'], profile, geo, request['support_group'])
-    if phenomenon == 'cloth_drape':
+    if phenomenon == 'multibody_rearrangement':
+        from .experiment_layouts import rearrange
+        inputs,calculations=rearrange(*args)
+    elif phenomenon == 'cloth_drape':
         inputs, calculations = drape(*args)
     elif phenomenon in ('geometry_constrained_motion', 'rigid_roll_slide', 'multibody_collision_propagation'):
         inputs, calculations = rigid(*args, phenomenon)
@@ -356,7 +356,7 @@ def main():
         report['source_pins'][doc['backend']['runtime']]=file_hash(doc['backend']['runtime'])
     report['source_pins'][str(profile_path)]=file_hash(profile_path)
     report['source_pins'][str(a.request.resolve())]=file_hash(a.request)
-    for name in ('experiment_construct.py','experiment_construct_material.py','experiment_geometry.py','experiment_contract.py'):
+    for name in ('experiment_construct.py','experiment_construct_material.py','experiment_geometry.py','experiment_contract.py','experiment_layouts.py'):
         path=Path(__file__).with_name(name)
         if path.exists(): report['source_pins'][str(path)]=file_hash(path)
     a.output.mkdir(parents=True, exist_ok=False)
