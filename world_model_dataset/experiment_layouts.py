@@ -57,6 +57,52 @@ def rope_load(obj,cond,profile,geo,support):
         limits='horizontal support, two axis-aligned boxes, same rope endpoint height, planar initial slack, -X bounded control; geometric straightening is not native tension')
 
 
+def rope_wrap(obj,cond,profile,geo,support):
+    """Single upper U over a selected original slender horizontal bar."""
+    from .experiment_construct import number,passage_camera
+    from .io import read_json,file_hash
+    keys(obj,{'length_m','radius_m','density_kg_m3'},{'length_m','radius_m','density_kg_m3'},'wrap rope')
+    keys(cond,{'end_condition','left_leg_fraction'},{'end_condition','left_leg_fraction'},'wrap conditions')
+    keys(support,{'group','object_index'},{'group','object_index'},'original rod selector')
+    length=number(obj,'length_m');r=number(obj,'radius_m');number(obj,'density_kg_m3')
+    fraction=number(cond,'left_leg_fraction');require(.3<=fraction<=.7,'leg_fraction','0.3..0.7 required')
+    require(cond['end_condition'] in ('free','first_clamped'),'end_condition','free or first_clamped')
+    manifest=read_json(geo.scene['source_records']['scene']);group=support['group'];index=support['object_index']
+    require(group in manifest['groups'] and type(index) is int and 0<=index<len(manifest['groups'][group]['objects']),'rod_selection','unknown original rod')
+    info=manifest['groups'][group];sel=info['objects'][index]
+    spec=next((m for m in geo.scene['collision'].get('meshes',[]) if m['id']==group),None)
+    require(spec is not None and file_hash(spec['path'])==info['sha256'],'rod_source','unchanged complete original group required')
+    triangles=geo.meshes[group][sel['triangle_start']:sel['triangle_start']+sel['triangle_count']]
+    points=np.unique(triangles.reshape(-1,3),axis=0);center=points.mean(0)
+    _,_,axes=np.linalg.svd(points-center,full_matrices=False);axis=axes[0]
+    require(abs(axis[2])<.01,'rod_axis','only nearly horizontal straight slender rods')
+    local=(points-center)@axes.T;bar_length=np.ptp(local[:,0]);bar_radius=np.linalg.norm(local[:,1:],axis=1).max()
+    require(bar_length>8*bar_radius and bar_radius>0,'rod_shape','selected object is not slender')
+    axis[2]=0;axis/=np.linalg.norm(axis);normal=np.cross(axis,[0,0,1.])
+    # Circumscribed envelope only plans the route. Collision uses untouched triangles.
+    gap=max(.002,r);steps=16;R=(bar_radius+r+gap)/np.cos(np.pi/(2*steps))
+    angles=np.linspace(np.pi,0,steps+1)
+    arc=center+R*np.cos(angles)[:,None]*normal+R*np.sin(angles)[:,None]*np.array([0,0,1.])
+    arc_length=np.linalg.norm(np.diff(arc,axis=0),axis=1).sum();legs=length-arc_length
+    require(legs>8*r and length<bar_length,'wrap_length','rope must span arc and legs, and remain shorter than selected bar')
+    ends=[]
+    for endpoint,h in ((arc[0],legs*fraction),(arc[-1],legs*(1-fraction))):
+        n=max(2,int(np.ceil(h/profile['discretization_m'])))
+        ends.append(endpoint-np.linspace(h,0,n+1)[:,None]*[0,0,1.])
+    path=np.concatenate((ends[0][:-1],arc,ends[1][-2::-1]))
+    require(len(path)<=256,'discretization','wrap segment budget exceeded')
+    for a,b in zip(path[:-1],path[1:]):geo.check_box(np.minimum(a,b)-r,np.maximum(a,b)+r,'wrap_clearance')
+    cfg=copy.deepcopy(profile['input']);cfg['rope']=dict(copy.deepcopy(profile['rope_properties']),centerline_m=path.tolist(),
+        radius_m=r,density_kg_m3=obj['density_kg_m3'],end_condition=cond['end_condition'])
+    geo.support_identity=dict(group=group,object_index=index,original_object=sel,mesh_sha256=info['sha256'])
+    target=center-[0,0,legs/4]
+    return cfg,dict(design='single upper semicircular U with vertical legs around original horizontal slender bar',
+        rod_center_m=center.tolist(),rod_axis=axis.tolist(),rod_envelope_radius_m=float(bar_radius),
+        wrap_radius_m=float(R),initial_clearance_margin_m=gap,centerline_length_m=float(np.linalg.norm(np.diff(path,axis=0),axis=1).sum()),
+        observation_camera=passage_camera(geo,path[0],target,max(.25,length*2)),
+        limits='circumscribed conservative planning around straight horizontal rod; original triangles unchanged; no knots, arbitrary threading or guaranteed maintained contact; native rope tension unavailable')
+
+
 def cloth_drag(obj,cond,profile,geo,support):
     from .experiment_construct import number,transform,passage_camera
     keys(obj,{'size_m'},{'size_m'},'drag cloth')

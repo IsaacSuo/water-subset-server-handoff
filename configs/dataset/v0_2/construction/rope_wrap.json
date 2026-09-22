@@ -1,0 +1,59 @@
+{
+  "format": "phenomenon-construction/1",
+  "id": "layout_rope_wrap_v1",
+  "phenomenon": "rope_wrap",
+  "profile": "profiles/rope_wrap.json",
+  "scene": {
+    "id": "classroom_original",
+    "units": "m",
+    "up_axis": "Z",
+    "frame": "original_world",
+    "region_bounds_m": [
+      [
+        1.6,
+        -1.04,
+        0.03
+      ],
+      [
+        1.69,
+        -0.92,
+        0.3
+      ]
+    ],
+    "collision": {
+      "meshes": [
+        {
+          "id": "support",
+          "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/support.npz",
+          "friction": 0.4
+        },
+        {
+          "id": "room",
+          "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/room.npz",
+          "friction": 0.4
+        },
+        {
+          "id": "surroundings",
+          "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/surroundings.npz",
+          "friction": 0.4
+        }
+      ]
+    },
+    "source_records": {
+      "scene": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/scene.json"
+    }
+  },
+  "support_group": {
+    "group": "surroundings",
+    "object_index": 265
+  },
+  "object": {
+    "length_m": 0.16,
+    "radius_m": 0.0015,
+    "density_kg_m3": 800
+  },
+  "conditions": {
+    "end_condition": "first_clamped",
+    "left_leg_fraction": 0.5
+  }
+}

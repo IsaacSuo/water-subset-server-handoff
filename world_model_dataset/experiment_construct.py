@@ -245,6 +245,12 @@ def rigid(obj, cond, profile, geo, support, phenomenon):
             b['angular_velocity_rad_s'] = [0, speed*cond['spin_ratio']/details['effective_radius_m'], 0]
         bodies.append(b)
     require(len({o['id'] for o in objects}) == len(objects), 'participants', 'duplicate id')
+    if 'observation_camera' not in details:
+        # Same-region interventions retain the same diagnostic observation.
+        target=np.array([(lo[0]+hi[0])/2,(lo[1]+hi[1])/2,z+.1])
+        if phenomenon=='rigid_roll_slide':target[0]=lo[0]+min(.25,(hi[0]-lo[0])/2)
+        span=max(.6,min(1.,hi[0]-lo[0]))
+        details['observation_camera']=passage_camera(geo,target,target+[0,0,.05],span)
     return dict(participants=bodies, asset_library=copy.deepcopy(library)), details
 
 
@@ -267,6 +273,9 @@ def construct(request, profile):
     elif phenomenon == 'rope_finite_load':
         from .experiment_layouts import rope_load
         inputs,calculations=rope_load(*args)
+    elif phenomenon == 'rope_wrap':
+        from .experiment_layouts import rope_wrap
+        inputs,calculations=rope_wrap(*args)
     elif phenomenon == 'cloth_drape':
         inputs, calculations = drape(*args)
     elif phenomenon in ('geometry_constrained_motion', 'rigid_roll_slide', 'multibody_collision_propagation'):

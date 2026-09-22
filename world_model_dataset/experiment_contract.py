@@ -27,6 +27,7 @@ SUPPORT = {
     'beam_load_hold_withdraw': ('beam', 2),
     'cloth_drape': ('cloth', 3),
     'rope_passive': ('rope', 4),
+    'rope_wrap': ('rope', 4),
     'cloth_drag': ('cloth', 3),
     'rope_finite_load': ('rope', 4),
 }
@@ -202,7 +203,7 @@ def validate_common(doc):
             raise ValueError('Missing finite actuator fields: '+str(sorted(fields)))
     if doc['phenomenon'] == 'cloth_drape' and {'gripper','opposing_fixture'} & doc['input'].keys():
         raise ValueError('Passive drape cannot contain finite gripper input')
-    if doc['phenomenon'] == 'rope_passive' and {'loads','load_control'} & doc['input'].keys():
+    if doc['phenomenon'] in ('rope_passive','rope_wrap') and {'loads','load_control'} & doc['input'].keys():
         raise ValueError('Passive rope cannot contain finite load input')
     scene = doc['scene']
     fields = {'id', 'region_bounds_m', 'units', 'up_axis', 'frame', 'collision', 'source_records'}

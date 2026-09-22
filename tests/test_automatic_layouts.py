@@ -11,6 +11,24 @@ class AutomaticLayouts(unittest.TestCase):
     mesh=fixtures.ConstructionTests.mesh
     request=fixtures.ConstructionTests.request
 
+    def test_wrap_preserves_bar_and_rejects_impossible_length(self):
+        r=self.request('rope_wrap');bar=self.mesh('rod',[.4,.006,.006],[0,0,.3])
+        from world_model_dataset.io import write_json,file_hash
+        source=self.root/'scene.json'
+        write_json(source,dict(groups={'rod':dict(sha256=file_hash(bar['path']),objects=[dict(name='bar',triangle_start=0,triangle_count=12)])}))
+        r['scene'].update(collision=dict(meshes=[bar]),source_records=dict(scene=str(source)))
+        r['support_group']=dict(group='rod',object_index=0)
+        r['object']=dict(length_m=.16,radius_m=.0015,density_kg_m3=800)
+        r['conditions']=dict(end_condition='first_clamped',left_leg_fraction=.5)
+        p=read_json(fixtures.PROFILES/'rope_wrap.json');doc,_,report=construct(r,p)
+        self.assertEqual(doc['scene']['collision'],r['scene']['collision'])
+        self.assertAlmostEqual(report['calculations']['centerline_length_m'],.16)
+        line=np.array(doc['input']['rope']['centerline_m'])
+        self.assertGreater(line[:,2].max(),.303+.0015)
+        self.assertLess(line[0,2],.3)
+        r['object']['length_m']=.02
+        with self.assertRaisesRegex(ValueError,'wrap_length'):construct(r,p)
+
     def test_load_anchors_and_disabled_control(self):
         r=self.request('rope_finite_load');r['object']=dict(length_m=.3,radius_m=.002,density_kg_m3=700,
             loads=[dict(size_m=[.05]*3,mass_kg=.1,friction=.4),dict(size_m=[.06]*3,mass_kg=.2,friction=.4)])

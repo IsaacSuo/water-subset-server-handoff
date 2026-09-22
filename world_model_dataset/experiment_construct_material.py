@@ -10,7 +10,7 @@ from .experiment_geometry import require, rectangle
 
 
 def material(obj, cond, profile, geo, support, phenomenon):
-    from .experiment_construct import number, transform
+    from .experiment_construct import number, transform, passage_camera
     z, surface = geo.support(support); lo,hi=geo.bounds
     cfg=copy.deepcopy(profile['input'])
     cy=(lo[1]+hi[1])/2
@@ -43,12 +43,16 @@ def material(obj, cond, profile, geo, support, phenomenon):
         geo.check_box([*(center+low)[:2],z+1e-5],center+high,'drop_path')
         native['world_from_mesh']=transform(center); cfg['object']=native
         return cfg,dict(support_height_m=z,drop_height_m=height,object_bounds_m=[low.tolist(),high.tolist()],
+                        observation_camera=passage_camera(geo,[(lo[0]+hi[0])/2,cy,z+.12],[(lo[0]+hi[0])/2,cy,z+.12],.8),
                         limits='undeformed impact path only; plastic response and postimpact clearance unverified')
 
     components=list(surface.geoms) if hasattr(surface,'geoms') else [surface]
     components=[p for p in components if p.intersects(box(*lo[:2],*hi[:2]))]
     require(len(components)==1,'support_selection','select one connected horizontal support')
     surface=components[0]; edge=surface.bounds[2]
+    # Observation follows the selected original edge, not condition/object size.
+    camera_target=np.array([edge+min(.2,(hi[0]-edge)/2),cy,z-.04])
+    camera=passage_camera(geo,camera_target,camera_target,max(.6,min(1.2,hi[0]-edge)))
     if phenomenon=='beam_load_hold_withdraw':
         keys(obj,{'size_m'},{'size_m'},'beam object')
         keys(cond,{'clamp_fraction','deflection_fraction','max_force_n'},
@@ -87,6 +91,7 @@ def material(obj, cond, profile, geo, support, phenomenon):
                           max_force_n=number(cond,'max_force_n'),schedule=[[t,pz-travel if i in (2,3) else pz] for i,t in enumerate(times)],
                           guide_limits_m=[-travel-gap,gap])
         return cfg,dict(support_edge_x_m=edge,clamp_length_m=clamp,free_span_m=length-clamp,
+                        observation_camera=camera,
                         requested_deflection_m=drop,plate_travel_m=travel,
                         edge_contact_band_m=[edge,clear_start],edge_contact_effect='unverified',
                         constraint='native -X ideal attachment to visible world-fixed fixture; finite Z plate',
@@ -114,6 +119,7 @@ def material(obj, cond, profile, geo, support, phenomenon):
                          length_m=length,clamp_length_m=clamp,segments=segments,end_condition='first_clamped',
                          radius_m=radius,density_kg_m3=obj['density_kg_m3'])
         return cfg,dict(support_edge_x_m=edge,segments=segments,clamp_length_m=clamp,
+                        observation_camera=camera,
                         free_length_m=length-clamp,constraint='ideal first-clamped passive cable; no finite attached load',
                         edge_contact_band_m=[edge,clear_start],edge_contact_effect='unverified',
                         limits='reserved initial/downward prism; full 3D swinging envelope and physical response unverified')
