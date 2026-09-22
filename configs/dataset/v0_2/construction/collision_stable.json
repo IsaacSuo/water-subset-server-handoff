@@ -1,0 +1,59 @@
+{
+  "format": "phenomenon-construction/1",
+  "id": "collision_stable_auto",
+  "phenomenon": "multibody_collision_propagation",
+  "profile": "profiles/collision_stable.json",
+  "scene": {
+    "id": "classroom_original",
+    "units": "m",
+    "up_axis": "Z",
+    "frame": "original_world",
+    "region_bounds_m": [
+      [
+        -1.0,
+        -1.4,
+        -0.1
+      ],
+      [
+        2.0,
+        -0.6,
+        0.4
+      ]
+    ],
+    "collision": {
+      "scene_export": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/scene.json"
+    },
+    "source_records": {
+      "scene": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/scene.json"
+    }
+  },
+  "support_group": "room",
+  "object": [
+    {
+      "id": "body_a",
+      "asset": "ph_jug_01",
+      "size_m": 0.15,
+      "mass_kg": 0.3,
+      "rotation_deg": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "body_b",
+      "asset": "ph_jug_01",
+      "size_m": 0.12,
+      "mass_kg": 0.3,
+      "rotation_deg": [
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "conditions": {
+    "speed_m_s": 0.8,
+    "gap_ratio": 0.05
+  }
+}
