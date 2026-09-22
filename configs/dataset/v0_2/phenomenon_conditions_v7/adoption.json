@@ -1,0 +1,236 @@
+{
+  "format": "mainline-condition-adoption/1",
+  "base_catalog": {
+    "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_rope_load_data_v6/catalog.json",
+    "sha256": "6658ad69403b3289b248c281695c64ec9a329d9176fe4ba6de0b48e9f135b432"
+  },
+  "catalog": {
+    "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_conditions_data_v7/catalog.json",
+    "sha256": "ea73163f62044c6ba2c69580660b575ecee11540683e6d6fabab67483a3a1160"
+  },
+  "new_conditions": [
+    {
+      "id": "multibody_lower_drop",
+      "baseline_mainline_id": "rearrange_count_3",
+      "baseline_api_id": "multibody_baseline",
+      "purpose_and_limits": "One participant starts 40 mm lower; potential energy and collision timing change.",
+      "source_episode": "/mnt/y/isaacsim_work_generation_api/output/experiment_api_verified/multibody_reuse_generated/data/multibody_lower_drop/observation_000/episode",
+      "adopted_episode": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_conditions_data_v7/delivery/multibody_lower_drop/episode",
+      "manifest_sha256": "235bbd541c52e9fba464d4b1679bb735ae76b824fac2f847962b305e7009da90",
+      "source_states_sha256": "7bebf6ba898c704e5293dda2e6794880c949e5156af95712ba921cd2d3426928",
+      "source_review": {
+        "path": "/mnt/y/isaacsim_work_generation_api/output/experiment_api_verified/multibody_reuse_generated/reviews/multibody_lower_drop/review_000.json",
+        "sha256": "11c2244c8a8248c65c43b72aacf66badc4d02efa8e302644b85ccfb33a70f599"
+      },
+      "baseline_review": {
+        "path": "/mnt/y/isaacsim_work_generation_api/output/experiment_api_verified/multibody_reuse_generated/reviews/multibody_baseline/review_000.json",
+        "sha256": "dfacfdcf3909fbe0e84145f1f8f0f78f8b2f0ab81eb509ca7c4d7771c51a1a9a"
+      },
+      "workflow": {
+        "path": "/mnt/y/isaacsim_work_generation_api/output/experiment_api_verified/multibody_reuse_generated/workflow.json",
+        "sha256": "35a071e19ac6572ca3bcc217317cfd979c25fbbfd07700700a1b89be6793b02d"
+      },
+      "baseline_workflow": {
+        "path": "/mnt/y/isaacsim_work_generation_api/output/experiment_api_verified/multibody_reuse_generated/workflow.json",
+        "sha256": "35a071e19ac6572ca3bcc217317cfd979c25fbbfd07700700a1b89be6793b02d"
+      },
+      "intervention": {
+        "changed_inputs": [
+          "/input/participants/1/clearance_m"
+        ],
+        "declared_subtrees": [
+          "/input/participants/1/clearance_m"
+        ],
+        "declared_derived_impacts": [
+          "second body starts 40 mm lower; potential energy, impact timing and subsequent contacts can change"
+        ],
+        "invariant_sha256": "77154301ddd5ce0e12c7a0a1ef3e422563e52d64d304a86cea36bd0e2d097182",
+        "scene_sha256": "be28429a91b787bb89c9a97be9e053eaca4562c696b88b2aa350f2cbe639b5e5",
+        "actual_prepared_physics_differences": [
+          "/bodies/potato_b/state/position_m/2"
+        ]
+      },
+      "use_admission": "not_granted_by_catalog_adoption",
+      "comparison_scope": "declared input comparison with matching API invariants and existing baseline state bytes; not unique counterfactual certification"
+    },
+    {
+      "id": "plastic_yield_8000",
+      "baseline_mainline_id": "plastic_drop_12_v2",
+      "baseline_api_id": "plastic_baseline",
+      "purpose_and_limits": "Yield-pressure input comparison; native Jp and deformation are available, not calibrated material identification.",
+      "source_episode": "/mnt/y/isaacsim_work_generation_api/output/experiment_api_verified/plastic/data/plastic_yield_8000/observation_000/episode",
+      "adopted_episode": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_conditions_data_v7/delivery/plastic_yield_8000/episode",
+      "manifest_sha256": "48235352ba2a7e3cf2a979459139fa7c529a04def72b3fffb01ac7f4c1253b07",
+      "source_states_sha256": "78e637e885071d175f1fb36cb6e2cb33085c6790894a172ed3953da8e2164718",
+      "source_review": {
+        "path": "/mnt/y/isaacsim_work_generation_api/output/experiment_api_verified/plastic/reviews/plastic_yield_8000/review_000.json",
+        "sha256": "cef0535da4ff665d2b4f65065494526d22db4ff8bae158429adaa9b34e0d495c"
+      },
+      "baseline_review": {
+        "path": "/mnt/y/isaacsim_work_generation_api/output/experiment_api_verified/plastic/reviews/plastic_baseline/review_000.json",
+        "sha256": "e0ae3f82bd398b85e58d481763b237e6061e68922b5054b411b456bd906c39bd"
+      },
+      "workflow": {
+        "path": "/mnt/y/isaacsim_work_generation_api/output/experiment_api_verified/plastic/workflow.json",
+        "sha256": "4ecfd830f9ee44afe545de4c276c53f5693c20e949b0f85245bef41e75376143"
+      },
+      "baseline_workflow": {
+        "path": "/mnt/y/isaacsim_work_generation_api/output/experiment_api_verified/plastic/workflow.json",
+        "sha256": "4ecfd830f9ee44afe545de4c276c53f5693c20e949b0f85245bef41e75376143"
+      },
+      "intervention": {
+        "changed_inputs": [
+          "/input/material/yield_pressure"
+        ],
+        "declared_subtrees": [
+          "/input/material/yield_pressure"
+        ],
+        "declared_derived_impacts": [
+          "compressive yield threshold changes; Jp, impact deformation and residual shape may change"
+        ],
+        "invariant_sha256": "e1654f9b815caea3112b865c74e3631252f6414b37d5a0010b74a97adcf097f7",
+        "scene_sha256": "8e1753cfb0c82abb2a24355be43bb78767461b598d76b7cecdad6b9dbe787032",
+        "actual_prepared_physics_differences": [
+          "/config/material/yield_pressure"
+        ]
+      },
+      "use_admission": "not_granted_by_catalog_adoption",
+      "comparison_scope": "declared input comparison with matching API invariants and existing baseline state bytes; not unique counterfactual certification"
+    },
+    {
+      "id": "cloth_offset_278",
+      "baseline_mainline_id": "cloth_edge_273_stable_v1",
+      "baseline_api_id": "cloth_baseline",
+      "purpose_and_limits": "Support-overlap comparison within the passive 20 kPa profile; do not pair as the same material with active 200 kPa cloth.",
+      "source_episode": "/mnt/y/isaacsim_work_generation_api/output/experiment_api_verified/cloth/data/cloth_offset_278/observation_000/episode",
+      "adopted_episode": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_conditions_data_v7/delivery/cloth_offset_278/episode",
+      "manifest_sha256": "27dbfc532f7aecd624672825bcb174a063acd58d10df5bf6e00c4f376d82b0f7",
+      "source_states_sha256": "236f0d44e6185d8c073c33e3eca4d3e3e804b05f27f83f152a7944b926a962e5",
+      "source_review": {
+        "path": "/mnt/y/isaacsim_work_generation_api/output/experiment_api_verified/cloth/reviews/cloth_offset_278/review_000.json",
+        "sha256": "58fc22d3b1ebab0585e9b7c04e42a8fc3152ef9f8c35ce5ad6ee0ccda93f9c95"
+      },
+      "baseline_review": {
+        "path": "/mnt/y/isaacsim_work_generation_api/output/experiment_api_verified/cloth_baseline/reviews/cloth_baseline/review_000.json",
+        "sha256": "63ce3df0d84f7ea7334a3e19612c3df4055545d524a8814b3b2e331c7594dad4"
+      },
+      "workflow": {
+        "path": "/mnt/y/isaacsim_work_generation_api/output/experiment_api_verified/cloth/workflow.json",
+        "sha256": "53aa289f783aee375f8632f4f27b3964afbfea9017599c84f115897983720a19"
+      },
+      "baseline_workflow": {
+        "path": "/mnt/y/isaacsim_work_generation_api/output/experiment_api_verified/cloth_baseline/workflow.json",
+        "sha256": "1e25baea0b30c5ad898e8b268e707088d508aca0e31ad40dfc4bbdf9a9bf8b75"
+      },
+      "intervention": {
+        "changed_inputs": [
+          "/input/cloth/world_from_mesh/0/3"
+        ],
+        "declared_subtrees": [
+          "/input/cloth/world_from_mesh/0/3"
+        ],
+        "declared_derived_impacts": [
+          "cloth translated 50 mm in world X; support overlap and contact opportunities change; mesh, material and environment fixed"
+        ],
+        "invariant_sha256": "e264c099a94ed7aad1cd5ca2e3500eff9db9cf657d3f0bb4470225e4b7c18252",
+        "scene_sha256": "54623fe67133790ab83513df90c8faa95e195465669cb40583a35877c15c5da8",
+        "actual_prepared_physics_differences": [
+          "/config/cloth/world_from_mesh/0/3",
+          "/prepared_arrays/cloth.npz/vertices/sha256"
+        ]
+      },
+      "use_admission": "not_granted_by_catalog_adoption",
+      "comparison_scope": "declared input comparison with matching API invariants and existing baseline state bytes; not unique counterfactual certification"
+    },
+    {
+      "id": "rope_both_ends",
+      "baseline_mainline_id": "rope_end_first_clamped",
+      "baseline_api_id": "rope_baseline",
+      "purpose_and_limits": "Fixing the last finite segment also changes mobile mass; this is a boundary-condition comparison, not a tension measurement.",
+      "source_episode": "/mnt/y/isaacsim_work_generation_api/output/experiment_api_verified/rope_reuse_generated/data/rope_both_ends/observation_000/episode",
+      "adopted_episode": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_conditions_data_v7/delivery/rope_both_ends/episode",
+      "manifest_sha256": "9d391e33df66c89ca3e5ddf180d6f508b4474f3d8ea6fac77b031a4f2043990a",
+      "source_states_sha256": "fe798b32f04cfe7d88146e28624eba2e90d5800e59eaf74654790ebc27655bd0",
+      "source_review": {
+        "path": "/mnt/y/isaacsim_work_generation_api/output/experiment_api_verified/rope_reuse_generated/reviews/rope_both_ends/review_000.json",
+        "sha256": "a9d435a84745d41c24485abb6618e0ed1b4bb5d61dbc88baddff54dc196f4213"
+      },
+      "baseline_review": {
+        "path": "/mnt/y/isaacsim_work_generation_api/output/experiment_api_verified/rope_reuse_generated/reviews/rope_baseline/review_000.json",
+        "sha256": "a402db80abbe6cebade5a589a9d0766b5e179de2b0e16ed4b922fd1dbaa7b8c6"
+      },
+      "workflow": {
+        "path": "/mnt/y/isaacsim_work_generation_api/output/experiment_api_verified/rope_reuse_generated/workflow.json",
+        "sha256": "e419f18b1db427cd371aa3e717c67a3a8bbb3e61dc19a7a562a6b993e87133e3"
+      },
+      "baseline_workflow": {
+        "path": "/mnt/y/isaacsim_work_generation_api/output/experiment_api_verified/rope_reuse_generated/workflow.json",
+        "sha256": "e419f18b1db427cd371aa3e717c67a3a8bbb3e61dc19a7a562a6b993e87133e3"
+      },
+      "intervention": {
+        "changed_inputs": [
+          "/input/rope/end_condition"
+        ],
+        "declared_subtrees": [
+          "/input/rope/end_condition"
+        ],
+        "declared_derived_impacts": [
+          "last finite segment also fixed; its solver mass becomes zero; mobile mass and boundary conditions change"
+        ],
+        "invariant_sha256": "43552da6d0ad2278615422bf36ecd477aa3ef74dcfd5e6057a97b95ebd296ecb",
+        "scene_sha256": "c99d8e6a20c768eb280502ca5b9c87d91fc64926319b442bb794bca895511009",
+        "actual_prepared_physics_differences": [
+          "/config/rope/end_condition"
+        ]
+      },
+      "use_admission": "not_granted_by_catalog_adoption",
+      "comparison_scope": "declared input comparison with matching API invariants and existing baseline state bytes; not unique counterfactual certification"
+    }
+  ],
+  "retained_existing_ids": [
+    "plastic_drop_4_v2",
+    "plastic_drop_12_v2",
+    "elastic_unload_force_150",
+    "elastic_unload_force_50",
+    "passage_flat",
+    "passage_upright",
+    "rearrange_count_3",
+    "rearrange_count_4",
+    "roll_spin_0",
+    "roll_spin_12",
+    "rope_end_first_clamped",
+    "rope_end_free",
+    "roll_reuse_ph_yellow_onion",
+    "roll_reuse_ph_sweet_potato",
+    "plastic_yield_pressure_12000",
+    "cloth_edge_273_stable_v1",
+    "cloth_edge_283_stable_v1",
+    "beam_load_delivery",
+    "beam_hold_delivery",
+    "passage_scale_ph_jug_01_small",
+    "passage_scale_ph_jug_01_large",
+    "roll_friction_supported_ph_yellow_onion_low",
+    "roll_friction_supported_ph_yellow_onion_high",
+    "depen005_hold5s",
+    "depen005_blocked5s",
+    "depen005_low5s",
+    "c_travel24_v1"
+  ],
+  "existing_entries_unchanged": true,
+  "supersession_history_unchanged": true,
+  "counts": {
+    "states": 14887,
+    "observations": 873
+  },
+  "group_counts": {
+    "2": 8,
+    "1": 13,
+    "4": 4,
+    "3": 6
+  },
+  "source_code_merged": false,
+  "new_physics_run": false,
+  "new_phenomena_claimed": false,
+  "training_admission": false,
+  "observations": "diagnostic; no source textures"
+}
