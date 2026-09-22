@@ -1,0 +1,676 @@
+{
+  "format": "local-automatic-layout-delivery/1",
+  "base_mainline": "2b17ccf",
+  "base_catalog": "phenomenon_construction_data_v8 (33 episodes)",
+  "catalog_modified": false,
+  "merged": false,
+  "pushed": false,
+  "training_admission": false,
+  "cases": [
+    {
+      "case": "rearrangement",
+      "phenomenon": "multibody_rearrangement",
+      "implementation_commit": "89aeca8",
+      "request": {
+        "path": "/mnt/y/isaacsim_work_construction/configs/dataset/v0_2/construction/rearrangement.json",
+        "sha256": "67b3606e93211191e7436b4e39cf7b5b0ec3868bee840519bdcd402b84115ff9"
+      },
+      "generated": {
+        "experiment.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rearrangement/generated/experiment.json",
+          "sha256": "8c99a4c03c0d2cf39fbba9425bc789264b56e645ecaaafec93269405f7efff3d"
+        },
+        "backend_input.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rearrangement/generated/backend_input.json",
+          "sha256": "4bc607c92517c237c1d5e088876f8384f0eba143952bbc668b60db56200b173d"
+        },
+        "construction.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rearrangement/generated/construction.json",
+          "sha256": "9e3e3b6a9a1d62cd83ae02a083ace0f87070f862bf900fbb52f92bfb28b363cc"
+        }
+      },
+      "workflow": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rearrangement/execution/workflow.json",
+        "sha256": "06bc0bd248ff868c3bf122e13de83d0b44d02de5f354293aeb4ceec5dd12b295"
+      },
+      "construction": "implemented",
+      "geometry_checks": "passed",
+      "native_contract": "local compiler passed; native contract check separate",
+      "physical_execution": "completed",
+      "observed_outcome": "contact rearrangement occurred; top object rolled off; not restabilized",
+      "unified_reading": "complete",
+      "use_qualification": "human_use_review_pending",
+      "training_admission": false,
+      "stage_names": [
+        "prepare",
+        "simulate",
+        "package",
+        "audit",
+        "observe"
+      ],
+      "errors": [],
+      "attempt_directories": [
+        "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rearrangement/execution/jobs/layout_rearrange_v1_baseline/attempt_001"
+      ],
+      "native_run": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rearrangement/execution/jobs/layout_rearrange_v1_baseline/attempt_001/layout_rearrange_v1_baseline",
+      "execution_source_pins": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rearrangement/execution/jobs/layout_rearrange_v1_baseline/attempt_001/source_pins.json",
+        "sha256": "68e3e3c3a4351fea5f60e9a6bdaf1eb79ae0973e06147c155dc56a0458b8fcdc"
+      },
+      "episode": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rearrangement/execution/data/layout_rearrange_v1_baseline/observation_000/episode",
+      "episode_manifest": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rearrangement/execution/data/layout_rearrange_v1_baseline/observation_000/episode/episode.json",
+        "sha256": "ace4502976dd602f4347d95745d9ca9010bc01da90066e599de44a62a7b08797"
+      },
+      "evidence": {
+        "result.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rearrangement/result.json",
+          "sha256": "7a135bc365bd72d47ec7d285aa55977f3a3912518b0870885c5206ac910f571a"
+        },
+        "appearance/replay.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rearrangement/appearance/replay.json",
+          "sha256": "efbd1e3e030618e24148031e45547a2103136ddbe2ad61695ae4aa637855d900"
+        }
+      }
+    },
+    {
+      "case": "cloth_drag",
+      "phenomenon": "cloth_drag",
+      "implementation_commit": "050f161",
+      "request": {
+        "path": "/mnt/y/isaacsim_work_construction/configs/dataset/v0_2/construction/cloth_drag.json",
+        "sha256": "8adb6915509346cd91c41f626eb70c8f4114a49d132f83ca8db2f2172147bb96"
+      },
+      "generated": {
+        "experiment.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/cloth_drag/generated/experiment.json",
+          "sha256": "426e0172a61e7fe5938737926018743fc2992f5bfc92a77809ed0ff5e2c6772c"
+        },
+        "backend_input.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/cloth_drag/generated/backend_input.json",
+          "sha256": "aaa69ba4ca5c7cb22de095a52443303c3fd5a09298eb25631fb7398cda8079c5"
+        },
+        "construction.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/cloth_drag/generated/construction.json",
+          "sha256": "fe55f8949f5da5145be8f2d2bb22c9eaadb3d865ee3519c29bc49be171406962"
+        }
+      },
+      "workflow": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/cloth_drag/execution/workflow.json",
+        "sha256": "af7302a01740e3f4c8b0988c0a0bef02963ba22e8d7fd803acab0257f7909a58"
+      },
+      "construction": "implemented",
+      "geometry_checks": "passed",
+      "native_contract": "native input_contract.normalize passed; no prepare/solver/render",
+      "physical_execution": "completed",
+      "observed_outcome": "finite free drag occurred; blocked/low-force are geometry-only checks",
+      "unified_reading": "complete",
+      "use_qualification": "human_use_review_pending",
+      "training_admission": false,
+      "stage_names": [
+        "prepare",
+        "simulate",
+        "package",
+        "audit",
+        "observe"
+      ],
+      "errors": [],
+      "attempt_directories": [
+        "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/cloth_drag/execution/jobs/layout_cloth_drag_v1_baseline/attempt_001"
+      ],
+      "native_run": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/cloth_drag/execution/jobs/layout_cloth_drag_v1_baseline/attempt_001/layout_cloth_drag_v1_baseline",
+      "execution_source_pins": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/cloth_drag/execution/jobs/layout_cloth_drag_v1_baseline/attempt_001/source_pins.json",
+        "sha256": "1634d91e8367633a53a629ee511fb587e8eea50864b6ed4483bee559d27b08ed"
+      },
+      "episode": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/cloth_drag/execution/data/layout_cloth_drag_v1_baseline/observation_000/episode",
+      "episode_manifest": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/cloth_drag/execution/data/layout_cloth_drag_v1_baseline/observation_000/episode/episode.json",
+        "sha256": "ccdf71f9f8838d94ce19b66ca93cc91dc4ea9a45d1e9bfffd4eff51fd6aece7a"
+      },
+      "evidence": {
+        "result_complete.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/cloth_drag/result_complete.json",
+          "sha256": "85a1eaa0acba066886b03769dc4c8c1f652df2f2901da4f63b8d93fbb8968c82"
+        },
+        "result.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/cloth_drag/result.json",
+          "sha256": "aa68e552d9ef30fcf24027cd6c0450a77a2f4c56094cf5206ccc8bee281c831e"
+        },
+        "appearance/replay.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/cloth_drag/appearance/replay.json",
+          "sha256": "25ae2005b5c7e01c22f7252453409cc4aeb4fbebada5c025af14ea8861355fbd"
+        }
+      }
+    },
+    {
+      "case": "rope_load",
+      "phenomenon": "rope_finite_load",
+      "implementation_commit": "d2b27b8",
+      "request": {
+        "path": "/mnt/y/isaacsim_work_construction/configs/dataset/v0_2/construction/rope_load.json",
+        "sha256": "92874aa8525228204c6454e6d17356c34b2d289a53d1b87ee9b5678e01901012"
+      },
+      "generated": {
+        "experiment.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_load/generated/experiment.json",
+          "sha256": "485b99865423a1c80c746f86d15b6cc219631ebfe3535ac0b77f39697730bf1f"
+        },
+        "backend_input.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_load/generated/backend_input.json",
+          "sha256": "3716db644c1661266abc9db9c7fbe7d077de9ee20a0e3feb7a1d7b8463e7452b"
+        },
+        "construction.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_load/generated/construction.json",
+          "sha256": "f14af2a2803c374f44591de05149c10a0434bc2dc9240ee35a4235a44c7502e5"
+        }
+      },
+      "workflow": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_load/execution/workflow.json",
+        "sha256": "a33f5ed3f5d7694ad24fafca7fb413b00a74fb78eeceb6d14a5125651b2d71c6"
+      },
+      "construction": "implemented",
+      "geometry_checks": "passed",
+      "native_contract": "native input_contract.normalize passed; no prepare/solver/render",
+      "physical_execution": "completed",
+      "observed_outcome": "front load moved and pulled rear load; native tension unavailable",
+      "unified_reading": "complete",
+      "use_qualification": "human_use_review_pending",
+      "training_admission": false,
+      "stage_names": [
+        "prepare",
+        "simulate",
+        "package",
+        "audit",
+        "observe"
+      ],
+      "errors": [],
+      "attempt_directories": [
+        "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_load/execution/jobs/layout_rope_load_v1_baseline/attempt_001"
+      ],
+      "native_run": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_load/execution/jobs/layout_rope_load_v1_baseline/attempt_001/layout_rope_load_v1_baseline",
+      "execution_source_pins": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_load/execution/jobs/layout_rope_load_v1_baseline/attempt_001/source_pins.json",
+        "sha256": "29d1431bfe6c2ce53b5f0767af66fa572c2be33fc3f9c1742897f740b65f0686"
+      },
+      "episode": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_load/execution/data/layout_rope_load_v1_baseline/observation_000/episode",
+      "episode_manifest": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_load/execution/data/layout_rope_load_v1_baseline/observation_000/episode/episode.json",
+        "sha256": "afe52e43e2187c1e55d4a2724191de66a8d25f42dd108ce1ea7d1f1342508f5b"
+      },
+      "evidence": {
+        "result.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_load/result.json",
+          "sha256": "5db5e335ff005d1f19cf7a09a0d541437912d1a17dec7e618b7de9db8e587434"
+        },
+        "native_details.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_load/native_details.json",
+          "sha256": "409984668fe69eab0fa01f435e3b392c1ae898e5fc53021c9c6cd5a71b66e43d"
+        },
+        "appearance/replay.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_load/appearance/replay.json",
+          "sha256": "45f0c08bb70ab6587865c7766da25ef5a51e49f713fc2a0a6cb321b1afd301b9"
+        }
+      }
+    },
+    {
+      "case": "rope_wrap",
+      "phenomenon": "rope_wrap",
+      "implementation_commit": "c975438",
+      "request": {
+        "path": "/mnt/y/isaacsim_work_construction/configs/dataset/v0_2/construction/rope_wrap.json",
+        "sha256": "b2f9642f3a63cbebeb810917850a5139f672e73c96bc10b9c651f36ceac62516"
+      },
+      "generated": {
+        "experiment.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_wrap/generated/experiment.json",
+          "sha256": "a9a07c451e7f1f45cea69cdb9999604cadb431cff5d69f69af1c6a1c3d2b1026"
+        },
+        "backend_input.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_wrap/generated/backend_input.json",
+          "sha256": "0af0acb5e9498318141f3fe77d9b0ea73694aa5dafb581de33f888c09ac26dbf"
+        },
+        "construction.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_wrap/generated/construction.json",
+          "sha256": "da2c58c31aa4fbf7e1fecd17654821cdfb48ac8618bc171340e9b312fbfb3035"
+        }
+      },
+      "workflow": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_wrap/execution/workflow.json",
+        "sha256": "4cb3403ec6275447497d95ed5cc692d6a0649dd322238095e1b233100d768aad"
+      },
+      "construction": "implemented",
+      "geometry_checks": "passed",
+      "native_contract": "native input_contract.normalize passed; no prepare/solver/render",
+      "physical_execution": "not_started",
+      "observed_outcome": "prepare rejects unchanged original mesh degeneracies; no physics",
+      "unified_reading": "unavailable",
+      "use_qualification": "not_qualified",
+      "training_admission": false,
+      "stage_names": [],
+      "errors": [
+        {
+          "stage": "prepare",
+          "error": "CalledProcessError(1, ['/home/fangsuo/isaacsim_work_material_response/.venv-material/bin/python', '-c', 'import sys,runpy,numpy as np,trimesh; from pathlib import Path; seed=int(sys.argv[1]); sys.argv=sys.argv[2:]; sys.path.insert(0,str(Path(sys.argv[0]).parent)); np.random.seed(seed); trimesh.util.random_generator().bit_generator.state=np.random.default_rng(seed).bit_generator.state; runpy.run_path(sys.argv[0],run_name=\"__main__\")', '0', '/home/fangsuo/isaacsim_work_material_response/experiments/material_response/scene_input/material_entry.py', '--stage', 'prepare', '--output', '/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_wrap/execution/jobs/layout_rope_wrap_v1_baseline/attempt_001/layout_rope_wrap_v1_baseline', '--runtime', '/mnt/y/isaacsim_work/configs/dataset/v0_2/phenomenon_pilot_v1/runtime.json', '--mainline', '/mnt/y/isaacsim_work_construction', '--config', '/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_wrap/execution/jobs/layout_rope_wrap_v1_baseline/attempt_001/config.json'])",
+          "traceback": "Traceback (most recent call last):\n  File \"/mnt/y/isaacsim_work_construction/world_model_dataset/phenomenon_experiment.py\", line 201, in run\n    result = prepare_job(variant, condition, folder, job_id)\n  File \"/mnt/y/isaacsim_work_construction/world_model_dataset/phenomenon_experiment.py\", line 88, in prepare_job\n    run = adapters.prepare(doc, folder, job_id)\n  File \"/mnt/y/isaacsim_work_construction/world_model_dataset/experiment_adapters.py\", line 148, in prepare\n    material_call(doc, run, 'prepare', folder / 'prepare.log', folder / 'config.json')\n    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/mnt/y/isaacsim_work_construction/world_model_dataset/experiment_adapters.py\", line 49, in material_call\n    run_command(command, log)\n    ~~~~~~~~~~~^^^^^^^^^^^^^^\n  File \"/mnt/y/isaacsim_work_construction/world_model_dataset/experiment_adapters.py\", line 26, in run_command\n    subprocess.run(command, cwd=ROOT, stdout=stream, stderr=subprocess.STDOUT, check=True)\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/fangsuo/anaconda3/lib/python3.13/subprocess.py\", line 577, in run\n    raise CalledProcessError(retcode, process.args,\n                             output=stdout, stderr=stderr)\nsubprocess.CalledProcessError: Command '['/home/fangsuo/isaacsim_work_material_response/.venv-material/bin/python', '-c', 'import sys,runpy,numpy as np,trimesh; from pathlib import Path; seed=int(sys.argv[1]); sys.argv=sys.argv[2:]; sys.path.insert(0,str(Path(sys.argv[0]).parent)); np.random.seed(seed); trimesh.util.random_generator().bit_generator.state=np.random.default_rng(seed).bit_generator.state; runpy.run_path(sys.argv[0],run_name=\"__main__\")', '0', '/home/fangsuo/isaacsim_work_material_response/experiments/material_response/scene_input/material_entry.py', '--stage', 'prepare', '--output', '/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_wrap/execution/jobs/layout_rope_wrap_v1_baseline/attempt_001/layout_rope_wrap_v1_baseline', '--runtime', '/mnt/y/isaacsim_work/configs/dataset/v0_2/phenomenon_pilot_v1/runtime.json', '--mainline', '/mnt/y/isaacsim_work_construction', '--config', '/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_wrap/execution/jobs/layout_rope_wrap_v1_baseline/attempt_001/config.json']' returned non-zero exit status 1.\n"
+        }
+      ],
+      "attempt_directories": [
+        "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_wrap/execution/jobs/layout_rope_wrap_v1_baseline/attempt_001"
+      ],
+      "evidence": {
+        "interface_gap.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_wrap/interface_gap.json",
+          "sha256": "6ed4b4665575db999bbc6f6ca8c25995bbee41277eddb5bf5fa0bc1eaa35583d"
+        }
+      }
+    },
+    {
+      "case": "roll",
+      "phenomenon": "rigid_roll_slide",
+      "implementation_commit": "c975438",
+      "request": {
+        "path": "/mnt/y/isaacsim_work_construction/configs/dataset/v0_2/construction/roll.json",
+        "sha256": "8bf8aa4c79a571757525e2ee1a7da68a2d63e6453b75396978e6de4cb5936c0e"
+      },
+      "generated": {
+        "experiment.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/roll/generated/experiment.json",
+          "sha256": "2d035818c3794076ca86d00c39d5098dcdc134c985d9660a40727ddfc55aee6b"
+        },
+        "backend_input.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/roll/generated/backend_input.json",
+          "sha256": "6435cb5b62bcf7e2437317fdd071fc5c2fabd844724d8f3fc626735529104a07"
+        },
+        "construction.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/roll/generated/construction.json",
+          "sha256": "e80a2150575f3c9e67fa68cfa2aa0690a3508690c4aec55c2967cf1ec7930343"
+        }
+      },
+      "workflow": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/roll/execution/workflow.json",
+        "sha256": "48b5d6a2f3f9701e76c3e2fe20c3f312a232fbeb7217cd516958f58033ba0b52"
+      },
+      "construction": "implemented",
+      "geometry_checks": "passed",
+      "native_contract": "local compiler passed; native contract check separate",
+      "physical_execution": "completed",
+      "observed_outcome": "translation and rotation on original floor; no pure-rolling or rest claim",
+      "unified_reading": "complete",
+      "use_qualification": "human_use_review_pending",
+      "training_admission": false,
+      "stage_names": [
+        "prepare",
+        "simulate",
+        "package",
+        "audit",
+        "observe"
+      ],
+      "errors": [],
+      "attempt_directories": [
+        "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/roll/execution/jobs/constructed_roll_baseline/attempt_001"
+      ],
+      "native_run": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/roll/execution/jobs/constructed_roll_baseline/attempt_001/constructed_roll_baseline",
+      "execution_source_pins": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/roll/execution/jobs/constructed_roll_baseline/attempt_001/source_pins.json",
+        "sha256": "5edef1e625fe88e7064456f12094449f3a3e3cd5d9cd01f379ab80dc7b728e83"
+      },
+      "episode": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/roll/execution/data/constructed_roll_baseline/observation_000/episode",
+      "episode_manifest": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/roll/execution/data/constructed_roll_baseline/observation_000/episode/episode.json",
+        "sha256": "2df15b1035d9ac341edaa23bf30e110a7286b263bd18f7e940eb8fe07b41958f"
+      },
+      "evidence": {
+        "result.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/roll/result.json",
+          "sha256": "ebc3f655461018346b78f7b0821584796fef468e18be98b0eaeb0c6337d43f37"
+        },
+        "appearance/replay.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/roll/appearance/replay.json",
+          "sha256": "0ef4bc07a840394587b2b871c19c486c525aa15652badae060d6c300ff8abc0e"
+        }
+      }
+    },
+    {
+      "case": "collision_chain_v2",
+      "phenomenon": "multibody_collision_propagation",
+      "implementation_commit": "c975438",
+      "request": {
+        "path": "/mnt/y/isaacsim_work_construction/configs/dataset/v0_2/construction/collision_chain.json",
+        "sha256": "42b3e4c43dc5dcb7592512e321ce1b54f6bf52d5af078105106a6505f2e2da6b"
+      },
+      "generated": {
+        "experiment.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/collision_chain_v2/generated/experiment.json",
+          "sha256": "73c5d420bf4101829506edb30b69e3e2b253b80199d3c382553162d038a18a27"
+        },
+        "backend_input.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/collision_chain_v2/generated/backend_input.json",
+          "sha256": "299d04f8a6f582019a8ebf278a1dd4bc55689fea0e4940f1d4b447873179c514"
+        },
+        "construction.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/collision_chain_v2/generated/construction.json",
+          "sha256": "c606abe339b38d605970303f9a5202aa1169ec773157b9dac6892924ec87742f"
+        }
+      },
+      "workflow": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/collision_chain_v2/execution/workflow.json",
+        "sha256": "d99af81feb3682edaddab425487080b2f97362b8d8811c39895a37f561dac568"
+      },
+      "construction": "implemented",
+      "geometry_checks": "passed",
+      "native_contract": "local compiler passed; native contract check separate",
+      "physical_execution": "completed",
+      "observed_outcome": "interbody contact occurred; intended forward propagation not observed",
+      "unified_reading": "complete",
+      "use_qualification": "human_use_review_pending",
+      "training_admission": false,
+      "stage_names": [
+        "prepare",
+        "simulate",
+        "package",
+        "audit",
+        "observe"
+      ],
+      "errors": [],
+      "attempt_directories": [
+        "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/collision_chain_v2/execution/jobs/constructed_collision_chain_baseline/attempt_001"
+      ],
+      "native_run": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/collision_chain_v2/execution/jobs/constructed_collision_chain_baseline/attempt_001/constructed_collision_chain_baseline",
+      "execution_source_pins": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/collision_chain_v2/execution/jobs/constructed_collision_chain_baseline/attempt_001/source_pins.json",
+        "sha256": "c32048606e7f2373e39052a398d2f970ac5b975ea22ef87bd64d184bbf52b580"
+      },
+      "episode": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/collision_chain_v2/execution/data/constructed_collision_chain_baseline/observation_000/episode",
+      "episode_manifest": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/collision_chain_v2/execution/data/constructed_collision_chain_baseline/observation_000/episode/episode.json",
+        "sha256": "0b2763f887dcc9cb3e76c0cf4675b55357491ca0d9d34412fee1b4a69dca7be1"
+      },
+      "evidence": {
+        "result.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/collision_chain_v2/result.json",
+          "sha256": "e83339cf10d2d56b82c0f40668e0a3b252f10ba461c71b3f709785b0d7392f83"
+        },
+        "appearance/replay.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/collision_chain_v2/appearance/replay.json",
+          "sha256": "d7f538eebd94008a19f9dd346de56335a793234a3a36341f3e47f34410ca0737"
+        }
+      }
+    },
+    {
+      "case": "plastic",
+      "phenomenon": "plastic_impact",
+      "implementation_commit": "c975438",
+      "request": {
+        "path": "/mnt/y/isaacsim_work_construction/configs/dataset/v0_2/construction/plastic.json",
+        "sha256": "6d7453fde7f6c460d8213a551800c709e79644741200ef1c13254ebb4c11bc90"
+      },
+      "generated": {
+        "experiment.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/plastic/generated/experiment.json",
+          "sha256": "1bd658c7832eab0c12f32396d2ec251c87f3724e123df8ed512bc104fea0f725"
+        },
+        "backend_input.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/plastic/generated/backend_input.json",
+          "sha256": "7853a163913677c0317647f4fd68108722eee5c1de9d502d61b5ebb0190037e0"
+        },
+        "construction.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/plastic/generated/construction.json",
+          "sha256": "55e71067682b5c8e6ce49145c4bed13c8e80ba79e849bd86208fa279f5984d55"
+        }
+      },
+      "workflow": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/plastic/execution/workflow.json",
+        "sha256": "ab0e612803d915a13cf915cb987bc897f00eeea98d3bdb9144860197929ec3aa"
+      },
+      "construction": "implemented",
+      "geometry_checks": "passed",
+      "native_contract": "native input_contract.normalize passed; no prepare/solver/render",
+      "physical_execution": "started_then_nonfinite_failure",
+      "observed_outcome": "actual MPM execution aborted on nonfinite x; complete native state file absent",
+      "unified_reading": "unavailable",
+      "use_qualification": "not_qualified",
+      "training_admission": false,
+      "stage_names": [
+        "prepare"
+      ],
+      "errors": [
+        {
+          "stage": "simulate",
+          "error": "CalledProcessError(1, ['/home/fangsuo/isaacsim_work_material_response/.venv-material/bin/python', '/home/fangsuo/isaacsim_work_material_response/experiments/material_response/scene_input/material_entry.py', '--stage', 'simulate', '--output', '/mnt/y/isaacsim_work_construction/output/layout_completion_v1/plastic/execution/jobs/constructed_plastic_baseline/attempt_001/constructed_plastic_baseline', '--runtime', '/mnt/y/isaacsim_work/configs/dataset/v0_2/phenomenon_pilot_v1/runtime.json', '--mainline', '/mnt/y/isaacsim_work_construction', '--allow-busy-gpu'])",
+          "traceback": "Traceback (most recent call last):\n  File \"/mnt/y/isaacsim_work_construction/world_model_dataset/phenomenon_experiment.py\", line 242, in run\n    adapters.simulate(variant, run_dir, logs)\n    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/mnt/y/isaacsim_work_construction/world_model_dataset/experiment_adapters.py\", line 257, in simulate\n    material_call(doc, run, 'simulate', log_root / 'simulate.log')\n    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/mnt/y/isaacsim_work_construction/world_model_dataset/experiment_adapters.py\", line 49, in material_call\n    run_command(command, log)\n    ~~~~~~~~~~~^^^^^^^^^^^^^^\n  File \"/mnt/y/isaacsim_work_construction/world_model_dataset/experiment_adapters.py\", line 26, in run_command\n    subprocess.run(command, cwd=ROOT, stdout=stream, stderr=subprocess.STDOUT, check=True)\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/fangsuo/anaconda3/lib/python3.13/subprocess.py\", line 577, in run\n    raise CalledProcessError(retcode, process.args,\n                             output=stdout, stderr=stderr)\nsubprocess.CalledProcessError: Command '['/home/fangsuo/isaacsim_work_material_response/.venv-material/bin/python', '/home/fangsuo/isaacsim_work_material_response/experiments/material_response/scene_input/material_entry.py', '--stage', 'simulate', '--output', '/mnt/y/isaacsim_work_construction/output/layout_completion_v1/plastic/execution/jobs/constructed_plastic_baseline/attempt_001/constructed_plastic_baseline', '--runtime', '/mnt/y/isaacsim_work/configs/dataset/v0_2/phenomenon_pilot_v1/runtime.json', '--mainline', '/mnt/y/isaacsim_work_construction', '--allow-busy-gpu']' returned non-zero exit status 1.\n"
+        }
+      ],
+      "attempt_directories": [
+        "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/plastic/execution/jobs/constructed_plastic_baseline/attempt_001"
+      ],
+      "native_run": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/plastic/execution/jobs/constructed_plastic_baseline/attempt_001/constructed_plastic_baseline",
+      "execution_source_pins": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/plastic/execution/jobs/constructed_plastic_baseline/attempt_001/source_pins.json",
+        "sha256": "043d9f33aab19ac240101410659e1bfdae311b28fd7b392c5c437feb4ce3b2e2"
+      },
+      "evidence": {
+        "failure_report.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/plastic/failure_report.json",
+          "sha256": "8ab391ce1851b40be9f93e92b76ff92adedce65c66731f26712e9d8bc93fb7d8"
+        }
+      }
+    },
+    {
+      "case": "beam_v2",
+      "phenomenon": "beam_load_hold_withdraw",
+      "implementation_commit": "c975438",
+      "request": {
+        "path": "/mnt/y/isaacsim_work_construction/configs/dataset/v0_2/construction/beam.json",
+        "sha256": "b056385b3d4f7ed5dd2d6228b1e434c747232b9d6090744e6f4e847e0e9ce39d"
+      },
+      "generated": {
+        "experiment.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/beam_v2/generated/experiment.json",
+          "sha256": "67fc4038357c714a27a2c5cd0fc924d66bf0e7d667dc2a8715d11033c4248914"
+        },
+        "backend_input.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/beam_v2/generated/backend_input.json",
+          "sha256": "1dc8d5c7fe74c38d176f2ff1a40da9389707ec0b452a64be3bc56a89f3a435ee"
+        },
+        "construction.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/beam_v2/generated/construction.json",
+          "sha256": "f6109d567d95ad977d6d35a166555e25b89d1e97292f348864a94e0dda34e4af"
+        }
+      },
+      "workflow": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/beam_v2/execution/workflow.json",
+        "sha256": "f6744659448c572ca5796788880565da174dc04f855d51250ebaafa27bb389ed"
+      },
+      "construction": "implemented",
+      "geometry_checks": "passed",
+      "native_contract": "native input_contract.normalize passed; no prepare/solver/render",
+      "physical_execution": "completed",
+      "observed_outcome": "gravity sag caused failed sustained plate loading; complete negative outcome retained",
+      "unified_reading": "complete",
+      "use_qualification": "human_use_review_pending",
+      "training_admission": false,
+      "stage_names": [
+        "prepare",
+        "simulate",
+        "package",
+        "audit",
+        "observe"
+      ],
+      "errors": [],
+      "attempt_directories": [
+        "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/beam_v2/execution/jobs/constructed_beam_baseline/attempt_001"
+      ],
+      "native_run": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/beam_v2/execution/jobs/constructed_beam_baseline/attempt_001/constructed_beam_baseline",
+      "execution_source_pins": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/beam_v2/execution/jobs/constructed_beam_baseline/attempt_001/source_pins.json",
+        "sha256": "89819618185218ca834e2ee2dbaaf6abf8bdf6b6cfd4f4c8f717ee13d438825c"
+      },
+      "episode": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/beam_v2/execution/data/constructed_beam_baseline/observation_000/episode",
+      "episode_manifest": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/beam_v2/execution/data/constructed_beam_baseline/observation_000/episode/episode.json",
+        "sha256": "aa929a62cbf2cf0c05de991a9310b41601eafd8334c2be938255715813fdebfc"
+      },
+      "evidence": {
+        "result.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/beam_v2/result.json",
+          "sha256": "da62e32eceb05488c9eea2c4750fc0a48b665b869ecbe69a649cbfb8af229603"
+        },
+        "native_details.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/beam_v2/native_details.json",
+          "sha256": "96294f06317232cb4d0c5717ecf7f545aec0f2887255a766e254d59dc1eb3c0a"
+        },
+        "appearance/replay.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/beam_v2/appearance/replay.json",
+          "sha256": "79d2520e83abb8bc5359f8d61c988f4e186a4bd9613386ceb8e6eec1ece3a7af"
+        }
+      }
+    },
+    {
+      "case": "beam_supported",
+      "phenomenon": "beam_load_hold_withdraw",
+      "implementation_commit": "9fe0bd1",
+      "request": {
+        "path": "/mnt/y/isaacsim_work_construction/configs/dataset/v0_2/construction/beam_supported.json",
+        "sha256": "55f662714510074a85ce995986a70d5c689a1f4fe8516fb31c28f14c33a967d0"
+      },
+      "generated": {
+        "experiment.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/beam_supported/generated/experiment.json",
+          "sha256": "efe24646fd6bf817a2ef47337d3ada8934b9f1ad0334f418a43179bd90d3995f"
+        },
+        "backend_input.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/beam_supported/generated/backend_input.json",
+          "sha256": "807de3a9c15c11e242744e789874266ec00637c090a336feb3754dc3a250b5ed"
+        },
+        "construction.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/beam_supported/generated/construction.json",
+          "sha256": "ed8cb8fcaef1a8c8c87799d29d26136c09928c06ec71efb95a425c6053cfa84f"
+        }
+      },
+      "workflow": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/beam_supported/execution/workflow.json",
+        "sha256": "b50258f0a89a7989db4cc70b4ac127479290c6f2284613631108e2f18a5170cf"
+      },
+      "construction": "implemented",
+      "geometry_checks": "passed",
+      "native_contract": "native input_contract.normalize passed; no prepare/solver/render",
+      "physical_execution": "completed",
+      "observed_outcome": "screened shorter beam still failed sustained hold contact; no further sweep",
+      "unified_reading": "complete",
+      "use_qualification": "human_use_review_pending",
+      "training_admission": false,
+      "stage_names": [
+        "prepare",
+        "simulate",
+        "package",
+        "audit",
+        "observe"
+      ],
+      "errors": [],
+      "attempt_directories": [
+        "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/beam_supported/execution/jobs/constructed_beam_supported_baseline/attempt_001"
+      ],
+      "native_run": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/beam_supported/execution/jobs/constructed_beam_supported_baseline/attempt_001/constructed_beam_supported_baseline",
+      "execution_source_pins": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/beam_supported/execution/jobs/constructed_beam_supported_baseline/attempt_001/source_pins.json",
+        "sha256": "0de770442529c6ff206d57191bbee52973605fc518820eacbe4ec4de2db5df9a"
+      },
+      "episode": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/beam_supported/execution/data/constructed_beam_supported_baseline/observation_000/episode",
+      "episode_manifest": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/beam_supported/execution/data/constructed_beam_supported_baseline/observation_000/episode/episode.json",
+        "sha256": "6dd6fe702741acccb1178b4b6075ea46f4ece172fca84a18c30c75a5eaf0f2da"
+      },
+      "evidence": {
+        "result.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/beam_supported/result.json",
+          "sha256": "6ebe5df79405fe9f5bde9a6374a09738eed129c98942b97c5c664b7dbebb56ed"
+        },
+        "native_details.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/beam_supported/native_details.json",
+          "sha256": "ac96631616d2093193d99cd2be3283797db0d2d39112cfa0436be5f42fb03511"
+        },
+        "appearance/replay.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/beam_supported/appearance/replay.json",
+          "sha256": "ae4dbe94941c7378dfac648a54626aa9449c487cee9d7727410af5ac909376ec"
+        }
+      }
+    },
+    {
+      "case": "rope_v2",
+      "phenomenon": "rope_passive",
+      "implementation_commit": "c975438",
+      "request": {
+        "path": "/mnt/y/isaacsim_work_construction/configs/dataset/v0_2/construction/rope.json",
+        "sha256": "43b04eb93b16e8ecaeae6488315aa0389064a80ff78abb507371b9de286fda05"
+      },
+      "generated": {
+        "experiment.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_v2/generated/experiment.json",
+          "sha256": "7ccaefcfd4b517caac99b9e7788a251c029cb6bc2cd376097a709529130a75e5"
+        },
+        "backend_input.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_v2/generated/backend_input.json",
+          "sha256": "85bd56b2fec7801e807e59c2e386c836a8d0f884f51e27dbb8f83db3faa5d6d5"
+        },
+        "construction.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_v2/generated/construction.json",
+          "sha256": "029d82bfdbabe5d28c2815a82d1117c400333d054c89bfb932cce821b0befc41"
+        }
+      },
+      "workflow": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_v2/execution/workflow.json",
+        "sha256": "989e8b49cacd45c2072414601ae9fb0cd8c450a4fdf4bd041870b74af920c3e6"
+      },
+      "construction": "implemented",
+      "geometry_checks": "passed",
+      "native_contract": "native input_contract.normalize passed; no prepare/solver/render",
+      "physical_execution": "completed",
+      "observed_outcome": "first point fixed; free end draped downward; native residuals retained",
+      "unified_reading": "complete",
+      "use_qualification": "human_use_review_pending",
+      "training_admission": false,
+      "stage_names": [
+        "prepare",
+        "simulate",
+        "package",
+        "audit",
+        "observe"
+      ],
+      "errors": [],
+      "attempt_directories": [
+        "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_v2/execution/jobs/constructed_rope_baseline/attempt_001"
+      ],
+      "native_run": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_v2/execution/jobs/constructed_rope_baseline/attempt_001/constructed_rope_baseline",
+      "execution_source_pins": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_v2/execution/jobs/constructed_rope_baseline/attempt_001/source_pins.json",
+        "sha256": "26f4496925564c2a205a2974671d8945c3fa13b9db605e48d28ebe9366df6457"
+      },
+      "episode": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_v2/execution/data/constructed_rope_baseline/observation_000/episode",
+      "episode_manifest": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_v2/execution/data/constructed_rope_baseline/observation_000/episode/episode.json",
+        "sha256": "dfd6b68b66bc92fa18266fc70c639d8ee02485b5923a4d1726441faa00f84f53"
+      },
+      "evidence": {
+        "result.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_v2/result.json",
+          "sha256": "354aa75d5e5208bc21bb2e7e0069221462e3fc365cb4b7ba33436caae4ee9326"
+        },
+        "native_details.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_v2/native_details.json",
+          "sha256": "7448a2f806f42040622134ddb866d39c0938a5ff63a11420d538dc7670e1b0b6"
+        },
+        "appearance/replay.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_completion_v1/rope_v2/appearance/replay.json",
+          "sha256": "a2af7dc9834c0584ba751708ada0cda6d6ede38d640be79d64155ed95dd7e5df"
+        }
+      }
+    }
+  ],
+  "limits": [
+    "No wrapping physics: public original-mesh admission gap",
+    "Plastic execution failed before complete native cache",
+    "Both beam runs lack sustained hold proximity; gravity-aware native-response layout remains open",
+    "All failed/nonexpected outcomes preserved; no convergence, native rope tension or automatic purpose-admission claims"
+  ]
+}
