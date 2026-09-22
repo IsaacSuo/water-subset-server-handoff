@@ -1,0 +1,159 @@
+{
+  "format": "construction-mainline-adoption/1",
+  "source_commit": "f8484b4",
+  "adopted_code_commits": [
+    "e844424",
+    "8582a72",
+    "97055df"
+  ],
+  "base_catalog": {
+    "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_conditions_data_v7/catalog.json",
+    "sha256": "ea73163f62044c6ba2c69580660b575ecee11540683e6d6fabab67483a3a1160"
+  },
+  "source_delivery": {
+    "path": "/mnt/y/isaacsim_work_construction/docs/CONSTRUCTION_PHYSICS_TRIALS.json",
+    "sha256": "89b2a0f1b8275ce73a6ac3451c12301cdad632a9fc0567c892d7b57197c088c7"
+  },
+  "catalog": {
+    "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_construction_data_v8/catalog.json",
+    "sha256": "126208c7f3bdb2f24931842d87b524cad5f4cb23caf401e13cf6f785597582f1"
+  },
+  "episodes": {
+    "passage": {
+      "episode_id": "reuse_passage_second_row_baseline",
+      "manifest_sha256": "d2863d7eaae3dee953b8426be51bcd81a17db407221c6822cd07dcb85cd9a939",
+      "source_episode": "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/passage_camera_v2/execution/data/reuse_passage_second_row_baseline/observation_000/episode",
+      "copied_episode": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_construction_data_v8/delivery/reuse_passage_second_row_baseline/episode",
+      "measurement": {
+        "initial_position_m": [
+          1.7144742012023926,
+          -1.8236814737319946,
+          0.05152261629700661
+        ],
+        "final_position_m": [
+          2.2070531845092773,
+          -1.7855525016784668,
+          0.03811347112059593
+        ],
+        "position_bounds_m": [
+          [
+            1.7144742012023926,
+            -1.827226996421814,
+            0.03803323581814766
+          ],
+          [
+            2.208496332168579,
+            -1.771760106086731,
+            0.05152261629700661
+          ]
+        ],
+        "throat_x_m": 1.8027344509031316,
+        "first_leading_edge_at_throat_s": 0.04583333333333333,
+        "first_trailing_edge_beyond_throat_s": 0.17916666666666667,
+        "lateral_roi_preserved": true,
+        "contact_rows": 2844,
+        "contact_pair_counts": {
+          "subject / room": 2844
+        },
+        "minimum_reported_separation_m": -0.00023123421124182642,
+        "interpretation": "crossed selected throat",
+        "limits": "throat and original ROI tests use actual posed mesh; passage past throat is not proof of traversing every downstream obstacle"
+      },
+      "source_files_verified": 21,
+      "source_review_sha256": "99ae8e0753b03784be6084e9b174a5881ded91c97e1a7dae7d254ae4a8a4cfdb",
+      "use_status": "human_use_review_pending",
+      "training_admission": false
+    },
+    "cloth": {
+      "episode_id": "reuse_cloth_sideboard_baseline",
+      "manifest_sha256": "16cc94e4ea0243fd34a90f962042462cead98ecddf532f08eb6bd1303bc11b28",
+      "source_episode": "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/cloth/execution/data/reuse_cloth_sideboard_baseline/observation_000/episode",
+      "copied_episode": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_construction_data_v8/delivery/reuse_cloth_sideboard_baseline/episode",
+      "measurement": {
+        "support_height_m": 0.8616107106208801,
+        "vertices": 2925,
+        "frames": 301,
+        "first": {
+          "time_s": 0.0,
+          "bounds_m": [
+            [
+              0.7334785461425781,
+              -0.04950002580881119,
+              0.8676106929779053
+            ],
+            [
+              0.9254786372184753,
+              0.07950002700090408,
+              0.8676106929779053
+            ]
+          ],
+          "projected_support_node_fraction": 0.6923076923076923,
+          "near_top_node_fraction": 0.0,
+          "minimum_z_over_support_m": 0.8676106929779053,
+          "original_free_nodes_mean_z_m": 0.8676108121871948,
+          "original_free_nodes_min_z_m": 0.8676106929779053,
+          "peak_speed_m_s": 0.0,
+          "rms_speed_m_s": 0.0
+        },
+        "final": {
+          "time_s": 5.0,
+          "bounds_m": [
+            [
+              0.7336805462837219,
+              -0.049488890916109085,
+              0.8044618368148804
+            ],
+            [
+              0.8694742918014526,
+              0.07946663349866867,
+              0.8640944957733154
+            ]
+          ],
+          "projected_support_node_fraction": 0.6923076923076923,
+          "near_top_node_fraction": 0.6923076923076923,
+          "minimum_z_over_support_m": 0.8623652458190918,
+          "original_free_nodes_mean_z_m": 0.8332383036613464,
+          "original_free_nodes_min_z_m": 0.8044618368148804,
+          "peak_speed_m_s": 0.03608192875981331,
+          "rms_speed_m_s": 0.005985892377793789
+        },
+        "maximum_edge_length_ratio": 1.0807011127471924,
+        "peak_nodal_speed_m_s": 1.5146235227584839,
+        "last_half_second_peak_speed_m_s": 0.08308106660842896,
+        "contact_force": "unavailable",
+        "attachment_reaction": "unavailable",
+        "limits": "near-top nodes use a 4 mm geometric band, not solver contact or force truth; edge stretch and velocity are diagnostics, not convergence"
+      },
+      "source_files_verified": 17,
+      "source_review_sha256": "8706287ee3743fcea9a47f05b2719253e2fe0fee92dc19bb10f587155af498c1",
+      "use_status": "human_use_review_pending",
+      "training_admission": false
+    }
+  },
+  "counts": {
+    "states": 15669,
+    "observations": 945
+  },
+  "group_counts": {
+    "2": 8,
+    "1": 14,
+    "4": 4,
+    "3": 7
+  },
+  "existing_entries_and_supersessions_preserved": true,
+  "preexisting_documents_unchanged": true,
+  "new_physics_run_by_mainline": false,
+  "accepted_scope": "bounded constructor prototype, with two realized cross-region trials; not complete coverage",
+  "remaining": [
+    "multibody rearrangement construction",
+    "B/C object and region layout construction",
+    "per-profile use review"
+  ],
+  "observation_scope": "diagnostic RGB/depth/IDs; appearance spot checks do not form full-material visual dataset",
+  "training_admission": false,
+  "physical_inputs_unchanged_after_camera_fix": true,
+  "mainline_cpu_regression": {
+    "tests_passed": 27,
+    "physics_runs": 0
+  }
+}
