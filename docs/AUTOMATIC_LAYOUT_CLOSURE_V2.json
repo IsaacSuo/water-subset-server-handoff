@@ -1,0 +1,360 @@
+{
+  "format": "local-layout-closure-evidence/2",
+  "base_branch_commit": "c4060ff",
+  "mainline_observed": "2b17ccf",
+  "catalog_modified": false,
+  "merged": false,
+  "pushed": false,
+  "training_admission": false,
+  "implementation_commits": {
+    "beam": "f709f80",
+    "collision_and_rope_analysis": "972b528",
+    "cloth": "b3b3f06",
+    "backend_issues": "ff3888b"
+  },
+  "cases": [
+    {
+      "case": "beam_load_bound",
+      "implementation_commit": "f709f80",
+      "request": {
+        "path": "/mnt/y/isaacsim_work_construction/configs/dataset/v0_2/construction/beam_adaptive.json",
+        "sha256": "f1be2a1b1b752396b0b606c43cba9d1e38da3e7131ae299346953596ef28e077"
+      },
+      "generated": {
+        "backend_input.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/beam_load_bound/generated/backend_input.json",
+          "sha256": "0309eac4e30ea884382c6a53c6d1122f4084f8a8d081cf5c0db2b22b22508cea"
+        },
+        "construction.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/beam_load_bound/generated/construction.json",
+          "sha256": "0eab97b03dee8f4663e5b91d8bf0ef14ca798fb981a32b6a974f936b4b675db8"
+        },
+        "experiment.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/beam_load_bound/generated/experiment.json",
+          "sha256": "57a53ed36e2a9daa1595fee2cbe06aa7e226e2c390c7a898258f90482791d53e"
+        }
+      },
+      "workflow": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/beam_load_bound/execution/workflow.json",
+        "sha256": "954c41b78971544f0f6b4595e3701699139b772363e158d5a012b78c8fd477a7"
+      },
+      "result": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/beam_load_bound/result.json",
+        "sha256": "18628a9f1445e5c758239b001880df8f883ef681d84d8152c2f378f875946e33"
+      },
+      "source_episode": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/beam_load_bound/execution/data/beam_adaptive_baseline/observation_000/episode",
+      "manifest": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/beam_load_bound/execution/data/beam_adaptive_baseline/observation_000/episode/episode.json",
+        "sha256": "82f7b6b5a8ec89c9d7d5ac5bd3975f3803c68fd594350d0e8efadae8b5fad391"
+      },
+      "stages": [
+        "prepare",
+        "simulate",
+        "package",
+        "audit",
+        "observe"
+      ],
+      "alignment": {
+        "counts": {
+          "states": 661,
+          "commands": 2640,
+          "actuator_states": 661,
+          "efforts": 2640,
+          "observations": 111
+        },
+        "start_s": 0.0,
+        "end_s": 11.0,
+        "physics_hz": 240,
+        "state_hz": 60,
+        "interpolation": false,
+        "semantics": "commands/efforts are step inputs; terminal state has no following command"
+      },
+      "appearance": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/beam_load_bound/appearance/replay.json",
+        "sha256": "8f68cc51e0c0f092e9bb88fa65ae9127186ceb9e91aaad1af748f3f4d4a504cc"
+      },
+      "construction_implemented": true,
+      "geometry_and_contract_checked": true,
+      "actually_executed": true,
+      "qualification": "mainline_review_pending",
+      "training_admission": false,
+      "raw_native": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/beam_load_bound/execution/data/beam_adaptive_baseline/observation_000/episode/native/frames.npz",
+        "sha256": "ea0de2fbe59a06b4e5ffe85748ffc52750c2286fa972ab4c0f8947ad983970dd"
+      }
+    },
+    {
+      "case": "collision_stable",
+      "implementation_commit": "972b528",
+      "request": {
+        "path": "/mnt/y/isaacsim_work_construction/configs/dataset/v0_2/construction/collision_stable.json",
+        "sha256": "87aa2c8748a8ccece2c10b0816e506288afff17a1d70c3b4f17c312c8ffe4cfb"
+      },
+      "generated": {
+        "backend_input.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/collision_stable/generated/backend_input.json",
+          "sha256": "98246d28e04badaffa711da44b33dd88e62a5c369c9e9d637748d593dc70e381"
+        },
+        "construction.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/collision_stable/generated/construction.json",
+          "sha256": "bec8397d2105a8f009ceef002ef32e90a048288b658c7cc2b37e504605621d4c"
+        },
+        "experiment.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/collision_stable/generated/experiment.json",
+          "sha256": "8127ef9f39d1b61b6fbd5e8dd8b7f3826002189fdc0c5eeccd8de5160cbbffd5"
+        }
+      },
+      "workflow": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/collision_stable/execution/workflow.json",
+        "sha256": "5889e483c11b94fd1e2e4f2fdd3368d1b6163500a448d50c3a89f107cb5e56de"
+      },
+      "result": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/collision_stable/result.json",
+        "sha256": "b6f35c3ab66f69dae430a64ce8e7a9071cdfe8df6a3b27d884a4135f98010fdc"
+      },
+      "source_episode": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/collision_stable/execution/data/collision_stable_auto_baseline/observation_000/episode",
+      "manifest": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/collision_stable/execution/data/collision_stable_auto_baseline/observation_000/episode/episode.json",
+        "sha256": "0df70261f4e3e8eba47d8909bcc15e51479269573f589f0a6c2cdb832183c04c"
+      },
+      "stages": [
+        "prepare",
+        "simulate",
+        "package",
+        "audit",
+        "observe"
+      ],
+      "alignment": {
+        "counts": {
+          "states": 481,
+          "commands": 0,
+          "actuator_states": 0,
+          "efforts": 0,
+          "observations": 21
+        },
+        "start_s": 0.0,
+        "end_s": 2.0,
+        "physics_hz": 240,
+        "state_hz": 240,
+        "interpolation": false,
+        "semantics": "commands/efforts are step inputs; terminal state has no following command"
+      },
+      "appearance": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/collision_stable/appearance/replay.json",
+        "sha256": "55d8de3d7059757b469eb91c9812ce33495d24dda2a25617fbab095bb866891b"
+      },
+      "construction_implemented": true,
+      "geometry_and_contract_checked": true,
+      "actually_executed": true,
+      "qualification": "mainline_review_pending",
+      "training_admission": false
+    },
+    {
+      "case": "cloth_blocked",
+      "implementation_commit": "b3b3f06",
+      "request": {
+        "path": "/mnt/y/isaacsim_work_construction/configs/dataset/v0_2/construction/cloth_blocked.json",
+        "sha256": "fc99710f841ab4fdbc9fa35eff716d116758c441195410c186ca855040f5626e"
+      },
+      "generated": {
+        "backend_input.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/cloth_blocked/generated/backend_input.json",
+          "sha256": "dd098ebc6b4de0666aeb009728253ccbdab2adf99800ec3f6e56d546d4cb75d8"
+        },
+        "construction.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/cloth_blocked/generated/construction.json",
+          "sha256": "96c5f9c4d4db19d066eee293a7c055de57b72fcf0a79be6135245f10e0eb16f3"
+        },
+        "experiment.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/cloth_blocked/generated/experiment.json",
+          "sha256": "e2f2f1277ca7491c693a275855b49c8195ac9143aeb4907af4a6365de114d808"
+        }
+      },
+      "workflow": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/cloth_blocked/execution/workflow.json",
+        "sha256": "a0a82e3f1e107911cecb76686c8e81a80d6721830b3201b754a097fd6c7f456f"
+      },
+      "result": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/cloth_blocked/result.json",
+        "sha256": "0e0ed97a26689185ab0f2195c7acc3abfd1573d21cbc8b2325deb0f09ed44c2b"
+      },
+      "source_episode": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/cloth_blocked/execution/data/cloth_blocked_auto_baseline/observation_000/episode",
+      "manifest": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/cloth_blocked/execution/data/cloth_blocked_auto_baseline/observation_000/episode/episode.json",
+        "sha256": "dd919451841cb9ed3fc9d53effa2ea9c2f2eada49379b3484eba49e2f6a23b04"
+      },
+      "stages": [
+        "prepare",
+        "simulate",
+        "package",
+        "audit",
+        "observe"
+      ],
+      "alignment": {
+        "counts": {
+          "states": 601,
+          "commands": 6000,
+          "actuator_states": 601,
+          "efforts": 6000,
+          "observations": 51
+        },
+        "start_s": 0.0,
+        "end_s": 5.0,
+        "physics_hz": 1200,
+        "state_hz": 120,
+        "interpolation": false,
+        "semantics": "commands/efforts are step inputs; terminal state has no following command"
+      },
+      "appearance": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/cloth_blocked/appearance/replay.json",
+        "sha256": "8066092ee0ddad1b9978dbc88fd23b13b13bba9f7bcc534664d13d730bf26c59"
+      },
+      "construction_implemented": true,
+      "geometry_and_contract_checked": true,
+      "actually_executed": true,
+      "qualification": "mainline_review_pending",
+      "training_admission": false
+    },
+    {
+      "case": "cloth_low_force",
+      "implementation_commit": "b3b3f06",
+      "request": {
+        "path": "/mnt/y/isaacsim_work_construction/configs/dataset/v0_2/construction/cloth_low_force.json",
+        "sha256": "399e5eb49b89bc0bfafed3a1ff581b269fb8c6311eb0e5d0c2aac1e5a9a317f1"
+      },
+      "generated": {
+        "backend_input.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/cloth_low_force/generated/backend_input.json",
+          "sha256": "f1a5c082e2f333bb643e18ec990f7e98b442080e307dab300a37870b96fca297"
+        },
+        "construction.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/cloth_low_force/generated/construction.json",
+          "sha256": "30e8e4b82b82b35f9b428018e7499b31995b4a2befa0769be1df0235b67e40ff"
+        },
+        "experiment.json": {
+          "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/cloth_low_force/generated/experiment.json",
+          "sha256": "750a3856d5f4ef38dc4240ff5597ccbd7bbbe77b54eb9b0f30de30567d9d5d43"
+        }
+      },
+      "workflow": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/cloth_low_force/execution/workflow.json",
+        "sha256": "1ed949d2e95163bef59155466dc959a6e8510535467c5590573df15b26155c01"
+      },
+      "result": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/cloth_low_force/result.json",
+        "sha256": "2466a5847447d8095b11512b80039c46074f43744c8a27ec54846d085540ffd0"
+      },
+      "source_episode": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/cloth_low_force/execution/data/cloth_low_force_auto_baseline/observation_000/episode",
+      "manifest": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/cloth_low_force/execution/data/cloth_low_force_auto_baseline/observation_000/episode/episode.json",
+        "sha256": "0ee30e94342f29d8ddbba5cfa25feeaaeedbde6e8f33ba8c8bd4a391f73065dd"
+      },
+      "stages": [
+        "prepare",
+        "simulate",
+        "package",
+        "audit",
+        "observe"
+      ],
+      "alignment": {
+        "counts": {
+          "states": 601,
+          "commands": 6000,
+          "actuator_states": 601,
+          "efforts": 6000,
+          "observations": 51
+        },
+        "start_s": 0.0,
+        "end_s": 5.0,
+        "physics_hz": 1200,
+        "state_hz": 120,
+        "interpolation": false,
+        "semantics": "commands/efforts are step inputs; terminal state has no following command"
+      },
+      "appearance": {
+        "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/cloth_low_force/appearance/replay.json",
+        "sha256": "6e46d6e95478292553a2fddc3011ffb49e6f9c1265ae42d1d4a0c80cd54af018"
+      },
+      "construction_implemented": true,
+      "geometry_and_contract_checked": true,
+      "actually_executed": true,
+      "qualification": "mainline_review_pending",
+      "training_admission": false
+    }
+  ],
+  "calibration": {
+    "episode": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/beam_probe/execution/jobs/beam_adaptive_baseline/attempt_001/beam_adaptive_baseline/episode",
+    "manifest": {
+      "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/beam_probe/execution/jobs/beam_adaptive_baseline/attempt_001/beam_adaptive_baseline/episode/episode.json",
+      "sha256": "d89c7e1c1b9659c7f2c4ecf2f752e731407c547b4173700ebf6737bf89fa0fbf"
+    },
+    "construction": {
+      "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/beam_probe/generated/construction.json",
+      "sha256": "d6936c734e168fb0ef7a1b78991da9a5cee2e5b828ca66c9e863bd965319b7cf"
+    },
+    "workflow": {
+      "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/beam_probe/execution/workflow.json",
+      "sha256": "98d272fba5670b863798130fef5f89c7338a55f349a87579d53211049b9bb6a8"
+    }
+  },
+  "analyses": {
+    "beam_load_bound/measured_phases_with_effort.json": {
+      "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/beam_load_bound/measured_phases_with_effort.json",
+      "sha256": "d5767dd18c921db202b8dd9ba9f1976d3d064f79192dfe65127fbcdfe53d4c84"
+    },
+    "collision_analysis.json": {
+      "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/collision_analysis.json",
+      "sha256": "c73f448ce2e4844012c39732ce6eee0936c6b6f27bf2877bd7de1c79ae0aff37"
+    },
+    "collision_stable/transfer_analysis.json": {
+      "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/collision_stable/transfer_analysis.json",
+      "sha256": "f7b333a50b5f26b1e2fee44016fc02b220353346574d7ae92d5cefc71e240c2a"
+    },
+    "rope_spin_detailed.json": {
+      "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/rope_spin_detailed.json",
+      "sha256": "34fb4fde537e36fa5554b9538c47498dddb92bf952b2b162a3f38bfff9569dab"
+    },
+    "cloth_comparison_precise.json": {
+      "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/cloth_comparison_precise.json",
+      "sha256": "821a21c0543e9b3c91ca54eb6c5f67739cc876a97730a372d42d044d45b9f1e3"
+    },
+    "backend_issues/plastic.json": {
+      "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/backend_issues/plastic.json",
+      "sha256": "3c13387c334c4f74e10f197e437e4e499fe0792e307922187a9a0c7b159f3096"
+    },
+    "backend_issues/rope_wrap.json": {
+      "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/backend_issues/rope_wrap.json",
+      "sha256": "28cfaca013d0ba3b53d0f33873a05c30026ee0025a69af29be7797fad5beb76b"
+    },
+    "final_rule_equivalence.json": {
+      "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/final_rule_equivalence.json",
+      "sha256": "05ef4d7b5a4a043bed9b57d4263660d42ebfbe9381c704ed9220c60cc99a475e"
+    },
+    "no_simulation_checks.log": {
+      "path": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/no_simulation_checks.log",
+      "sha256": "20eba05ac095e912442acc986c7c2bb3d7cd0821af604d6197f8bcc064addbb1"
+    }
+  },
+  "prior_delivery": {
+    "path": "/mnt/y/isaacsim_work_construction/docs/AUTOMATIC_LAYOUT_COMPLETION.json",
+    "sha256": "cb7a19e6a8db020fd579d9397b6e8f31f92bf4a5e027066a0466dc6d29b3e8a1"
+  },
+  "limitations": [
+    "saved-frame beam proximity is not native force measurement or between-frame continuous proof",
+    "rope spin is real axial motion; numerical/physical quality remains unresolved",
+    "plastic and wrap have backend blockers and no new successful physical evidence",
+    "exact executed code is retained in attempt source snapshots; later guard-only change checked for physical-input equivalence"
+  ],
+  "retained_nonexecuted_generation": "/mnt/y/isaacsim_work_construction/output/layout_closure_v2/beam_load/generated",
+  "no_rerun": [
+    "accepted restricted passage",
+    "passive cloth drape",
+    "roll/slide",
+    "passive rope",
+    "free cloth",
+    "rearrangement",
+    "rope load",
+    "plastic",
+    "rope wrap"
+  ]
+}
