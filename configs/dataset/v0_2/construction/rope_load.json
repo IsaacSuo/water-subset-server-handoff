@@ -1,0 +1,84 @@
+{
+  "format": "phenomenon-construction/1",
+  "id": "layout_rope_load_v1",
+  "phenomenon": "rope_finite_load",
+  "profile": "profiles/rope_load.json",
+  "scene": {
+    "id": "classroom_original",
+    "units": "m",
+    "up_axis": "Z",
+    "frame": "original_world",
+    "region_bounds_m": [
+      [
+        2.2,
+        1.2,
+        0.7
+      ],
+      [
+        2.97,
+        1.8,
+        1.3
+      ]
+    ],
+    "collision": {
+      "meshes": [
+        {
+          "id": "original_support",
+          "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/support.npz",
+          "friction": 0.4
+        },
+        {
+          "id": "original_object_0",
+          "path": "/mnt/y/isaacsim_work_rope_load/output/rope_load_c/inputs_travel24_v1/original_object_0.npz",
+          "friction": 0.4
+        },
+        {
+          "id": "original_object_1",
+          "path": "/mnt/y/isaacsim_work_rope_load/output/rope_load_c/inputs_travel24_v1/original_object_1.npz",
+          "friction": 0.4
+        },
+        {
+          "id": "original_object_2",
+          "path": "/mnt/y/isaacsim_work_rope_load/output/rope_load_c/inputs_travel24_v1/original_object_2.npz",
+          "friction": 0.4
+        }
+      ]
+    },
+    "source_records": {
+      "scene": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/scene.json",
+      "selection": "/mnt/y/isaacsim_work_rope_load/output/rope_load_c/inputs_travel24_v1/source_selection.json"
+    }
+  },
+  "support_group": "original_support",
+  "object": {
+    "length_m": 0.34,
+    "radius_m": 0.0025,
+    "density_kg_m3": 700,
+    "loads": [
+      {
+        "size_m": [
+          0.055,
+          0.055,
+          0.055
+        ],
+        "mass_kg": 0.12,
+        "friction": 0.4
+      },
+      {
+        "size_m": [
+          0.06,
+          0.06,
+          0.06
+        ],
+        "mass_kg": 0.2,
+        "friction": 0.4
+      }
+    ]
+  },
+  "conditions": {
+    "slack_fraction": 0.5,
+    "travel_m": 0.18,
+    "max_force_n": 1.5,
+    "enabled": true
+  }
+}

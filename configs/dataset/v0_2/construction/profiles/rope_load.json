@@ -1,0 +1,48 @@
+{
+  "control": {
+    "mode": "impedance_control",
+    "enabled": true
+  },
+  "timing": {
+    "duration_s": 3,
+    "physics_hz": 960,
+    "state_hz": 60
+  },
+  "backend": {
+    "kind": "rope",
+    "entry": "/mnt/y/isaacsim_work_construction/output/external_sources/rope_d8a4c4b/experiments/material_response/scene_input/material_entry.py",
+    "runtime": "/mnt/y/isaacsim_work/configs/dataset/v0_2/phenomenon_pilot_v1/runtime.json"
+  },
+  "phenomenon": "rope_finite_load",
+  "input": {
+    "gravity_m_s2": [
+      0,
+      0,
+      -9.81
+    ],
+    "iterations": 40
+  },
+  "prior_physics": "Existing nearby configurations only; not evidence for this constructed configuration",
+  "discretization_m": 0.025,
+  "rope_properties": {
+    "friction": 0.4,
+    "contact_mode": "penalty",
+    "joint_material": {
+      "stretch_stiffness": 10000.0,
+      "stretch_damping": 0.001,
+      "bend_stiffness": 0.0001,
+      "bend_damping": 0.001
+    }
+  },
+  "actuation": {
+    "kind": "finite_load",
+    "instance_ids": [
+      "front_load"
+    ]
+  },
+  "load_control_properties": {
+    "stiffness_n_m": 40.0,
+    "damping_n_s_m": 2.0
+  },
+  "public_source_revision": "d8a4c4b415ae283f2ed8d8903ed2274bb1ebd40c"
+}

@@ -40,3 +40,19 @@ blocked 使用已有可见固定 opposing_fixture 与另一端局部 attachment�
 公开源只读核对 `2f12001`，未修改材料代码。请求 `construction/cloth_drag.json`；
 输出 `output/layout_completion_v1/cloth_drag/`，`result_complete.json` 为含观测的最终读取摘要，
 早先物理阶段摘要保留。原材质三帧抽查包含实际有限夹头，没有省略执行器。
+
+## 3. 绳索连接有限负载
+
+输入绳长/半径/密度、两个有限盒负载尺寸/质量/摩擦、原支承区域、余长比例、行程、力上限和 enabled。
+推导平面正弦余长中心线（离散弧长匹配请求）、负载初态、局部/世界连接点；原生入口按端段切向建立连接坐标系。
+检查初始支承、负载命令行程及绳索净空；仅支持水平支承、两个轴向盒体及负 X 有限力拖动。
+过长行程、区域不足、过细负载、超出离散预算明确拒绝。换尺寸、换 BlueWall 原支承及禁用控制的几何/接口检查通过。
+
+新主动案例 Newton SolverVBD：181 状态，2880 command/actual/effort，31 帧统一诊断。
+目标 -180 mm，前负载实际 X -170.26 mm，后负载 -64.15 mm；后负载确实被带动。
+末段绳段角速度仍约 126–133 rad/s，不声明稳定或收敛；中心线拉直不当作原生拉力测量。
+接触力、attachment 反力、原生绳索拉力仍 unavailable。用途待审核，不自动授予训练资格。
+
+材料公开源只读核对 d8a4c4b，并显式导出到本工作区供此新 profile 使用；既有固定版本入口未升级。
+无驱动缓存已存在，旧“尚不存在”状态不再适用；本轮只构造 disabled 检查，不重跑其物理。
+请求 `construction/rope_load.json`，输出 `output/layout_completion_v1/rope_load/`；result.json、原材质三帧及全部原生缓存保留。

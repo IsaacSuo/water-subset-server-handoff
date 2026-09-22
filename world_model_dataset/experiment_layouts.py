@@ -6,6 +6,57 @@ from .experiment_contract import keys
 from .experiment_geometry import require
 
 
+def rope_load(obj,cond,profile,geo,support):
+    from .experiment_construct import number,passage_camera
+    keys(obj,{'length_m','radius_m','density_kg_m3','loads'},{'length_m','radius_m','density_kg_m3','loads'},'rope with loads')
+    keys(cond,{'slack_fraction','travel_m','max_force_n','enabled'}, {'slack_fraction','travel_m','max_force_n','enabled'},'rope load conditions')
+    length=number(obj,'length_m');r=number(obj,'radius_m');number(obj,'density_kg_m3')
+    slack=number(cond,'slack_fraction');travel=number(cond,'travel_m');force=number(cond,'max_force_n')
+    require(.1<=slack<=1 and length>40*r,'rope_shape','slack fraction 0.1..1; length >40 radii')
+    require(type(cond['enabled']) is bool,'enabled','boolean required')
+    loads=obj['loads'];require(len(loads)==2,'loads','front and rear finite box descriptions required')
+    sizes=[]
+    for load in loads:
+        keys(load,{'size_m','mass_kg','friction'},{'size_m','mass_kg','friction'},'load description')
+        size=np.asarray(load['size_m'],float);require(size.shape==(3,) and np.isfinite(size).all() and np.all(size>4*r),'load_size','box XYZ must exceed four rope radii')
+        number(load,'mass_kg');number(load,'friction',zero=True);sizes.append(size)
+    z,surface=geo.support(support);lo,hi=geo.bounds;gap=max(.004,r)
+    span=length/(1+slack);cx=(lo[0]+hi[0]+travel)/2;cy=(lo[1]+hi[1])/2;rope_z=z+gap+r
+    endpoint_x=[cx-span/2,cx+span/2];cfg=copy.deepcopy(profile['input']);cfg['loads']=[]
+    for i,(load,size,ex) in enumerate(zip(loads,sizes,endpoint_x)):
+        sign=1 if i==0 else -1
+        anchor=np.array([sign*(size[0]/2+r),0,r-size[2]/2])
+        position=np.array([ex-anchor[0],cy,z+gap+size[2]/2]);a=position-size/2;b=position+size/2
+        require(surface.buffer(1e-7).covers(box(*a[:2],*b[:2])),'load_support','initial load not fully supported')
+        geo.check_box(a,b)
+        if i==0:
+            require(surface.buffer(1e-7).covers(box(*(a-[travel,0,0])[:2],*b[:2])),'load_travel_support','commanded front path exceeds original support')
+            geo.check_box(a-[travel,0,0],b,'load_command_sweep')
+        cfg['loads'].append(dict(copy.deepcopy(load),id=('front_load','rear_load')[i],position_m=position.tolist(),anchor_local_m=anchor.tolist()))
+    n=max(8,int(np.ceil(length/profile['discretization_m'])));require(n<=128,'discretization','at most 128 cable segments')
+    u=np.linspace(0,1,n+1)
+    def curve(amplitude):return np.column_stack((cx-span/2+span*u,cy+amplitude*np.sin(np.pi*u),np.full(len(u),rope_z)))
+    low,high=0.,length
+    for _ in range(60):
+        mid=(low+high)/2;arc=np.linalg.norm(np.diff(curve(mid),axis=0),axis=1).sum()
+        if arc<length:low=mid
+        else:high=mid
+    points=curve((low+high)/2)
+    geo.check_box(points.min(0)-r,points.max(0)+r,'rope_initial_clearance')
+    cfg['rope']=dict(copy.deepcopy(profile['rope_properties']),centerline_m=points.tolist(),radius_m=r,density_kg_m3=obj['density_kg_m3'],end_condition='free')
+    duration=profile['timing']['duration_s'];hz=profile['timing']['physics_hz']
+    times=[round(duration*f*hz)/hz for f in (.1,11/30,16/30)]
+    cfg['load_control']=dict(copy.deepcopy(profile['load_control_properties']),max_force_n=force,displacement_m=-travel,
+        enabled=cond['enabled'],hold_until_s=times[0],move_until_s=times[1],release_at_s=times[2])
+    target=np.array([cx-travel/2,cy,rope_z]);camera=passage_camera(geo,points[len(points)//2],target,max(length+travel,.4)*1.5)
+    return cfg,dict(design='two finite boxes with planar sine-arch slack cable, original support, negative X bounded effort',
+        arc_length_m=float(np.linalg.norm(np.diff(points,axis=0),axis=1).sum()),endpoint_distance_m=span,initial_slack_m=length-span,
+        endpoints_m=[points[0].tolist(),points[-1].tolist()],load_anchors=[dict(id=l['id'],world_m=(np.array(l['position_m'])+l['anchor_local_m']).tolist(),local_m=l['anchor_local_m']) for l in cfg['loads']],
+        connection_frames='identity initial load orientation; existing native backend constructs joint bases from each endpoint segment tangent',
+        control_enabled=cond['enabled'],observation_camera=camera,
+        limits='horizontal support, two axis-aligned boxes, same rope endpoint height, planar initial slack, -X bounded control; geometric straightening is not native tension')
+
+
 def cloth_drag(obj,cond,profile,geo,support):
     from .experiment_construct import number,transform,passage_camera
     keys(obj,{'size_m'},{'size_m'},'drag cloth')

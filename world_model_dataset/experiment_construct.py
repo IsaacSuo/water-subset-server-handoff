@@ -264,6 +264,9 @@ def construct(request, profile):
     elif phenomenon == 'cloth_drag':
         from .experiment_layouts import cloth_drag
         inputs,calculations=cloth_drag(*args)
+    elif phenomenon == 'rope_finite_load':
+        from .experiment_layouts import rope_load
+        inputs,calculations=rope_load(*args)
     elif phenomenon == 'cloth_drape':
         inputs, calculations = drape(*args)
     elif phenomenon in ('geometry_constrained_motion', 'rigid_roll_slide', 'multibody_collision_propagation'):
@@ -279,6 +282,7 @@ def construct(request, profile):
                observations=dict(hz=10, camera=calculations.get('observation_camera',dict(target_m=target.tolist(),
                    position_m=(target + span*np.array([1,-1,.8])).tolist(), ortho_scale_m=span*1.5))),
                conditions=[dict(id='baseline', changes={}, derived_impacts=[])])
+    if phenomenon=='rope_finite_load':doc['control']['enabled']=inputs['load_control']['enabled']
     kind = validate_common(doc)
     compiled = rigid_spec(doc, doc['id']+'_baseline') if kind == 'rigid' else native_config(doc)
     report = dict(format='construction-report/1', constructor='implemented',
