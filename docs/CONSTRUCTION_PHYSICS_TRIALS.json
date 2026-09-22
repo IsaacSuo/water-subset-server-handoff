@@ -1,0 +1,239 @@
+{
+  "format": "construction-physical-trials/1",
+  "baseline_commit": "cca88b1",
+  "new_physics_runs": 2,
+  "baseline_reruns": 0,
+  "no_mainline_changes": true,
+  "no_register_merge_push": true,
+  "cases": {
+    "passage": {
+      "request": "configs/dataset/v0_2/construction/reuse/passage_second_row.json",
+      "final_generated": "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/passage_camera_v2/generated",
+      "native_cache": "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/passage/execution/jobs/reuse_passage_second_row_baseline/attempt_001/reuse_passage_second_row_baseline",
+      "uniform_episode": "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/passage_camera_v2/execution/data/reuse_passage_second_row_baseline/observation_000/episode",
+      "physical_runs": 1,
+      "alignment": {
+        "counts": {
+          "states": 481,
+          "commands": 0,
+          "actuator_states": 0,
+          "efforts": 0,
+          "observations": 21
+        },
+        "start_s": 0.0,
+        "end_s": 2.0,
+        "physics_hz": 240,
+        "state_hz": 240,
+        "interpolation": false,
+        "semantics": "commands/efforts are step inputs; terminal state has no following command"
+      },
+      "configuration_check": "passed",
+      "execution": "completed",
+      "measured_outcome": {
+        "initial_position_m": [
+          1.7144742012023926,
+          -1.8236814737319946,
+          0.05152261629700661
+        ],
+        "final_position_m": [
+          2.2070531845092773,
+          -1.7855525016784668,
+          0.03811347112059593
+        ],
+        "position_bounds_m": [
+          [
+            1.7144742012023926,
+            -1.827226996421814,
+            0.03803323581814766
+          ],
+          [
+            2.208496332168579,
+            -1.771760106086731,
+            0.05152261629700661
+          ]
+        ],
+        "throat_x_m": 1.8027344509031316,
+        "first_leading_edge_at_throat_s": 0.04583333333333333,
+        "first_trailing_edge_beyond_throat_s": 0.17916666666666667,
+        "lateral_roi_preserved": true,
+        "contact_rows": 2844,
+        "contact_pair_counts": {
+          "subject / room": 2844
+        },
+        "minimum_reported_separation_m": -0.00023123421124182642,
+        "interpretation": "crossed selected throat",
+        "limits": "throat and original ROI tests use actual posed mesh; passage past throat is not proof of traversing every downstream obstacle"
+      },
+      "data_use": "fixed-configuration state candidate; human review pending",
+      "training_admission": false,
+      "appearance": {
+        "frames": 3,
+        "resolution": [
+          480,
+          320
+        ],
+        "samples": 4,
+        "original_scene_materials": true,
+        "physics_rerun": false
+      },
+      "files_sha256": {
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/passage/generated/experiment.json": "9d7cac3080d4f61edb9e8b9ec0cda7a007e1520df42fed156df02e1ea593de29",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/passage/generated/backend_input.json": "a129ce80c40160cf4695e6b3b9d0a3a19e6e37be4d5ac4d2c1bdcc1c6c01ef9b",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/passage/generated/construction.json": "3c0f009c55585cd0e5c7824c900187e0197b1fcc13e5fa6ecd859d3925276821",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/passage_camera_v2/generated/experiment.json": "e8530d07f60208a5cdb62addad378981a0620cffa70ee00c6660232c685f4c1e",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/passage_camera_v2/generated/backend_input.json": "d18a49171814dfec01cbe903056206d94dc15ed74e9d6b9472c455723a950c98",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/passage_camera_v2/generated/construction.json": "77595d3bf8582cafbef77abea5b2e6b40e94511db138de57140930191b1bf68e",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/passage/execution/workflow.json": "da4a0ca1e6d5f490e39f2592d26929504416763b3e6400601e8de3bc70932c3c",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/passage_camera_v2/execution/workflow.json": "2843bc2ab7cdc0c2c6030a38e7dc40c50bcc3d89a78ea70f9371f4cf15641f1c",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/passage_camera_v2/execution/data/reuse_passage_second_row_baseline/observation_000/episode/episode.json": "d2863d7eaae3dee953b8426be51bcd81a17db407221c6822cd07dcb85cd9a939",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/reviews_v2/passage/physical_review.json": "16db312d0c8574f271113edbb3cc9a763c578df8abc14898e4d0e9ee325a5943",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/passage/execution/reviews/reuse_passage_second_row_baseline/review_000.json": "7cd850974d24a3ad1b799162b339da563eac9cccf0e2e5cd13979a56d956d20e",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/appearance/passage/replay.json": "4d8ba66606efa9f35393880c160ac5baf245333e6523f88e1286341a160f2d98",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/appearance/passage/frame_0000.png": "d07921251f317951b1ecc083becf43fc075ba03dfcc5f11c5b475b07eee7d2a4",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/appearance/passage/frame_0001.png": "bfe8598e62f9e0968a11c3d77e4c2ab1dd8f93e97ff1f1f0dc1ce9cd3024d994",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/appearance/passage/frame_0002.png": "dbd9b0265df9b0f0e31711483710388fc4b53d024487efb9b4f0572e101faa5f",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/passage/execution/jobs/reuse_passage_second_row_baseline/attempt_001/reuse_passage_second_row_baseline/body_state_trace.jsonl": "5bc1f482ef5f3278aea7964f865500e30af0d0ae45878c040cc25bd3c8946742",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/passage/execution/jobs/reuse_passage_second_row_baseline/attempt_001/reuse_passage_second_row_baseline/contacts.jsonl": "e5c80b4093706c6b597c3e6d364adabb94aabf4bb950260ede8637dfa4b9d9af",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/passage/execution/jobs/reuse_passage_second_row_baseline/attempt_001/reuse_passage_second_row_baseline/native_report.json": "33b5764cbabf7c50374ed73e59679ed42be921e84ce87de8e0b7aebe73ea4f55",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/passage/execution/jobs/reuse_passage_second_row_baseline/attempt_001/reuse_passage_second_row_baseline/source_snapshot.json": "ca4321e04f4293f3fb0b1084ee19d55868aa438e52997135e7b43e428eb989df",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/passage/execution/jobs/reuse_passage_second_row_baseline/attempt_001/reuse_passage_second_row_baseline/native_initial.usda": "c99ab0969917506b34acb33b7da24fcd55e06287c48ff8edf356ab1515a98184",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/passage/execution/jobs/reuse_passage_second_row_baseline/attempt_001/reuse_passage_second_row_baseline/resolved_inputs.json": "329a83e1c84ec38f5926fea29a914653fa6475bc5ed5b7dbb070f131cffd41bf"
+      }
+    },
+    "cloth": {
+      "request": "configs/dataset/v0_2/construction/reuse/cloth_sideboard.json",
+      "final_generated": "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/cloth/generated",
+      "native_cache": "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/cloth/execution/jobs/reuse_cloth_sideboard_baseline/attempt_001/reuse_cloth_sideboard_baseline",
+      "uniform_episode": "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/cloth/execution/data/reuse_cloth_sideboard_baseline/observation_000/episode",
+      "physical_runs": 1,
+      "alignment": {
+        "counts": {
+          "states": 301,
+          "commands": 0,
+          "actuator_states": 0,
+          "efforts": 0,
+          "observations": 51
+        },
+        "start_s": 0.0,
+        "end_s": 5.0,
+        "physics_hz": 1200,
+        "state_hz": 60,
+        "interpolation": false,
+        "semantics": "commands/efforts are step inputs; terminal state has no following command"
+      },
+      "configuration_check": "passed",
+      "execution": "completed",
+      "measured_outcome": {
+        "support_height_m": 0.8616107106208801,
+        "vertices": 2925,
+        "frames": 301,
+        "first": {
+          "time_s": 0.0,
+          "bounds_m": [
+            [
+              0.7334785461425781,
+              -0.04950002580881119,
+              0.8676106929779053
+            ],
+            [
+              0.9254786372184753,
+              0.07950002700090408,
+              0.8676106929779053
+            ]
+          ],
+          "projected_support_node_fraction": 0.6923076923076923,
+          "near_top_node_fraction": 0.0,
+          "minimum_z_over_support_m": 0.8676106929779053,
+          "original_free_nodes_mean_z_m": 0.8676108121871948,
+          "original_free_nodes_min_z_m": 0.8676106929779053,
+          "peak_speed_m_s": 0.0,
+          "rms_speed_m_s": 0.0
+        },
+        "final": {
+          "time_s": 5.0,
+          "bounds_m": [
+            [
+              0.7336805462837219,
+              -0.049488890916109085,
+              0.8044618368148804
+            ],
+            [
+              0.8694742918014526,
+              0.07946663349866867,
+              0.8640944957733154
+            ]
+          ],
+          "projected_support_node_fraction": 0.6923076923076923,
+          "near_top_node_fraction": 0.6923076923076923,
+          "minimum_z_over_support_m": 0.8623652458190918,
+          "original_free_nodes_mean_z_m": 0.8332383036613464,
+          "original_free_nodes_min_z_m": 0.8044618368148804,
+          "peak_speed_m_s": 0.03608192875981331,
+          "rms_speed_m_s": 0.005985892377793789
+        },
+        "maximum_edge_length_ratio": 1.0807011127471924,
+        "peak_nodal_speed_m_s": 1.5146235227584839,
+        "last_half_second_peak_speed_m_s": 0.08308106660842896,
+        "contact_force": "unavailable",
+        "attachment_reaction": "unavailable",
+        "limits": "near-top nodes use a 4 mm geometric band, not solver contact or force truth; edge stretch and velocity are diagnostics, not convergence"
+      },
+      "data_use": "fixed-configuration state candidate; human review pending",
+      "training_admission": false,
+      "appearance": {
+        "frames": 3,
+        "resolution": [
+          480,
+          320
+        ],
+        "samples": 4,
+        "original_scene_materials": true,
+        "physics_rerun": false
+      },
+      "files_sha256": {
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/cloth/generated/experiment.json": "a045e8211a42162fffa7f5335ea60a33ec8d64f3b9a0db2da789257605b85672",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/cloth/generated/backend_input.json": "4ae9bf76c3cce7a587c215374b77a5f63f641b6be9e53727716ce2a09d3fe7d3",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/cloth/generated/construction.json": "237b546f65a54c0033dbeaadfe55e6ace332d3df4f49e5b0c4b8455ffdc6a3a2",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/cloth/execution/workflow.json": "ae275cd689db5efed53fa4a126e5b665ccf12c3d2bd864d58651b2b278bb02fc",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/cloth/execution/data/reuse_cloth_sideboard_baseline/observation_000/episode/episode.json": "16cc94e4ea0243fd34a90f962042462cead98ecddf532f08eb6bd1303bc11b28",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/reviews_v2/cloth/physical_review.json": "a06dbef3be5eaa0411b0b32251bddaf9e972b9b04478af55aafb56c571cd288b",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/cloth/execution/reviews/reuse_cloth_sideboard_baseline/review_000.json": "e84cbaf5bafcc64118e455044fc797fc8759fb2dac1adfdc6b70aa33d9943a08",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/appearance/cloth/replay.json": "227c0c5734d41788ab3a6a639348eab45afddabdef8582ce41d2ff83bde6a879",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/appearance/cloth/frame_0000.png": "a64206d636300ae365b07837645246c1a80f6d31d09264d7a4842f38b7918c4c",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/appearance/cloth/frame_0001.png": "5d6297755b430ea999ac6801903fc8ef4aa7232902571d53df0e593542d72887",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/appearance/cloth/frame_0002.png": "b8a3139982203c054718d9505b242bccdd0b177662998aaba35b69266094a68e",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/cloth/execution/jobs/reuse_cloth_sideboard_baseline/attempt_001/reuse_cloth_sideboard_baseline/native/frames.npz": "ca37395398d9d7e28b38760368f492018197dfc2a80a0c9cc2aa6ca23d1238e1",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/cloth/execution/jobs/reuse_cloth_sideboard_baseline/attempt_001/reuse_cloth_sideboard_baseline/native/runtime.json": "1694ad2f784687c581751237442d8a69c24357c4f45b72d531287bc3401bde9f",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/cloth/execution/jobs/reuse_cloth_sideboard_baseline/attempt_001/reuse_cloth_sideboard_baseline/native/scene.usda": "a0e42355d4d12ecef0b29735db082c7e56fad768104a69a0d7a79821b68e4162",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/cloth/execution/jobs/reuse_cloth_sideboard_baseline/attempt_001/reuse_cloth_sideboard_baseline/execution.json": "9c6a105436f7dc8d083c169c0dbd429aea183ae8dde5731b1bc654e1d782e6a9",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/cloth/execution/jobs/reuse_cloth_sideboard_baseline/attempt_001/reuse_cloth_sideboard_baseline/prepared/config.json": "fdece6650fe88da3c04dac0427a3ed59914a665b6a393b26c13fbe71ce5dda32",
+        "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/cloth/execution/jobs/reuse_cloth_sideboard_baseline/attempt_001/reuse_cloth_sideboard_baseline/episode/topology.json": "a482c9203976c80a8cf79b807acb1f95726f67275aa9cef5facd605ff950bc5f"
+      }
+    }
+  },
+  "correction": {
+    "rule": "local passage camera and source-triangle visibility",
+    "physics_input_changed": false,
+    "failed_workflow": "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/passage/execution/workflow.json",
+    "failure": "No observed subject",
+    "original_failed_observations_preserved": true,
+    "cache_equivalence_verified": true,
+    "additional_physics_runs": 0
+  },
+  "tests": {
+    "passed": 27,
+    "log": "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/tests.log",
+    "sha256": "38fb022dd3f72a0d20484c5935c9e9f64ced205d1d68e30b5536ef42404d959c"
+  },
+  "C_readonly": {
+    "report": "/mnt/y/isaacsim_work_construction/output/construction_physics_v1/c_delivery_verified.json",
+    "sha256": "f1b0814795655440d5b2658040513675e52d428ed1919609f05f655585294d2e",
+    "versions_not_upgraded": true,
+    "physics_runs": 0
+  },
+  "remaining": [
+    "multibody rearrangement construction",
+    "B/C new-object and region connection layout"
+  ],
+  "mainline_catalog_untouched_sha256": "ea73163f62044c6ba2c69580660b575ecee11540683e6d6fabab67483a3a1160"
+}

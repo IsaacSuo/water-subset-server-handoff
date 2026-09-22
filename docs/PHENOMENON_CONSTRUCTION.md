@@ -1,5 +1,9 @@
 # 现象请求构造层与材料公开入口对接
 
+后续两例实际执行见 [CONSTRUCTION_PHYSICS_TRIALS.md](CONSTRUCTION_PHYSICS_TRIALS.md)：
+各运行一次新物理，刚体通过所选喉部，BlueWall 布料形成悬垂；相机构造问题已修复。
+下文“构造初版”检查统计保留其历史阶段含义，不代表后续物理试验仍未执行。
+
 本支线从只读核实的主线 `bee9e62` 建立于 `Y:/isaacsim_work_construction`，分支
 `feat/phenomenon-construction`。有选择地保留 `f6fe6a8` 的执行编排、输入合同、
 来源固定、条件记录、缓存比对与失败恢复；新增对象/区域/现象条件构造层。
@@ -61,7 +65,7 @@ Classroom 桌面的最高水平边界 X=2.970953 m，圆边/桌架外缘延伸�
 接触带不称为无碰撞空间，其接触行为仍未验证。没有删除桌架或把场景凸包化。
 
 这些检查不证明连续时间零穿透、稳定悬垂、刚体实际通过、梁物理撤离或任何收敛结论。
-物理结果必须来自对应新配置的 native 缓存，本轮没有这样的新证据。
+物理结果必须来自对应新配置的 native 缓存；构造初版阶段没有这样的新证据，后续两例见上方独立报告。
 
 ## 条件、来源与恢复
 
@@ -97,7 +101,13 @@ C 原主动请求固定 `ca39d3875c933c9ad759a0e6c9c52fbf22d159e2`，映射
 新增单独 `bridge_c_disabled.json`，固定该版本并保留 `load_control.enabled=false`、原 -0.24 m
 不生效目标。统一入口使用 `control.enabled=false`，实体仍为 `finite_load`，不以位移 0 冒充关闭。
 主动 0–0.3 s 已有保持外力，因此禁用对照的拉动前差异不能全部归因于随机变异。
-该禁用请求只有配置/CPU 证据，native 和 episode 不存在；没有运行它或授予物理验证。
+材料线随后完成 `d8a4c4b415ae283f2ed8d8903ed2274bb1ebd40c`：
+`output/rope_load_c/c_disabled_v1/native` 与 `episode` 现已存在。入口线已只读核对交付哈希，
+统一读取 181 状态及 2880 条 command/actual/effort，并逐条确认主动力、力矩为零且 target_active=false。
+共同稳定参考窗口仍未通过，用途保持 human_use_review_pending，training_admission=false。
+相对 `05aabd3`，交付版本修复 package 重复独占写入 annotations 的问题，附加审核脚本和证据；
+求解器与 enabled 输入语义没有变化。现有主动 `ca39d38` 与禁用 `05aabd3` 入口绑定均未自动升级，
+也未重新封装或重跑 C。若以后用新版封装，须显式选版本并重新固定来源，不能把旧封装缺陷静默替换掉。
 
 为避免吸收材料工作区后续修改，C 的两版公开源从已知提交只读导出到本工作区
 `output/external_sources/rope_ca39d38` 和 `rope_05aabd3`，逐文件与 git 提交核对。
@@ -169,7 +179,8 @@ generate、prepare、simulate、package、preview。测试只选这些明确无�
    当前证据为 `output/construction_review_reuse_final/results.json`。先前 28 配置报告属于同一区域的
    参数敏感性检查，不能作为跨区域复用证据，也不再按它的旧标签声称多体重排已完成。
 3. **已有相近物理证据**：原 v7、被动布/梁/绳、B/C 缓存只能说明已有固定配置；未重新审核梁观测或补交付数字。
-4. **新配置物理效果未验证**：没有新物理、渲染、收敛、训练准入或新数据目录。禁用 C 同样未验证。
+4. **构造初版阶段的新配置物理效果未验证**：当时没有新物理、渲染、收敛、训练准入或新数据目录。
+   后续仅两例获得本次缓存证据；C 的无驱动材料线缓存状态已在上文更新，其他新配置不据此升级。
 
 旧检查失败目录原样保留；最终结果不掩盖超出构造范围的拒绝，也不把配置数量当作新增现象数量。
 

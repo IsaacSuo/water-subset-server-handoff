@@ -6,6 +6,8 @@ import numpy as np
 from tests import test_experiment_construction as fixtures
 PROFILES,ROOT=fixtures.PROFILES,fixtures.ROOT
 from world_model_dataset.experiment_construct import construct
+from world_model_dataset.experiment_construct import passage_camera
+from world_model_dataset.experiment_geometry import Geometry
 from world_model_dataset.experiment_contract import (load_experiment, native_config, validate_common,
                                                     upgrade_experiment, control_and_actuation)
 from world_model_dataset.io import read_json
@@ -16,6 +18,14 @@ class RevisionTests(unittest.TestCase):
     request=fixtures.ConstructionTests.request
     mesh=fixtures.ConstructionTests.mesh
     rigid_request=fixtures.ConstructionTests.rigid_request
+    def test_camera_rejects_source_wall_occlusion(self):
+        r=self.request('cloth_drape')
+        r['scene']['collision']['meshes'].append(self.mesh('wall',[.1,2,2],[.6,0,1.]))
+        geo=Geometry(r['scene'])
+        camera=passage_camera(geo,[0,0,.6],[.2,0,.6],1.)
+        self.assertLess(camera['position_m'][0],.55)
+        self.assertEqual(camera['target_m'],[.2,0,.6])
+
     def test_rearrangement_not_alias_for_collision_chain(self):
         r,p=self.rigid_request(); r['phenomenon']='multibody_rearrangement';p['phenomenon']=r['phenomenon']
         with self.assertRaisesRegex(ValueError,'construction_missing: rearrangement'):

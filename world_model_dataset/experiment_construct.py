@@ -45,6 +45,23 @@ def body_geometry(obj, library, geometry):
     return posed.min(0), posed.max(0)
 
 
+def passage_camera(geo, initial_center, target, span):
+    """Frame the local approach/exit; reject source-mesh occlusion before execution."""
+    import trimesh
+    triangles=np.concatenate(list(geo.meshes.values()))
+    mesh=trimesh.Trimesh(triangles.reshape(-1,3),np.arange(triangles.size//3).reshape(-1,3),process=False)
+    anchors=np.asarray([initial_center,target])
+    for direction in ([.8,-.25,.35],[.8,.25,.35],[0,-.8,.4],[0,.8,.4],[.1,-.1,.8]):
+        origin=np.asarray(target)+span*np.asarray(direction)
+        rays=anchors-origin;lengths=np.linalg.norm(rays,axis=1)
+        locations,indices,_=mesh.ray.intersects_location(np.repeat(origin[None],len(anchors),axis=0),
+                                                       rays/lengths[:,None],multiple_hits=True)
+        if len(locations) and np.any(np.linalg.norm(locations-origin,axis=1)<lengths[indices]-1e-5):
+            continue
+        return dict(target_m=np.asarray(target).tolist(),position_m=origin.tolist(),ortho_scale_m=float(span))
+    raise ValueError('observation_visibility: no unoccluded local passage camera; select another region')
+
+
 def drape(obj, cond, profile, geo, support):
     keys(obj, {'size_m','kind','path','scale'}, (), 'cloth object')
     keys(cond, {'overhang_fraction'}, {'overhang_fraction'}, 'drape conditions')
@@ -188,6 +205,11 @@ def rigid(obj, cond, profile, geo, support, phenomenon):
                        restriction_object_candidates=geo.restriction_objects(bottom,top),
                        throat_x_m=throat, approach_to_x_m=approach_to, approach_distance_m=max(length*.5,.02), regime=regime,
                        limits='orientation-specific AABB clearance; passage/jamming outcome unverified')
+        initial_center=np.array([x+(low[0]+high[0])/2,corridor_center,(bottom+top)/2])
+        target=initial_center.copy();target[0]=(initial_center[0]+hi[0])/2
+        span=1.5*max(hi[0]-(x+low[0]),width*3,(top-bottom)*3)
+        details['observation_camera']=passage_camera(geo,initial_center,target,span)
+        details['camera_check']='original-mesh visibility to initial centre and local path target; future visibility unverified'
     elif phenomenon == 'multibody_collision_propagation':
         keys(cond, {'speed_m_s', 'gap_ratio'}, {'speed_m_s', 'gap_ratio'}, 'multibody conditions')
         require(len(objects) >= 2, 'participants', 'at least two objects required')
@@ -251,8 +273,8 @@ def construct(request, profile):
                backend=copy.deepcopy(profile['backend']), scene=copy.deepcopy(request['scene']), input=inputs,
                control=copy.deepcopy(profile['control']), actuation=copy.deepcopy(profile['actuation']),
                timing=copy.deepcopy(profile['timing']),
-               observations=dict(hz=10, camera=dict(target_m=target.tolist(),
-                   position_m=(target + span*np.array([1,-1,.8])).tolist(), ortho_scale_m=span*1.5)),
+               observations=dict(hz=10, camera=calculations.get('observation_camera',dict(target_m=target.tolist(),
+                   position_m=(target + span*np.array([1,-1,.8])).tolist(), ortho_scale_m=span*1.5))),
                conditions=[dict(id='baseline', changes={}, derived_impacts=[])])
     kind = validate_common(doc)
     compiled = rigid_spec(doc, doc['id']+'_baseline') if kind == 'rigid' else native_config(doc)
@@ -302,10 +324,19 @@ def main():
     p.add_argument('--request', type=Path, required=True)
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--reference', type=Path, help='Same-region baseline request; compile baseline and derived variant conditions')
+    p.add_argument('--reuse-physics-cache',type=Path,
+                   help='Bind an existing native run after metadata-only reconstruction; executor verifies physical equivalence')
     a=p.parse_args(); request=read_json(a.request)
     profile_path=(a.request.parent/request['profile']).resolve()
     profile=read_json(profile_path)
     doc, compiled, report=construct(request, profile)
+    if a.reuse_physics_cache:
+        require(a.reference is None,'cache_scope','cache reuse currently accepts one baseline only')
+        cache=a.reuse_physics_cache.resolve()
+        manifest=next((cache/n for n in ('episode.json','episode.physics.json') if (cache/n).is_file()),None)
+        require(manifest is not None,'cache_manifest','existing packaged physics required')
+        doc['conditions'][0]['cache']=dict(run=str(cache),manifest=manifest.name,manifest_sha256=file_hash(manifest))
+        report['cache_reuse_requested']=dict(run=str(cache),physical_equivalence='must be verified by execution prepare; not assumed')
     if a.reference:
         base=read_json(a.reference)
         reference_profile=read_json((a.reference.parent/base['profile']).resolve())
