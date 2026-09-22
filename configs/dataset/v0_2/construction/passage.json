@@ -1,0 +1,46 @@
+{
+  "format": "phenomenon-construction/1",
+  "id": "constructed_passage",
+  "phenomenon": "geometry_constrained_motion",
+  "profile": "profiles/passage.json",
+  "scene": {
+    "id": "classroom_original",
+    "units": "m",
+    "up_axis": "Z",
+    "frame": "original_world",
+    "region_bounds_m": [
+      [
+        -1.0,
+        -1.4,
+        -0.1
+      ],
+      [
+        2.0,
+        -0.6,
+        0.4
+      ]
+    ],
+    "collision": {
+      "scene_export": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/scene.json"
+    },
+    "source_records": {
+      "scene": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/scene.json"
+    }
+  },
+  "support_group": "room",
+  "object": {
+    "id": "subject",
+    "asset": "ph_jug_01",
+    "size_m": 0.15,
+    "mass_kg": 0.3,
+    "rotation_deg": [
+      0,
+      0,
+      0
+    ]
+  },
+  "conditions": {
+    "speed_m_s": 1.0,
+    "clearance_regime": "passable"
+  }
+}

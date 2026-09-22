@@ -1,0 +1,36 @@
+{
+  "control": "finite_plate",
+  "timing": {
+    "duration_s": 4.0,
+    "physics_hz": 240,
+    "state_hz": 240
+  },
+  "backend": {
+    "kind": "beam",
+    "entry": "/mnt/y/isaacsim_work_beam_attachment/experiments/material_response/scene_input/material_entry.py",
+    "runtime": "/mnt/y/isaacsim_work_beam_attachment/experiments/material_response/scene_input/examples/runtime.beam.local.json"
+  },
+  "phenomenon": "beam_load_hold_withdraw",
+  "input": {
+    "iterations": 128,
+    "contact_offset_m": 0.002
+  },
+  "prior_physics": "Existing nearby configurations only; not evidence for this constructed configuration",
+  "beam_properties": {
+    "resolution": 48,
+    "material": {
+      "density_kg_m3": 800,
+      "static_friction": 0.6,
+      "dynamic_friction": 0.5,
+      "youngs_modulus_pa": 3000000,
+      "poissons_ratio": 0.35,
+      "linear_damping": 0.1,
+      "elasticity_damping": 0.005
+    }
+  },
+  "plate_properties": {
+    "kp": 800.0,
+    "kd": 15.0,
+    "mass_kg": 0.2
+  }
+}

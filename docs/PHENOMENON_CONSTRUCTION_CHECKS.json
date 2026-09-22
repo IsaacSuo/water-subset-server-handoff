@@ -1,0 +1,45 @@
+{
+  "selected_predecessor": "f6fe6a8",
+  "base_commit": "bee9e6285962589f1f64cf56f7780c9f34d00d0f",
+  "renders": 0,
+  "new_physics_runs": 0,
+  "format": "construction-delivery-checks/1",
+  "statuses": {
+    "beam": "passed",
+    "multibody": "passed",
+    "bridge_c": "public_input_mapped_and_native_contract_checked",
+    "bridge_b_free": "public_input_mapped_and_native_contract_checked",
+    "cloth": "passed",
+    "roll": "passed",
+    "passage": "passed",
+    "bridge_b_low": "public_input_mapped_and_native_contract_checked",
+    "plastic": "passed",
+    "bridge_b_blocked": "public_input_mapped_and_native_contract_checked",
+    "bridge_c_disabled": "public_input_mapped_and_native_contract_checked",
+    "rope": "passed"
+  },
+  "tests_log_sha256": "f3aa8d4a5f642c016bed34211c236f11bcf242519a02dd2800a6ac95ce5f7fd1",
+  "protected_mainline_modules_unchanged": [
+    "world_model_dataset/causal_loader.py",
+    "world_model_dataset/phenomenon_collect.py",
+    "world_model_dataset/phenomenon_observations.py"
+  ],
+  "constructor_families": 7,
+  "results": "output/construction_checks_delivery/results.json",
+  "results_sha256": "2d78145c76f358db5cb452b0ee7067466fdc88b6da4837f9dd14fbc83cdc670a",
+  "constructor_configurations": 28,
+  "catalog": {
+    "observations": 873,
+    "states": 14887,
+    "superseded": 2,
+    "sha256": "ea73163f62044c6ba2c69580660b575ecee11540683e6d6fabab67483a3a1160",
+    "path": "Y:/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_conditions_data_v7/catalog.json",
+    "episodes": 31
+  },
+  "new_catalogs": 0,
+  "material_mapping_scope": "forward_only",
+  "tests_passed": 21,
+  "public_material_mappings": 5,
+  "new_configuration_physics": "unverified",
+  "tests_log": "output/construction_tests_delivery.log"
+}

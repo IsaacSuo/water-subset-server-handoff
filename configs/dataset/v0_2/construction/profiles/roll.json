@@ -1,0 +1,17 @@
+{
+  "control": "none",
+  "asset_library": {
+    "exploration_root": "/home/fangsuo/isaacsim_work_flexible_explore",
+    "library": "output/physical_assets/library_web_20260917_v2"
+  },
+  "timing": {
+    "duration_s": 2.0,
+    "physics_hz": 240,
+    "state_hz": 240
+  },
+  "backend": {
+    "kind": "rigid"
+  },
+  "phenomenon": "rigid_roll_slide",
+  "prior_physics": "Existing nearby configurations only; not evidence for this constructed configuration"
+}

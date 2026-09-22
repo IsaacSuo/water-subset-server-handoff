@@ -1,0 +1,21 @@
+{
+  "phenomenon": "rope_finite_load",
+  "workspace": "/mnt/y/isaacsim_work_rope_load",
+  "config_path": "/mnt/y/isaacsim_work_rope_load/output/rope_load_c/inputs_disabled_v1/request.json",
+  "runtime": "/mnt/y/isaacsim_work_rope_load/experiments/material_response/scene_input/examples/runtime.local.json",
+  "bounds": [
+    [
+      2.1,
+      1.1,
+      0.1
+    ],
+    [
+      3.5,
+      1.9,
+      1.5
+    ]
+  ],
+  "experiment_id": "bridge_c_disabled",
+  "pinned_source": "/mnt/y/isaacsim_work_construction/output/external_sources/rope_05aabd3",
+  "source_revision": "05aabd376dc32916bb5541406ca67378da9fbc72"
+}

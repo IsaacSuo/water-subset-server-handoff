@@ -1,0 +1,2 @@
+# In addition to the existing dataset numpy/scipy/trimesh requirements.
+shapely==2.1.2

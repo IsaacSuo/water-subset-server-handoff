@@ -1,0 +1,103 @@
+{
+  "format": "phenomenon-experiment/1",
+  "id": "passage",
+  "phenomenon": "geometry_constrained_motion",
+  "backend": {
+    "kind": "rigid"
+  },
+  "scene": {
+    "id": "classroom_original",
+    "units": "m",
+    "up_axis": "Z",
+    "frame": "original_world",
+    "region_bounds_m": [
+      [
+        -1,
+        -3,
+        -0.1
+      ],
+      [
+        2,
+        3,
+        2
+      ]
+    ],
+    "collision": {
+      "scene_export": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/scene.json"
+    },
+    "source_records": {
+      "scene": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/scene.json"
+    }
+  },
+  "input": {
+    "participants": [
+      {
+        "id": "jug",
+        "asset": "ph_jug_01",
+        "size_m": 0.225,
+        "rotation_deg": [
+          0,
+          0,
+          0
+        ],
+        "xy_m": [
+          -0.3,
+          -1.0
+        ],
+        "support_group": "room",
+        "ray_start_z_m": 0.1,
+        "velocity_m_s": [
+          2.2,
+          0,
+          0
+        ],
+        "mass_kg": 0.55,
+        "material": {
+          "static_friction": 0.25,
+          "dynamic_friction": 0.18
+        }
+      }
+    ],
+    "asset_library": {
+      "exploration_root": "/home/fangsuo/isaacsim_work_flexible_explore",
+      "library": "output/physical_assets/library_web_20260917_v2"
+    }
+  },
+  "control": "none",
+  "timing": {
+    "duration_s": 2.0,
+    "physics_hz": 240,
+    "state_hz": 240
+  },
+  "observations": {
+    "hz": 10,
+    "camera": {
+      "position_m": [
+        0.4,
+        -1.75,
+        0.32
+      ],
+      "target_m": [
+        0.4,
+        -1,
+        0.12
+      ],
+      "ortho_scale_m": 1.95
+    },
+    "required_visible_ids": [
+      "jug"
+    ]
+  },
+  "conditions": [
+    {
+      "id": "baseline",
+      "changes": {},
+      "derived_impacts": [],
+      "cache": {
+        "run": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_pilot_v1/passage_flat/episodes/passage_flat",
+        "manifest": "episode.physics.json",
+        "manifest_sha256": "38302ed20276f6b0c7d8ad0a985eb77456769451c47ba293ba375a41561f4bbc"
+      }
+    }
+  ]
+}

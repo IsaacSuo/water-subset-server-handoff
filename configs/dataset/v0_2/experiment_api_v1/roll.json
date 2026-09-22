@@ -1,0 +1,101 @@
+{
+  "format": "phenomenon-experiment/1",
+  "id": "roll",
+  "phenomenon": "rigid_roll_slide",
+  "backend": {
+    "kind": "rigid"
+  },
+  "scene": {
+    "id": "classroom_original",
+    "units": "m",
+    "up_axis": "Z",
+    "frame": "original_world",
+    "region_bounds_m": [
+      [
+        2.2,
+        1.1,
+        0.4
+      ],
+      [
+        3.4,
+        1.9,
+        1.5
+      ]
+    ],
+    "collision": {
+      "scene_export": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/scene.json"
+    },
+    "source_records": {
+      "scene": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/scene.json"
+    }
+  },
+  "input": {
+    "participants": [
+      {
+        "id": "onion",
+        "asset": "ph_yellow_onion",
+        "size_m": 0.105,
+        "xy_m": [
+          2.35,
+          1.64
+        ],
+        "velocity_m_s": [
+          0.65,
+          0,
+          0
+        ],
+        "material": {
+          "static_friction": 0.35,
+          "dynamic_friction": 0.25
+        },
+        "angular_velocity_rad_s": [
+          0,
+          0,
+          0
+        ],
+        "density_kg_m3": 700.0
+      }
+    ],
+    "asset_library": {
+      "exploration_root": "/home/fangsuo/isaacsim_work_flexible_explore",
+      "library": "output/physical_assets/library_web_20260917_v2"
+    }
+  },
+  "control": "none",
+  "timing": {
+    "duration_s": 2.0,
+    "physics_hz": 240,
+    "state_hz": 240
+  },
+  "observations": {
+    "hz": 10,
+    "camera": {
+      "position_m": [
+        2.0,
+        0.55,
+        1.6
+      ],
+      "target_m": [
+        2.6,
+        1.53,
+        0.84
+      ],
+      "ortho_scale_m": 0.95
+    },
+    "required_visible_ids": [
+      "onion"
+    ]
+  },
+  "conditions": [
+    {
+      "id": "baseline",
+      "changes": {},
+      "derived_impacts": [],
+      "cache": {
+        "run": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_pilot_v1/roll_spin_0/episodes/roll_spin_0",
+        "manifest": "episode.physics.json",
+        "manifest_sha256": "dea88c5fe4d2e65c43a7b80ca3aaf3aa867c3fb332717651a124b2837d747548"
+      }
+    }
+  ]
+}

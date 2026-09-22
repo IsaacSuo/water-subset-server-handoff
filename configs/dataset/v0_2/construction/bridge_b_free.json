@@ -1,0 +1,19 @@
+{
+  "phenomenon": "cloth_drag",
+  "workspace": "/mnt/y/isaacsim_work_cloth_gripper",
+  "config_path": "/mnt/y/isaacsim_work_cloth_gripper/experiments/material_response/scene_input/examples/classroom_cloth_drag_depen005_trace5s.json",
+  "runtime": "/mnt/y/isaacsim_work_cloth_gripper/experiments/material_response/scene_input/examples/runtime.local.json",
+  "bounds": [
+    [
+      2.1,
+      1.1,
+      0.1
+    ],
+    [
+      3.5,
+      1.9,
+      1.5
+    ]
+  ],
+  "experiment_id": "bridge_b_free"
+}

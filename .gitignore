@@ -31,3 +31,4 @@ experiments/mountain_waterfall/native_bridge/bin/
 
 # Historical ad-hoc copies are kept locally, not as active source
 *.bak_*
+/.construction-deps/

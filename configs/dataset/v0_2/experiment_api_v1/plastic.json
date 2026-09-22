@@ -1,0 +1,162 @@
+{
+  "format": "phenomenon-experiment/1",
+  "id": "plastic",
+  "phenomenon": "plastic_impact",
+  "backend": {
+    "kind": "plastic",
+    "entry": "/home/fangsuo/isaacsim_work_material_response/experiments/material_response/scene_input/material_entry.py",
+    "runtime": "/mnt/y/isaacsim_work/configs/dataset/v0_2/phenomenon_pilot_v1/runtime.json"
+  },
+  "scene": {
+    "id": "classroom_original",
+    "units": "m",
+    "up_axis": "Z",
+    "frame": "original_world",
+    "region_bounds_m": [
+      [
+        2.2,
+        1.1,
+        0.4
+      ],
+      [
+        3.4,
+        1.9,
+        1.5
+      ]
+    ],
+    "collision": {
+      "meshes": [
+        {
+          "id": "original_tabletop",
+          "margin_m": 0.0,
+          "friction": 0.0,
+          "projection_threshold_m": 0.0,
+          "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/material_runs/plastic_potato_v1/prepared/original_tabletop.npz"
+        },
+        {
+          "id": "original_desk_frame",
+          "margin_m": 0.0,
+          "friction": 0.0,
+          "projection_threshold_m": 0.0,
+          "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/material_runs/plastic_potato_v1/prepared/original_desk_frame.npz"
+        }
+      ]
+    },
+    "source_records": {
+      "scene": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/scene.json",
+      "frame": "/home/fangsuo/isaacsim_work_material_response/experiments/material_response/scene_input/examples/desk_frame_source.json",
+      "asset": "/home/fangsuo/isaacsim_work_flexible_explore/output/physical_assets/library_web_20260917_v2/ph_sweet_potato/asset.json"
+    }
+  },
+  "input": {
+    "object": {
+      "kind": "closed_mesh",
+      "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/material_requests/potato_normalized.npz",
+      "spacing_m": 0.0075,
+      "density_kg_m3": 900.0,
+      "world_from_mesh": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          2.65
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          1.52
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.9914578335665817
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    "initial_velocity_m_s": [
+      0,
+      0,
+      0
+    ],
+    "gravity_m_s2": [
+      0,
+      0,
+      -9.81
+    ],
+    "material": {
+      "young_modulus": 100000.0,
+      "poisson_ratio": 0.25,
+      "damping": 0.0,
+      "friction": 0.0,
+      "yield_pressure": 4000.0,
+      "tensile_yield_ratio": 1.0,
+      "yield_stress": 2000.0,
+      "hardening": 0.0,
+      "hardening_rate": 1.0,
+      "softening_rate": 1.0,
+      "dilatancy": 0.0,
+      "viscosity": 0.0
+    },
+    "solver": {
+      "voxel_size": 0.015,
+      "grid_type": "sparse",
+      "strain_basis": "P1d",
+      "max_iterations": 100,
+      "tolerance": 1e-06,
+      "solver": "gs",
+      "warmstart_mode": "particles",
+      "air_drag": 0.0
+    }
+  },
+  "control": "none",
+  "timing": {
+    "duration_s": 0.8,
+    "physics_hz": 480,
+    "state_hz": 480
+  },
+  "observations": {
+    "hz": 10,
+    "camera": {
+      "position_m": [
+        3.6,
+        0.4,
+        1.7
+      ],
+      "target_m": [
+        2.85,
+        1.52,
+        0.8
+      ],
+      "ortho_scale_m": 1.2
+    }
+  },
+  "conditions": [
+    {
+      "id": "baseline",
+      "changes": {},
+      "derived_impacts": [],
+      "cache": {
+        "run": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_pilot_retry_plastic/plastic_drop_12_v2",
+        "manifest": "episode/episode.json",
+        "manifest_sha256": "8afb00a5aad2dcfe3089d663efc48cfbbcca82e1efbb589634d8f66323d9ed81"
+      }
+    },
+    {
+      "id": "yield_8000",
+      "changes": {
+        "/input/material/yield_pressure": 8000.0
+      },
+      "derived_impacts": [
+        "compressive yield threshold changes; Jp, impact deformation and residual shape may change"
+      ]
+    }
+  ]
+}

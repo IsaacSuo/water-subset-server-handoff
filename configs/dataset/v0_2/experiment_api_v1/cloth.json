@@ -1,0 +1,153 @@
+{
+  "format": "phenomenon-experiment/1",
+  "id": "cloth",
+  "phenomenon": "cloth_drape",
+  "backend": {
+    "kind": "cloth",
+    "entry": "/mnt/y/isaacsim_work_cloth_stability/experiments/material_response/scene_input/material_entry.py",
+    "runtime": "/mnt/y/isaacsim_work/configs/dataset/v0_2/phenomenon_pilot_v1/runtime.json"
+  },
+  "scene": {
+    "id": "classroom_original",
+    "units": "m",
+    "up_axis": "Z",
+    "frame": "original_world",
+    "region_bounds_m": [
+      [
+        2.2,
+        1.1,
+        0.4
+      ],
+      [
+        3.4,
+        1.9,
+        1.5
+      ]
+    ],
+    "collision": {
+      "meshes": [
+        {
+          "id": "tabletop",
+          "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/support.npz",
+          "repair_winding": true
+        },
+        {
+          "id": "desk_frame",
+          "path": "/home/fangsuo/isaacsim_work_material_response/experiments/material_response/scene_input/examples/desk_frame.npz"
+        }
+      ]
+    },
+    "source_records": {
+      "scene": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/scene.json",
+      "desk_frame": "/home/fangsuo/isaacsim_work_material_response/experiments/material_response/scene_input/examples/desk_frame_source.json"
+    }
+  },
+  "input": {
+    "cloth": {
+      "kind": "rectangle",
+      "size_m": [
+        0.64,
+        0.43
+      ],
+      "cells": [
+        64,
+        44
+      ],
+      "world_from_mesh": [
+        [
+          0.9659258262890683,
+          -0.25881904510252074,
+          0.0,
+          2.73
+        ],
+        [
+          0.25881904510252074,
+          0.9659258262890683,
+          0.0,
+          1.52
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          1.03
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    "initial_velocity_m_s": [
+      0,
+      0,
+      0
+    ],
+    "iterations": 8,
+    "material": {
+      "density_kg_m3": 480.0,
+      "youngs_modulus_Pa": 20000.0,
+      "poisson_ratio": 0.3,
+      "thickness_m": 0.001,
+      "stretch_stiffness": 20000.0,
+      "shear_stiffness": 20000.0,
+      "bend_stiffness": 0.02,
+      "friction": 0.6,
+      "elasticity_damping": 0.005,
+      "bend_damping": 0.005
+    },
+    "collision": {
+      "contact_offset_m": 0.003,
+      "rest_offset_m": 0.001
+    },
+    "collision_pair_updates": 4,
+    "collision_iteration_multiplier": 2,
+    "speculative_ccd": true,
+    "linear_damping_per_s": 0.5
+  },
+  "control": "none",
+  "timing": {
+    "duration_s": 5.0,
+    "physics_hz": 1200,
+    "state_hz": 60
+  },
+  "observations": {
+    "hz": 10,
+    "camera": {
+      "position_m": [
+        3.6,
+        0.4,
+        1.7
+      ],
+      "target_m": [
+        2.85,
+        1.52,
+        0.8
+      ],
+      "ortho_scale_m": 1.2
+    }
+  },
+  "conditions": [
+    {
+      "id": "baseline",
+      "changes": {},
+      "derived_impacts": [],
+      "cache": {
+        "run": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_cloth_stable_v1/cloth_edge_273_stable_v1",
+        "manifest": "episode/episode.json",
+        "manifest_sha256": "dd3e913138b20ab190ca22352811a35e1995fc4013bd2eb439d776dfa49a8e54"
+      }
+    },
+    {
+      "id": "offset_278",
+      "changes": {
+        "/input/cloth/world_from_mesh/0/3": 2.78
+      },
+      "derived_impacts": [
+        "cloth translated 50 mm in world X; support overlap and contact opportunities change; mesh, material and environment fixed"
+      ]
+    }
+  ]
+}

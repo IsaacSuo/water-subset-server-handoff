@@ -1,0 +1,53 @@
+{
+  "format": "phenomenon-construction/1",
+  "id": "constructed_plastic",
+  "phenomenon": "plastic_impact",
+  "profile": "profiles/plastic.json",
+  "scene": {
+    "id": "classroom_original",
+    "units": "m",
+    "up_axis": "Z",
+    "frame": "original_world",
+    "region_bounds_m": [
+      [
+        2.2,
+        1.2,
+        0.1
+      ],
+      [
+        3.5,
+        1.8,
+        1.5
+      ]
+    ],
+    "collision": {
+      "meshes": [
+        {
+          "id": "tabletop",
+          "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/support.npz"
+        },
+        {
+          "id": "desk_frame",
+          "path": "/home/fangsuo/isaacsim_work_material_response/experiments/material_response/scene_input/examples/desk_frame.npz"
+        }
+      ]
+    },
+    "source_records": {
+      "scene": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/scene.json",
+      "desk_frame": "/home/fangsuo/isaacsim_work_material_response/experiments/material_response/scene_input/examples/desk_frame_source.json"
+    }
+  },
+  "support_group": "tabletop",
+  "object": {
+    "kind": "box",
+    "size_m": [
+      0.12,
+      0.09,
+      0.08
+    ],
+    "density_kg_m3": 900
+  },
+  "conditions": {
+    "drop_height_m": 0.12
+  }
+}

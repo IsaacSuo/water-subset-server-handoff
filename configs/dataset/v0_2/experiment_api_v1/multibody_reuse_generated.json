@@ -1,0 +1,135 @@
+{
+  "format": "phenomenon-experiment/1",
+  "id": "multibody",
+  "phenomenon": "multibody_rearrangement",
+  "backend": {
+    "kind": "rigid"
+  },
+  "scene": {
+    "id": "classroom_original",
+    "units": "m",
+    "up_axis": "Z",
+    "frame": "original_world",
+    "region_bounds_m": [
+      [
+        2.2,
+        1.1,
+        0.4
+      ],
+      [
+        3.4,
+        1.9,
+        1.5
+      ]
+    ],
+    "collision": {
+      "scene_export": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/scene.json"
+    },
+    "source_records": {
+      "scene": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/scene.json"
+    }
+  },
+  "input": {
+    "participants": [
+      {
+        "id": "potato_a",
+        "asset": "ph_sweet_potato",
+        "size_m": 0.19,
+        "rotation_deg": [
+          0,
+          0,
+          70
+        ],
+        "xy_m": [
+          2.57,
+          1.57
+        ],
+        "density_kg_m3": 700.0
+      },
+      {
+        "id": "potato_b",
+        "asset": "ph_sweet_potato",
+        "size_m": 0.17,
+        "rotation_deg": [
+          0,
+          0,
+          -25
+        ],
+        "xy_m": [
+          2.68,
+          1.6
+        ],
+        "clearance_m": 0.16,
+        "density_kg_m3": 700.0
+      },
+      {
+        "id": "onion_a",
+        "asset": "ph_yellow_onion",
+        "size_m": 0.1,
+        "xy_m": [
+          2.59,
+          1.55
+        ],
+        "clearance_m": 0.29,
+        "density_kg_m3": 700.0
+      }
+    ],
+    "asset_library": {
+      "exploration_root": "/home/fangsuo/isaacsim_work_flexible_explore",
+      "library": "output/physical_assets/library_web_20260917_v2"
+    }
+  },
+  "control": "none",
+  "timing": {
+    "duration_s": 2.0,
+    "physics_hz": 240,
+    "state_hz": 240
+  },
+  "observations": {
+    "hz": 10,
+    "camera": {
+      "position_m": [
+        3.15,
+        0.3,
+        1.3
+      ],
+      "target_m": [
+        2.82,
+        1.52,
+        0.68
+      ],
+      "ortho_scale_m": 1.2
+    },
+    "required_visible_ids": [
+      "potato_a",
+      "potato_b",
+      "onion_a"
+    ]
+  },
+  "conditions": [
+    {
+      "id": "baseline",
+      "changes": {},
+      "derived_impacts": [],
+      "cache": {
+        "run": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_pilot_v1/rearrange_count_3/episodes/rearrange_count_3",
+        "manifest": "episode.physics.json",
+        "manifest_sha256": "6ebbc9ada64d1cdb6694928e641fb73527996049437d64436cfc6501125fdc98"
+      }
+    },
+    {
+      "id": "lower_drop",
+      "changes": {
+        "/input/participants/1/clearance_m": 0.12
+      },
+      "derived_impacts": [
+        "second body starts 40 mm lower; potential energy, impact timing and subsequent contacts can change"
+      ],
+      "cache": {
+        "run": "/mnt/y/isaacsim_work_generation_api/output/experiment_api_v1/multibody/jobs/multibody_lower_drop/attempt_001/physics",
+        "manifest": "episode.physics.json",
+        "manifest_sha256": "146364ec226074471291f44553cf21bb13f88d2bb077f87b01a883bfeb64d180"
+      }
+    }
+  ]
+}
