@@ -1,5 +1,8 @@
 {
-  "control": "none",
+  "control": {
+    "mode": "none",
+    "enabled": false
+  },
   "asset_library": {
     "exploration_root": "/home/fangsuo/isaacsim_work_flexible_explore",
     "library": "output/physical_assets/library_web_20260917_v2"
@@ -13,5 +16,9 @@
     "kind": "rigid"
   },
   "phenomenon": "rigid_roll_slide",
-  "prior_physics": "Existing nearby configurations only; not evidence for this constructed configuration"
+  "prior_physics": "Existing nearby configurations only; not evidence for this constructed configuration",
+  "actuation": {
+    "kind": "none",
+    "instance_ids": []
+  }
 }

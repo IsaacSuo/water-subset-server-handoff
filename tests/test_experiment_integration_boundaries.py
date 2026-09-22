@@ -50,6 +50,8 @@ class ExistingMaterialTests(unittest.TestCase):
             doc,report=map_existing(**read_json(CONFIG/('bridge_b_'+mode+'.json')))
             self.assertEqual(doc['input']['material']['youngs_modulus_Pa'],200000)
             self.assertTrue(report['physical_input_preserved'])
+            self.assertEqual(report['construction_owner'],'experiment entry line')
+            self.assertEqual(report['construction'],'forward_only')
             docs[mode]=doc
         self.assertEqual(docs['free']['input']['gripper']['max_force_n'],4)
         self.assertEqual(docs['low']['input']['gripper']['max_force_n'],.2)
@@ -57,11 +59,14 @@ class ExistingMaterialTests(unittest.TestCase):
 
     def test_C_disabled_semantics_and_exact_revision(self):
         doc,report=map_existing(**read_json(CONFIG/'bridge_c_disabled.json'))
-        self.assertEqual(doc['control'],'finite_load_disabled')
+        self.assertEqual(doc['control'],dict(mode='impedance_control',enabled=False))
+        self.assertEqual(doc['actuation'],dict(kind='finite_load',instance_ids=['front_load']))
         self.assertIs(doc['input']['load_control']['enabled'],False)
         self.assertEqual(doc['input']['load_control']['displacement_m'],-.24)
         self.assertEqual(report['source_commit'],'05aabd376dc32916bb5541406ca67378da9fbc72')
         self.assertEqual(report['backend'],'Newton SolverVBD')
+        self.assertEqual(report['construction_owner'],'experiment entry line')
+        self.assertEqual(report['construction'],'forward_only')
         self.assertEqual(report['executed_stages'],[])
         wrong=copy.deepcopy(doc); wrong['control']='finite_load'
         with self.assertRaisesRegex(ValueError,'Unsupported actuator'): validate_common(wrong)

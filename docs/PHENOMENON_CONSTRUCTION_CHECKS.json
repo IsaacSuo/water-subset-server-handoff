@@ -1,33 +1,56 @@
 {
-  "selected_predecessor": "f6fe6a8",
+  "format": "construction-delivery-checks/2",
   "base_commit": "bee9e6285962589f1f64cf56f7780c9f34d00d0f",
-  "renders": 0,
-  "new_physics_runs": 0,
-  "format": "construction-delivery-checks/1",
-  "statuses": {
-    "beam": "passed",
-    "multibody": "passed",
-    "bridge_c": "public_input_mapped_and_native_contract_checked",
-    "bridge_b_free": "public_input_mapped_and_native_contract_checked",
-    "cloth": "passed",
-    "roll": "passed",
-    "passage": "passed",
-    "bridge_b_low": "public_input_mapped_and_native_contract_checked",
-    "plastic": "passed",
-    "bridge_b_blocked": "public_input_mapped_and_native_contract_checked",
-    "bridge_c_disabled": "public_input_mapped_and_native_contract_checked",
-    "rope": "passed"
+  "selected_predecessor": "f6fe6a8",
+  "acceptance": "construction prototype; original seven-family target incomplete; not merged to mainline",
+  "implemented_original_goal_rules": [
+    "geometry_constrained_motion",
+    "cloth_drape",
+    "rigid_roll_slide",
+    "plastic_impact",
+    "beam_load_hold_withdraw",
+    "rope_passive"
+  ],
+  "missing_original_goal_rules": {
+    "multibody_rearrangement": "support-aware unstable packing and settling layout; full-config execution retained"
   },
-  "tests_log_sha256": "f3aa8d4a5f642c016bed34211c236f11bcf242519a02dd2800a6ac95ce5f7fd1",
+  "additional_rule": "multibody_collision_propagation",
+  "material_mapping_scope": "forward_only",
+  "material_construction_owner": "experiment entry line",
+  "material_provider_scope": "connection capabilities, legal conditions, native output semantics",
+  "contract": "phenomenon-experiment/2",
+  "legacy_read_compatibility": "v1 migrated without changing native physical input",
+  "current_evidence": {
+    "results": "output/construction_review_reuse_final/results.json",
+    "results_sha256": "3651804fd5fdf1305ce3112f08fa94e73a3fc9c33809f50894d482eeaee37fe7",
+    "cases": [
+      "passage_jug",
+      "passage_potato",
+      "passage_second_row",
+      "cloth_rectangle",
+      "cloth_mesh",
+      "cloth_sideboard"
+    ],
+    "identity_assertions": "passed",
+    "source_pins": "all verified against current files",
+    "applicability_rejections": {
+      "passage_potato": "clearance_regime: gap=0.357962, object width=0.15; requested regime does not fit",
+      "cloth_sideboard": "support_shape: need a straight +X edge with full transverse support"
+    }
+  },
+  "historical_evidence": {
+    "results": "output/construction_checks_delivery/results.json",
+    "results_sha256": "2d78145c76f358db5cb452b0ee7067466fdc88b6da4837f9dd14fbc83cdc670a",
+    "interpretation": "same-region sensitivity only; former multibody label actually collision propagation; not proof of seven completed goals"
+  },
+  "tests_passed": 26,
+  "tests_log": "output/construction_review_tests.log",
+  "tests_log_sha256": "5224dee4ce704125b459700305d8f2609f2d48b01c2404e7f0e753437ecff1b6",
   "protected_mainline_modules_unchanged": [
     "world_model_dataset/causal_loader.py",
     "world_model_dataset/phenomenon_collect.py",
     "world_model_dataset/phenomenon_observations.py"
   ],
-  "constructor_families": 7,
-  "results": "output/construction_checks_delivery/results.json",
-  "results_sha256": "2d78145c76f358db5cb452b0ee7067466fdc88b6da4837f9dd14fbc83cdc670a",
-  "constructor_configurations": 28,
   "catalog": {
     "observations": 873,
     "states": 14887,
@@ -36,10 +59,9 @@
     "path": "Y:/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_conditions_data_v7/catalog.json",
     "episodes": 31
   },
+  "new_physics_runs": 0,
+  "renders": 0,
   "new_catalogs": 0,
-  "material_mapping_scope": "forward_only",
-  "tests_passed": 21,
-  "public_material_mappings": 5,
   "new_configuration_physics": "unverified",
-  "tests_log": "output/construction_tests_delivery.log"
+  "prior_physics": "existing fixed configurations only; no new outcome inferred from source geometry or old caches"
 }

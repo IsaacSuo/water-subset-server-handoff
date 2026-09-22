@@ -46,19 +46,57 @@ def body_geometry(obj, library, geometry):
 
 
 def drape(obj, cond, profile, geo, support):
-    keys(obj, {'size_m'}, {'size_m'}, 'cloth object')
+    keys(obj, {'size_m','kind','path','scale'}, (), 'cloth object')
     keys(cond, {'overhang_fraction'}, {'overhang_fraction'}, 'drape conditions')
-    size = np.asarray(obj['size_m'], float)
+    mesh_input=None; mesh_details=None
+    if obj.get('kind','rectangle')=='mesh':
+        keys(obj,{'kind','path','scale'},{'kind','path'},'cloth mesh object')
+        import trimesh
+        from shapely.geometry import Polygon
+        from shapely.ops import unary_union
+        path=Path(obj['path']); checksum=geo.pin(path)
+        scale=number(obj,'scale',1.)
+        with np.load(path,allow_pickle=False) as arrays:
+            v=arrays['vertices'].astype(float)*scale; faces=arrays['triangles']
+        mesh=trimesh.Trimesh(v,faces,process=False)
+        require(np.isfinite(v).all() and np.ptp(v[:,2])<5e-6 and mesh.is_winding_consistent,
+                'cloth_mesh','require a finite horizontal, consistently wound rectangular rest surface')
+        outline=unary_union([Polygon(t[:,:2]) for t in v[faces]])
+        rect=outline.minimum_rotated_rectangle
+        require(abs(rect.area-outline.area)<1e-6*rect.area and abs(mesh.area-outline.area)<1e-6*rect.area,
+                'cloth_mesh','holes, folds, overlap or nonrectangular boundary not supported')
+        corners=np.asarray(rect.exterior.coords)[:4]; edges=np.roll(corners,-1,axis=0)-corners
+        longest=edges[np.argmax(np.linalg.norm(edges,axis=1))]; u=longest/np.linalg.norm(longest)
+        if u[0]<0: u=-u
+        rotation=np.array([[u[0],u[1],0],[-u[1],u[0],0],[0,0,1]])
+        local=v@rotation.T; low,high=local.min(0),local.max(0)
+        size=(high-low)[:2]; local_center=(low+high)/2
+        mesh_input=dict(kind='mesh',path=str(path.resolve()),scale=scale)
+        mesh_details=dict(source_sha256=checksum,vertices=len(v),triangles=len(faces),
+                          topology='original identity retained; no resampling',inferred_size_m=size.tolist())
+    else:
+        keys(obj,{'kind','size_m'},{'size_m'},'rectangle cloth object')
+        require(obj.get('kind','rectangle')=='rectangle','cloth_kind','unsupported cloth shape')
+        size = np.asarray(obj['size_m'], float)
     require(size.shape == (2,) and np.isfinite(size).all() and np.all(size > 0), 'cloth_size', 'two positive metre dimensions')
     fraction = cond['overhang_fraction']
     require(isinstance(fraction, (int, float)) and .05 <= fraction <= .8, 'overhang', 'fraction must be 0.05..0.8')
     z, surface = geo.support(support)
     lo, hi = geo.bounds
-    # +X edge of the actual selected support component, never the ROI boundary.
+    # Edge closest to +world-X on the actual support, never the ROI boundary.
     components = list(surface.geoms) if hasattr(surface, 'geoms') else [surface]
     components = [p for p in components if p.intersects(box(*lo[:2], *hi[:2]))]
     require(len(components) == 1, 'support_selection', 'select exactly one connected support patch')
-    surface = components[0]; edge = surface.bounds[2]
+    surface = components[0]
+    rect=np.asarray(surface.minimum_rotated_rectangle.exterior.coords)[:4]
+    directions=np.roll(rect,-1,axis=0)-rect
+    normals=np.column_stack([directions[:,1],-directions[:,0]])
+    normals /= np.linalg.norm(normals,axis=1)[:,None]
+    normal=normals[np.argmax(normals[:,0])]
+    from shapely.affinity import affine_transform
+    geo,frame=geo.horizontal_analysis_frame(normal)
+    surface=affine_transform(surface,[frame[0,0],frame[0,1],frame[1,0],frame[1,1],0,0])
+    lo,hi=geo.bounds; edge=surface.bounds[2]
     x, y = edge + (fraction-.5)*size[0], (lo[1]+hi[1])/2
     footprint = rectangle([x, y], size)
     overlap = footprint.intersection(surface).area / footprint.area
@@ -75,12 +113,20 @@ def drape(obj, cond, profile, geo, support):
                   [x+size[0]/2, y+size[1]/2, z-1e-5], 'hanging_clearance')
     spacing = profile['discretization_m']
     cells = np.ceil(size/spacing).astype(int)
-    require(np.prod(cells+1) <= 20000, 'discretization', 'profile node budget exceeded')
-    cfg['cloth'] = dict(kind='rectangle', size_m=size.tolist(), cells=cells.tolist(), world_from_mesh=transform(position))
+    node_count = mesh_details['vertices'] if mesh_input else np.prod(cells+1)
+    require(node_count <= 20000, 'discretization', 'profile node budget exceeded')
+    if mesh_input:
+        matrix=np.eye(4); matrix[:3,:3]=frame.T@rotation; matrix[:3,3]=frame.T@(position-local_center)
+        cfg['cloth']=dict(mesh_input,world_from_mesh=matrix.tolist())
+    else:
+        matrix=np.eye(4); matrix[:3,:3]=frame.T; matrix[:3,3]=frame.T@position
+        cfg['cloth'] = dict(kind='rectangle', size_m=size.tolist(), cells=cells.tolist(), world_from_mesh=matrix.tolist())
     return cfg, dict(support_height_m=z, edge_x_m=edge, supported_area_fraction=overlap,
+                     edge_frame_outward_world_xy=normal.tolist(),world_edge_point_m=(frame.T@np.array([edge,y,z])).tolist(),
                      free_length_m=free, reserved_drop_m=free+gap, initial_gap_m=gap,
                      edge_contact_band_m=[edge,clear_start], edge_contact_effect='unverified; contact allowed in this band',
-                     cells=cells.tolist(), attachment='none; passive contact support')
+                     cells=None if mesh_input else cells.tolist(),mesh_asset=mesh_details,
+                     attachment='none; passive contact support')
 
 
 def rigid(obj, cond, profile, geo, support, phenomenon):
@@ -139,9 +185,10 @@ def rigid(obj, cond, profile, geo, support, phenomenon):
         require(x+low[0] >= lo[0]+margin, 'approach_space', 'select more upstream space before the measured restriction')
         placements = [(x,y)]
         details = dict(gap_m=gap, object_width_m=width, signed_clearance_m=signed,
+                       restriction_object_candidates=geo.restriction_objects(bottom,top),
                        throat_x_m=throat, approach_to_x_m=approach_to, approach_distance_m=max(length*.5,.02), regime=regime,
                        limits='orientation-specific AABB clearance; passage/jamming outcome unverified')
-    elif phenomenon == 'multibody_rearrangement':
+    elif phenomenon == 'multibody_collision_propagation':
         keys(cond, {'speed_m_s', 'gap_ratio'}, {'speed_m_s', 'gap_ratio'}, 'multibody conditions')
         require(len(objects) >= 2, 'participants', 'at least two objects required')
         gap_ratio = number(cond, 'gap_ratio', zero=True)
@@ -186,12 +233,15 @@ def construct(request, profile):
     require(request['format'] == 'phenomenon-construction/1', 'format', 'unsupported request')
     identifier(request['id'])
     phenomenon = request['phenomenon']
+    require(phenomenon!='multibody_rearrangement','construction_missing',
+            'rearrangement needs support-aware unstable packing and settling layout rules; '
+            'collision propagation is a separate phenomenon, not a replacement')
     require(profile['phenomenon'] == phenomenon, 'profile', 'wrong phenomenon')
     geo = Geometry(request['scene'])
     args = (request['object'], request['conditions'], profile, geo, request['support_group'])
     if phenomenon == 'cloth_drape':
         inputs, calculations = drape(*args)
-    elif phenomenon in ('geometry_constrained_motion', 'rigid_roll_slide', 'multibody_rearrangement'):
+    elif phenomenon in ('geometry_constrained_motion', 'rigid_roll_slide', 'multibody_collision_propagation'):
         inputs, calculations = rigid(*args, phenomenon)
     else:
         from .experiment_construct_material import material
@@ -199,7 +249,8 @@ def construct(request, profile):
     lo, hi = geo.bounds; target = (lo+hi)/2; span = float(max(hi-lo))
     doc = dict(format=VERSION, id=request['id'], phenomenon=phenomenon,
                backend=copy.deepcopy(profile['backend']), scene=copy.deepcopy(request['scene']), input=inputs,
-               control=profile['control'], timing=copy.deepcopy(profile['timing']),
+               control=copy.deepcopy(profile['control']), actuation=copy.deepcopy(profile['actuation']),
+               timing=copy.deepcopy(profile['timing']),
                observations=dict(hz=10, camera=dict(target_m=target.tolist(),
                    position_m=(target + span*np.array([1,-1,.8])).tolist(), ortho_scale_m=span*1.5)),
                conditions=[dict(id='baseline', changes={}, derived_impacts=[])])
@@ -207,7 +258,8 @@ def construct(request, profile):
     compiled = rigid_spec(doc, doc['id']+'_baseline') if kind == 'rigid' else native_config(doc)
     report = dict(format='construction-report/1', constructor='implemented',
                   geometry_checks='passed', backend_contract='local compiler passed; native contract check separate',
-                  calculations=calculations, source_pins=geo.pins, request_sha256=digest(request),
+                  calculations=calculations,support_identity=geo.support_identity,
+                  source_pins=geo.pins, request_sha256=digest(request),
                   profile_sha256=digest(profile), experiment_sha256=digest(doc),
                   physical_effect='unverified_new_configuration', prior_physics=profile.get('prior_physics'),
                   contact_force='unavailable', attachment_reaction='unavailable', rope_native_tension='unavailable',
@@ -221,7 +273,7 @@ def compare_requests(base, changed, profile):
     requested = differences(base, changed)
     require(all(p.startswith(('/object/', '/conditions/')) for p in requested),
             'comparison_scope', 'same-region condition comparisons may only change objects/conditions')
-    invariant_keys = ('scene', 'backend', 'timing', 'control', 'observations')
+    invariant_keys = ('scene', 'backend', 'timing', 'control', 'actuation', 'observations')
     require(all(a[k] == b[k] for k in invariant_keys), 'invariant', 'nonintervention configuration changed')
     for key in profile.get('input', {}):
         require(a['input'][key] == b['input'][key], 'invariant', 'profile material/numerics changed: '+key)

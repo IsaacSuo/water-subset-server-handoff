@@ -1,5 +1,8 @@
 {
-  "control": "none",
+  "control": {
+    "mode": "none",
+    "enabled": false
+  },
   "timing": {
     "duration_s": 5.0,
     "physics_hz": 1200,
@@ -40,5 +43,9 @@
     "speculative_ccd": true,
     "linear_damping_per_s": 0.5
   },
-  "prior_physics": "Existing nearby configurations only; not evidence for this constructed configuration"
+  "prior_physics": "Existing nearby configurations only; not evidence for this constructed configuration",
+  "actuation": {
+    "kind": "none",
+    "instance_ids": []
+  }
 }

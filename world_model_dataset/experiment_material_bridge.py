@@ -13,7 +13,7 @@ import sys
 
 import numpy as np
 
-from .experiment_contract import INPUT_FIELDS, VERSION, native_config, validate_common
+from .experiment_contract import INPUT_FIELDS, VERSION, native_config, validate_common, control_and_actuation
 from .io import file_hash, read_json, write_json
 
 REVISIONS = {'cloth_drag':'2f120019808e369b074ddb16e6a0f754f4f3c79a',
@@ -73,12 +73,13 @@ def map_existing(phenomenon, workspace, config_path, runtime, bounds, experiment
     cfg['source_records']['public_request']=str(config_path)
     b=np.asarray(bounds,float); target=b.mean(0); span=float(np.max(b[1]-b[0]))
     disabled=cfg.get('load_control',{}).get('enabled') is False
+    control,actuation=control_and_actuation('finite_gripper' if kind=='cloth' else 'finite_load',not disabled)
     doc=dict(format=VERSION,id=experiment_id,phenomenon=phenomenon,
         backend=dict(kind=kind,entry=str(entry),runtime=str(Path(runtime).resolve())),
         scene=dict(id='original_material_region',region_bounds_m=bounds,units='m',up_axis='Z',frame='original_world',
                    collision=dict(meshes=cfg['environment']),source_records=cfg['source_records']),
         input={k:copy.deepcopy(cfg[k]) for k in INPUT_FIELDS[kind] if k in cfg},
-        control='finite_gripper' if kind=='cloth' else 'finite_load_disabled' if disabled else 'finite_load',
+        control=control,actuation=actuation,
         timing={k:cfg[k] for k in ('duration_s','physics_hz','state_hz')},
         observations=dict(hz=cfg.get('observation_hz',10),camera=dict(target_m=target.tolist(),
             position_m=(target+span*np.array([1,-1,.8])).tolist(),ortho_scale_m=span*1.5)),
@@ -90,7 +91,9 @@ def map_existing(phenomenon, workspace, config_path, runtime, bounds, experiment
     paths=[config_path,Path(runtime),*entry.parent.glob('*.py')]
     paths += [Path(m['path']) for m in cfg['environment']] + [Path(p) for p in cfg['source_records'].values()]
     report=dict(format='material-bridge/1',status='public_input_mapped_and_native_contract_checked',construction='forward_only',
-        missing_construction='new object/region attachment placement and load connection rules remain owned by material generator',
+        missing_construction='entry line must derive new object/region attachment selections, gripper/load layout and connection frames',
+        construction_owner='experiment entry line',
+        material_line_responsibility='provide connection capabilities, legal input constraints and native output semantics; not scene layout',
         source_commit=expected,observed_workspace_head=actual,source_pins={str(p):file_hash(p) for p in paths},
         physical_input_preserved=True,source_workspace_modified=False,
         backend='PhysX cloth finite gripper' if kind=='cloth' else 'Newton SolverVBD',

@@ -14,9 +14,15 @@ REQUESTS=ROOT/'configs/dataset/v0_2/construction'
 def main():
     import argparse
     p=argparse.ArgumentParser(description=__doc__); p.add_argument('--output',type=Path,required=True)
-    a=p.parse_args(); a.output.mkdir(parents=True,exist_ok=False)
+    p.add_argument('--legacy-sensitivity',action='store_true',help='Old same-region parameter checks; not cross-region reuse evidence')
+    a=p.parse_args()
+    if not a.legacy_sensitivity:
+        from scripts.check_construction_reuse import check
+        check(a.output)
+        return
+    a.output.mkdir(parents=True,exist_ok=False)
     results={}
-    for name in ('passage','cloth','roll','multibody','plastic','beam','rope'):
+    for name in ('passage','cloth','roll','collision_chain','plastic','beam','rope'):
         try:
             r=read_json(REQUESTS/(name+'.json')); profile=read_json(REQUESTS/r['profile'])
             variants=[('baseline',r)]
@@ -28,9 +34,9 @@ def main():
             else: obj['size_m']*=.8
             variants.append(('resized',resized))
             selected=copy.deepcopy(r); selected['scene']['region_bounds_m'][0][1]+=.08
-            variants.append(('region_selected',selected))
+            variants.append(('same_region_boundary_shift',selected))
             condition=copy.deepcopy(r)
-            key={'passage':'speed_m_s','cloth':'overhang_fraction','roll':'spin_ratio','multibody':'gap_ratio',
+            key={'passage':'speed_m_s','cloth':'overhang_fraction','roll':'spin_ratio','collision_chain':'gap_ratio',
                  'plastic':'drop_height_m','beam':'max_force_n','rope':'clamp_fraction'}[name]
             condition['conditions'][key]*=1.1
             variants.append(('condition',condition))

@@ -1,0 +1,52 @@
+{
+  "format": "phenomenon-construction/1",
+  "id": "reuse_cloth_sideboard",
+  "phenomenon": "cloth_drape",
+  "profile": "../profiles/cloth.json",
+  "scene": {
+    "id": "blue_wall_original",
+    "units": "m",
+    "up_axis": "Z",
+    "frame": "original_world",
+    "region_bounds_m": [
+      [
+        0.55,
+        -0.1,
+        0.5
+      ],
+      [
+        1.03,
+        0.13,
+        1.1
+      ]
+    ],
+    "collision": {
+      "meshes": [
+        {
+          "id": "support",
+          "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/blue_wall_native01/scene_geometry/support.npz"
+        },
+        {
+          "id": "room",
+          "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/blue_wall_native01/scene_geometry/room.npz"
+        },
+        {
+          "id": "surroundings",
+          "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/blue_wall_native01/scene_geometry/surroundings.npz"
+        }
+      ]
+    },
+    "source_records": {
+      "scene": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/blue_wall_native01/scene_geometry/scene.json"
+    }
+  },
+  "support_group": "support",
+  "object": {
+    "kind": "mesh",
+    "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_cloth_stable_v1/cloth_edge_273_stable_v1/prepared/cloth.npz",
+    "scale": 0.3
+  },
+  "conditions": {
+    "overhang_fraction": 0.3
+  }
+}

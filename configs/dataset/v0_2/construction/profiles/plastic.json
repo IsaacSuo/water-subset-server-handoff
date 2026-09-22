@@ -1,5 +1,8 @@
 {
-  "control": "none",
+  "control": {
+    "mode": "none",
+    "enabled": false
+  },
   "timing": {
     "duration_s": 0.8,
     "physics_hz": 480,
@@ -41,12 +44,16 @@
       "grid_type": "sparse",
       "strain_basis": "P1d",
       "max_iterations": 100,
-      "tolerance": 1E-06,
+      "tolerance": 1e-06,
       "solver": "gs",
       "warmstart_mode": "particles",
       "air_drag": 0.0
     }
   },
   "prior_physics": "Existing nearby configurations only; not evidence for this constructed configuration",
-  "discretization_m": 0.0075
+  "discretization_m": 0.0075,
+  "actuation": {
+    "kind": "none",
+    "instance_ids": []
+  }
 }

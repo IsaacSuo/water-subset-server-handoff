@@ -123,7 +123,7 @@ class ConstructionTests(unittest.TestCase):
 
     def test_roll_and_chain_recompute(self):
         r,p=self.rigid_request()
-        for kind in ('rigid_roll_slide','multibody_rearrangement'):
+        for kind in ('rigid_roll_slide','multibody_collision_propagation'):
             q=copy.deepcopy(r); q['phenomenon']=kind; profile=copy.deepcopy(p); profile['phenomenon']=kind
             # Use an upstream subregion of exactly the same original mesh.
             q['scene']['region_bounds_m'][1][0]=-.2

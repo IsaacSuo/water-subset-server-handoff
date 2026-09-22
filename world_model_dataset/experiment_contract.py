@@ -14,12 +14,14 @@ import numpy as np
 from .io import digest, read_json
 from .phenomenon_templates import apply_body, BODY_FIELDS
 
-VERSION = 'phenomenon-experiment/1'
+VERSION = 'phenomenon-experiment/2'
+LEGACY_VERSION = 'phenomenon-experiment/1'
 # An adapter is a solver boundary, not an outcome classifier. New material
 # capabilities require explicit contract and external source validation.
 SUPPORT = {
     'rigid_roll_slide': ('rigid', 1),
     'multibody_rearrangement': ('rigid', 1),
+    'multibody_collision_propagation': ('rigid', 1),
     'geometry_constrained_motion': ('rigid', 1),
     'plastic_impact': ('plastic', 2),
     'beam_load_hold_withdraw': ('beam', 2),
@@ -28,6 +30,28 @@ SUPPORT = {
     'cloth_drag': ('cloth', 3),
     'rope_finite_load': ('rope', 4),
 }
+
+
+def control_and_actuation(device='none', enabled=True):
+    """Control law and the physical execution entity are independent fields."""
+    ids={'none':[], 'finite_plate':['Plate'], 'finite_gripper':['Gripper'],
+         'finite_load':['front_load']}
+    if device not in ids:
+        raise ValueError('Unsupported actuator/control device: '+str(device))
+    return (dict(mode='none' if device=='none' else 'impedance_control',
+                 enabled=False if device=='none' else enabled),
+            dict(kind=device, instance_ids=ids[device]))
+
+
+def upgrade_experiment(doc):
+    """Read v1 without rewriting old files or changing any native physics field."""
+    result=copy.deepcopy(doc)
+    if result.get('format')==LEGACY_VERSION:
+        device=result['control']; enabled=device!='finite_load_disabled'
+        if device=='finite_load_disabled': device='finite_load'
+        result['control'],result['actuation']=control_and_actuation(device,enabled)
+        result['format']=VERSION
+    return result
 INPUT_FIELDS = {
     'rigid': {'participants', 'asset_library'},
     'cloth': {'cloth', 'initial_velocity_m_s', 'iterations', 'material', 'collision',
@@ -140,8 +164,10 @@ def intervention(base, condition):
 
 
 def validate_common(doc):
+    if doc.get('format')==LEGACY_VERSION:
+        return validate_common(upgrade_experiment(doc))
     required = {'format', 'id', 'phenomenon', 'backend', 'scene', 'input',
-                'control', 'timing', 'observations', 'conditions'}
+                'control', 'actuation', 'timing', 'observations', 'conditions'}
     keys(doc, required, required, 'experiment')
     if doc['format'] != VERSION or doc['phenomenon'] not in SUPPORT:
         raise ValueError('Unsupported experiment format or phenomenon')
@@ -156,12 +182,21 @@ def validate_common(doc):
             raise ValueError('preparation_seed must be a uint32 integer')
     if backend['kind'] != kind:
         raise ValueError('Phenomenon is connected to the wrong backend')
-    expected_control = {'beam_load_hold_withdraw': 'finite_plate',
+    if not isinstance(doc['control'],dict) or not isinstance(doc['actuation'],dict):
+        raise ValueError('Unsupported actuator/control: v2 requires separate control and actuation objects')
+    keys(doc['control'],{'mode','enabled'},{'mode','enabled'},'control')
+    keys(doc['actuation'],{'kind','instance_ids'},{'kind','instance_ids'},'actuation')
+    if type(doc['control']['enabled']) is not bool:
+        raise ValueError('control.enabled must be boolean')
+    expected_device = {'beam_load_hold_withdraw': 'finite_plate',
                         'cloth_drag': 'finite_gripper', 'rope_finite_load': 'finite_load'}.get(doc['phenomenon'], 'none')
-    if doc['phenomenon']=='rope_finite_load' and doc['input'].get('load_control',{}).get('enabled') is False:
-        expected_control='finite_load_disabled'
-    if doc['control'] != expected_control:
-        raise ValueError('Unsupported actuator/control for selected backend')
+    enabled=doc['input'].get('load_control',{}).get('enabled',True)
+    if type(enabled) is not bool:
+        raise ValueError('load_control.enabled must be boolean')
+    expected_control,actuation=control_and_actuation(expected_device,enabled)
+    if doc['control'] != expected_control or doc['actuation'] != actuation:
+        raise ValueError('Unsupported actuator/control combination or native enabled mismatch; '
+                         'this backend currently supports only the declared impedance law and entity')
     for active, fields in [('cloth_drag', {'gripper'}), ('rope_finite_load', {'loads','load_control'})]:
         if doc['phenomenon'] == active and not fields <= doc['input'].keys():
             raise ValueError('Missing finite actuator fields: '+str(sorted(fields)))
@@ -249,7 +284,7 @@ def rigid_spec(doc, job_id):
     bodies = copy.deepcopy(obj['participants'])
     if not isinstance(bodies, list) or not bodies:
         raise ValueError('At least one participant is required')
-    if doc['phenomenon'] == 'multibody_rearrangement' and len(bodies) < 2:
+    if doc['phenomenon'] in ('multibody_rearrangement','multibody_collision_propagation') and len(bodies) < 2:
         raise ValueError('Multibody rearrangement needs at least two participants')
     ids = []
     for body in bodies:
@@ -274,7 +309,7 @@ def rigid_spec(doc, job_id):
 def load_experiment(path):
     """Resolve caller-owned file paths once; no implicit mainline output directory."""
     path = Path(path).resolve()
-    doc = read_json(path)
+    doc = upgrade_experiment(read_json(path))
     kind = validate_common(doc)
     def resolve(value):
         p = Path(value)

@@ -1,8 +1,8 @@
 {
   "format": "phenomenon-construction/1",
-  "id": "constructed_multibody",
-  "phenomenon": "multibody_rearrangement",
-  "profile": "profiles/multibody.json",
+  "id": "reuse_passage_second_row",
+  "phenomenon": "geometry_constrained_motion",
+  "profile": "../profiles/passage.json",
   "scene": {
     "id": "classroom_original",
     "units": "m",
@@ -10,13 +10,13 @@
     "frame": "original_world",
     "region_bounds_m": [
       [
-        -1.0,
-        -1.4,
+        -0.7,
+        -2.25,
         -0.1
       ],
       [
-        2.0,
-        -0.6,
+        2.1,
+        -1.45,
         0.4
       ]
     ],
@@ -28,32 +28,19 @@
     }
   },
   "support_group": "room",
-  "object": [
-    {
-      "id": "body_a",
-      "asset": "ph_jug_01",
-      "size_m": 0.15,
-      "mass_kg": 0.3,
-      "rotation_deg": [
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "id": "body_b",
-      "asset": "ph_jug_01",
-      "size_m": 0.12,
-      "mass_kg": 0.3,
-      "rotation_deg": [
-        0,
-        0,
-        0
-      ]
-    }
-  ],
+  "object": {
+    "id": "subject",
+    "asset": "ph_sweet_potato",
+    "size_m": 0.15,
+    "mass_kg": 0.3,
+    "rotation_deg": [
+      0,
+      0,
+      0
+    ]
+  },
   "conditions": {
-    "speed_m_s": 0.5,
-    "gap_ratio": 0.2
+    "speed_m_s": 1.0,
+    "clearance_regime": "passable"
   }
 }

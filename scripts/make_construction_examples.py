@@ -15,8 +15,9 @@ def main():
     args=parser.parse_args(); dest=args.output
     dest.mkdir(parents=True,exist_ok=False)
     shutil.copytree(DEST/'profiles',dest/'profiles')
-    for name in ('passage','cloth','roll','multibody','plastic','beam','rope'):
-        old=read_json(ROOT/'configs/dataset/v0_2/experiment_api_v1'/f'{name}.json')
+    for name in ('passage','cloth','roll','collision_chain','plastic','beam','rope'):
+        old=read_json(ROOT/'configs/dataset/v0_2/experiment_api_v1'/f'{"multibody" if name=="collision_chain" else name}.json')
+        if name=='collision_chain': old['phenomenon']='multibody_collision_propagation'
         scene=copy.deepcopy(old['scene'])
         if name in ('rope','plastic'):
             scene=copy.deepcopy(read_json(ROOT/'configs/dataset/v0_2/experiment_api_v1/cloth.json')['scene'])
@@ -25,7 +26,7 @@ def main():
                 if name=='rope': mesh['friction']=.4
         scene['region_bounds_m']=[[2.2,1.2,.1],[3.5,1.8,1.5]]
         support='tabletop'
-        if name in ('passage','roll','multibody'):
+        if name in ('passage','roll','collision_chain'):
             support='room'
             scene['region_bounds_m']=[[-1.0,-1.4,-.1],[2.,-.6,.4]]
             obj=dict(id='subject',asset='ph_jug_01',size_m=.15,mass_kg=.3,rotation_deg=[0,0,0])

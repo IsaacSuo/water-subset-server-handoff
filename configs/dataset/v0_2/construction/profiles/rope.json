@@ -1,5 +1,8 @@
 {
-  "control": "none",
+  "control": {
+    "mode": "none",
+    "enabled": false
+  },
   "timing": {
     "duration_s": 2.0,
     "physics_hz": 480,
@@ -29,5 +32,9 @@
       "bend_stiffness": 0.00247,
       "bend_damping": 0.001
     }
+  },
+  "actuation": {
+    "kind": "none",
+    "instance_ids": []
   }
 }

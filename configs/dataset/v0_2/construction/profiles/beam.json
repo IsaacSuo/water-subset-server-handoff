@@ -1,5 +1,8 @@
 {
-  "control": "finite_plate",
+  "control": {
+    "mode": "impedance_control",
+    "enabled": true
+  },
   "timing": {
     "duration_s": 4.0,
     "physics_hz": 240,
@@ -32,5 +35,11 @@
     "kp": 800.0,
     "kd": 15.0,
     "mass_kg": 0.2
+  },
+  "actuation": {
+    "kind": "finite_plate",
+    "instance_ids": [
+      "Plate"
+    ]
   }
 }

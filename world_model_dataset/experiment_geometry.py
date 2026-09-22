@@ -28,6 +28,7 @@ def clip(poly, axis, bound, lower):
 
 class Geometry:
     def __init__(self, scene):
+        self.scene=scene
         require((scene['units'], scene['up_axis'], scene['frame']) == ('m', 'Z', 'original_world'),
                 'coordinates', 'require original world metres, Z-up; no scene transforms')
         self.bounds = np.asarray(scene['region_bounds_m'], float)
@@ -64,9 +65,48 @@ class Geometry:
         checksum = file_hash(path); self.pins[str(Path(path).resolve())] = checksum
         return checksum
 
+    def horizontal_analysis_frame(self, normal):
+        """Rotate calculation coordinates only; backend/source geometry is unchanged."""
+        import copy
+        frame=np.array([[normal[0],normal[1],0],[-normal[1],normal[0],0],[0,0,1]])
+        result=copy.copy(self)
+        result.meshes={k:t@frame.T for k,t in self.meshes.items()}
+        result.solids=[trimesh.Trimesh(m.vertices@frame.T,m.faces,process=False) for m in self.solids]
+        corners=np.array([[x,y,z] for x in self.bounds[:,0] for y in self.bounds[:,1] for z in self.bounds[:,2]])@frame.T
+        result.bounds=np.array([corners.min(0),corners.max(0)])
+        result.original_bounds=self.bounds.copy(); result.to_original=frame.T
+        return result,frame
+
     def support(self, name):
+        selection=None
+        if isinstance(name,dict):
+            require(set(name)=={'group','object_index'},'support_selection','expected original group and object_index')
+            group=name['group']; index=name['object_index']
+            require(type(index) is int and index>=0,'support_selection','nonnegative original object index required')
+            manifest=read_json(self.scene['source_records']['scene'])
+            require(group in manifest['groups'] and index<len(manifest['groups'][group]['objects']),
+                    'support_selection','unknown original object')
+            info=manifest['groups'][group]; selection=info['objects'][index]
+            mesh=next((m for m in self.scene['collision'].get('meshes',[]) if m['id']==group),None)
+            require(mesh is not None and file_hash(mesh['path'])==info['sha256'],
+                    'support_selection','object selector requires the unchanged complete original mesh group')
+            name=group
         require(name in self.meshes, 'support', 'unknown selected mesh: '+name)
         tri = self.meshes[name]
+        if selection:
+            start=selection['triangle_start']; tri=tri[start:start+selection['triangle_count']]
+        self.support_identity=dict(group=name,original_object=selection)
+        manifest_path=self.scene['collision'].get('scene_export',self.scene['source_records'].get('scene'))
+        if manifest_path:
+            manifest=read_json(manifest_path)
+            mesh=next((m for m in self.scene['collision'].get('meshes',[]) if m['id']==name),None)
+            checksum=file_hash(mesh['path']) if mesh else manifest.get('groups',{}).get(name,{}).get('sha256')
+            source=next(((g,i) for g,i in manifest.get('groups',{}).items() if i.get('sha256')==checksum),None)
+            if source:
+                self.support_identity.update(source_group=source[0],mesh_sha256=checksum,
+                    source_scene_sha256=file_hash(manifest_path),
+                    original_objects=[dict(name=o['name'],parent=o.get('parent')) for o in
+                                      ([selection] if selection else source[1].get('objects',[]))])
         lo, hi = self.bounds
         # Blender float32 world exports can differ by a few micrometres across
         # a nominally horizontal room floor; never flatten the backend mesh.
@@ -80,6 +120,20 @@ class Geometry:
         surface = unary_union([Polygon(t[:, :2]) for t in planar])
         require(surface.area > 0, 'support', 'degenerate surface')
         return height, surface
+
+    def restriction_objects(self, low_z, high_z):
+        """Source identities overlapping the queried slab/ROI; candidates, not contact truth."""
+        path=self.scene['collision'].get('scene_export',self.scene['source_records'].get('scene'))
+        if not path: return []
+        manifest=read_json(path); result=[]
+        for group,info in manifest.get('groups',{}).items():
+            if group not in self.meshes: continue
+            for index,obj in enumerate(info.get('objects',[])):
+                start=obj['triangle_start']; t=self.meshes[group][start:start+obj['triangle_count']]
+                mask=(t.max(1)[:,2]>=low_z)&(t.min(1)[:,2]<=high_z)
+                mask &= np.all(t.max(1)[:,:2]>self.bounds[0,:2],axis=1)&np.all(t.min(1)[:,:2]<self.bounds[1,:2],axis=1)
+                if mask.any(): result.append(dict(group=group,object_index=index,name=obj['name'],parent=obj.get('parent')))
+        return result
 
     def projection(self, low_z, high_z):
         """Conservative triangle projection in a Z slab, preserving holes in XY."""
@@ -100,6 +154,11 @@ class Geometry:
         low, high = np.asarray(low), np.asarray(high)
         require(np.all(low >= self.bounds[0]-1e-7) and np.all(high <= self.bounds[1]+1e-7),
                 'region_fit', 'object or reserved motion envelope exceeds selected region')
+        if hasattr(self,'to_original'):
+            corners=np.array([[x,y,z] for x in (low[0],high[0]) for y in (low[1],high[1])
+                              for z in (low[2],high[2])])@self.to_original.T
+            require(np.all(corners>=self.original_bounds[0]-1e-7) and np.all(corners<=self.original_bounds[1]+1e-7),
+                    'region_fit','oriented object/envelope exceeds the original selected region')
         footprint = box(*low[:2], *high[:2])
         obstacles = self.projection(low[2]+1e-7, high[2]-1e-7)
         require(not footprint.intersects(obstacles), code,
