@@ -1,0 +1,54 @@
+{
+  "format": "phenomenon-construction/1",
+  "id": "cloth_blocked_auto",
+  "phenomenon": "cloth_drag",
+  "profile": "profiles/cloth_drag.json",
+  "scene": {
+    "id": "classroom_original",
+    "units": "m",
+    "up_axis": "Z",
+    "frame": "original_world",
+    "region_bounds_m": [
+      [
+        2.2,
+        1.15,
+        0.7
+      ],
+      [
+        3.35,
+        1.85,
+        1.35
+      ]
+    ],
+    "collision": {
+      "meshes": [
+        {
+          "id": "tabletop",
+          "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/support.npz",
+          "repair_winding": true
+        },
+        {
+          "id": "desk_frame",
+          "path": "/home/fangsuo/isaacsim_work_material_response/experiments/material_response/scene_input/examples/desk_frame.npz"
+        }
+      ]
+    },
+    "source_records": {
+      "scene": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/real_scene_showcase_v2/classroom_geometry/scene.json",
+      "desk_frame": "/home/fangsuo/isaacsim_work_material_response/experiments/material_response/scene_input/examples/desk_frame_source.json"
+    }
+  },
+  "support_group": "tabletop",
+  "object": {
+    "size_m": [
+      0.42,
+      0.28
+    ]
+  },
+  "conditions": {
+    "grip_fraction": 0.06,
+    "travel_m": 0.18,
+    "max_force_n": 4.0,
+    "mode": "blocked"
+  }
+}
