@@ -1,0 +1,113 @@
+{
+  "format": "directed-cloth-mainline-adoption/1",
+  "source_commit": "c1166462fa69105d275af9b75b54a19d8426e114",
+  "adopted_commit": "7fe2bcf",
+  "base_catalog": {
+    "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_plastic_data_v11/catalog.json",
+    "sha256": "146e8f1033ab9426f8d7d4ee28ecae71dd339a6a24d6a1e3026d078057bb5f38"
+  },
+  "catalog": {
+    "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_directed_cloth_data_v12/catalog.json",
+    "sha256": "f2a95e6987793a93641eca251d8de5071df6acac3d04b73bf2c1f2d55125fd31"
+  },
+  "source_files_verified": {
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/apartment_geometry/scene.json": "c4d60ad9c41a5dce6711efbe1e2679b16a2abab7d00cb23d8b6937162e044360",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/apartment_geometry/support.npz": "cc4f3f2750dc2ac97177f4c06555d228384189400e815baca0246b60129dd30a",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/apartment_geometry/room.npz": "bb267800cd1e608f7adbb9b368807163532527e8372a8d2cf218feacd275a79f",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/apartment_geometry/surroundings.npz": "438fa581225ae5d7ccf4c2cf962ec1ed0bbaf37c65c38b8aba6c57a4b92b7aaa",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/F_pair_read_v2.json": "beed381b87fa40f158682b72596ac6eb4fa3b2f0255da6916c73e22b1473691e",
+    "/mnt/y/isaacsim_work_construction/configs/dataset/v0_2/directed_20260924/F_rect_25.json": "ccc1ebf1219757a1a7954e7f64e68ac008a133cdf82c718f20b7aae1ce8c5ac2",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/F_rect_25/generated/experiment.json": "f04348bfc633eb7a8dd58733b5389fe5aeb98768181827ea1c2bc532e5d414f7",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/F_rect_25/generated/construction.json": "0a63b7f6836467e75aa247e1ca9ffb6ce5dd81f86b4770cf857e0192c30a836f",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/F_rect_25/execution/workflow.json": "bd3b280be32658f56d63379da1b5a8e4bf0bd6afbf680952dae7d3ea22db91b8",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/F_rect_25/execution/reviews/F_rect_25_baseline/review_000.json": "c54d60d36dfcdc9cdc7167bea3a5f7eb1227deabaf9f5aaf20dfab2f10679407",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/F_rect_25/execution/jobs/F_rect_25_baseline/attempt_001/source_pins.json": "b575a2811d791adc1a831fed34310889fa2ee826ebaff39e043bd95ece464459",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/F_rect_25/appearance/frame_0000.png": "7db4576226380df91ef213fdc3545dcaf2fef129f7e3135a2611083c4a363e09",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/F_rect_25/appearance/replay.json": "69c88e4985e6f2b3b6237246973f3d2e0e51a3932b45ac1ff96ced474c8f92d4",
+    "/mnt/y/isaacsim_work_construction/configs/dataset/v0_2/directed_20260924/F_rect_45.json": "48361db67c36a1de5e23b2c7247a2c76e39321df670de40b9bc8ba44be10f00d",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/F_rect_45/generated/experiment.json": "6de2594311c41e22381284a87f2ad9d8f68768824326df589aa1ae9395db678e",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/F_rect_45/generated/construction.json": "e9d8bfd99ecdcdff3971bc141b789888ad87446584f6347453266d6035fe8064",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/F_rect_45/execution/workflow.json": "cbe9d2476111fcb75de60d5722adeb2eddcf221b11b7dcc301e9e3c3cfdc73c7",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/F_rect_45/execution/reviews/F_rect_45_baseline/review_000.json": "0d9c121aca152401df5b14cc961e21f8732bdf5107391bf94b44edee3a4e559d",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/F_rect_45/execution/jobs/F_rect_45_baseline/attempt_001/source_pins.json": "e39541b83c9d97f48f87bed7a21521c1ada8c71908cfbf6863fb1781342dcf39",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/F_rect_45/appearance/frame_0000.png": "58b611ee7c5ff310329d1142ae17ba42ba00a1563682f4cb082b1eefc2eb2db1",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/F_rect_45/appearance/frame_0001.png": "7058fd584296794fe4b7c98aaf3bc5b861d2956ed4f2eae600101d29e782004d",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/F_rect_45/appearance/replay.json": "0de61993f55230802092b0b991bf9a87377bb4f7ebd38dd1fd7b1470cffd4318",
+    "/mnt/y/isaacsim_work/output/adopt_directed_f_v12.py": "ff02b05be0cc5399c121b724cea4bb80d65f0fcfcd73e5564af5c6a8e328a385"
+  },
+  "source_scene_sha256": "090157c6fd9f90be6abfb3b141ecf2a69f4778f8cc9cfb77391192b4afb44b26",
+  "comparison": {
+    "group": "F",
+    "scene": "L_apartment_R2",
+    "overhang_fractions": [
+      0.25,
+      0.45
+    ],
+    "intrinsic_mesh_sha256": "f19829790acbd82df461da45bb2e9bcef1c2ce4fbe0d435746079446767cd023",
+    "changed_physical_input": "world_from_mesh X translation +0.1m; other physical inputs identical",
+    "measurements": {
+      "F_rect_25": {
+        "final_below_support_depth_m": 0.12644734978675842,
+        "final_initial_support_nodes_near_support_fraction": 0.9736842105263158,
+        "support_node_mean_xy_shift_m": [
+          0.004203916992992163,
+          0.0016035228036344051
+        ],
+        "free_nodes_mean_down_m": 0.07129108905792236,
+        "last_half_second_peak_node_speed_m_s": 0.05937464162707329
+      },
+      "F_rect_45": {
+        "final_below_support_depth_m": 0.23555773496627808,
+        "final_initial_support_nodes_near_support_fraction": 0.9642857142857143,
+        "support_node_mean_xy_shift_m": [
+          0.006988201290369034,
+          0.0016237733652815223
+        ],
+        "free_nodes_mean_down_m": 0.12815949320793152,
+        "last_half_second_peak_node_speed_m_s": 0.07515525072813034
+      }
+    }
+  },
+  "episode_ids": [
+    "F_rect_25_baseline",
+    "F_rect_45_baseline"
+  ],
+  "episode_count": 49,
+  "counts": {
+    "states": 23629,
+    "observations": 1539
+  },
+  "group_counts": {
+    "2": 12,
+    "1": 18,
+    "4": 7,
+    "3": 12
+  },
+  "record_scope_counts": {
+    "complete": 47,
+    "physics_only": 2
+  },
+  "previous_entries_and_supersessions_unchanged": true,
+  "preexisting_files_unchanged": true,
+  "excluded": "F_overhang_25/45 were never simulated; not admitted as episodes",
+  "verification": {
+    "new_episode_states_and_observations": true,
+    "new_native_geometry_frames": 602,
+    "copy_hashes": true,
+    "independent_pair_metrics": true,
+    "prior_streams": "inherited from pinned v11; old observation streams not redecoded",
+    "construction_checks": "14 unittest cases passed with existing external construction dependencies"
+  },
+  "mainline_new_physics_run": false,
+  "mainline_new_rendering": false,
+  "training_admission": false,
+  "batch": {
+    "completed_physics": 2,
+    "budget": 8,
+    "remaining_groups": [
+      "R",
+      "W"
+    ]
+  },
+  "adoption_script_sha256": "ff02b05be0cc5399c121b724cea4bb80d65f0fcfcd73e5564af5c6a8e328a385"
+}
