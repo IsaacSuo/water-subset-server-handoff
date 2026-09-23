@@ -1,0 +1,302 @@
+{
+  "format": "directed-wrap-mainline-adoption/1",
+  "source_commits": [
+    "e143c5c42e4d492697bf54d59eb008f65b875d76",
+    "b90c08054f0bf7be380eb209928543af79055ec8"
+  ],
+  "adopted_commits": [
+    "18653cf",
+    "73369cc"
+  ],
+  "base_catalog": {
+    "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_directed_release_data_v13/catalog.json",
+    "sha256": "495a250ec730e47ec24c1583d7da1e749a6eca709859e4cdd08087284748bf90"
+  },
+  "catalog": {
+    "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_directed_wrap_data_v14/catalog.json",
+    "sha256": "f83fa54a2ce13ab3614ea19a9dbc47467e9655c14e5b7b914029bfee523f7865"
+  },
+  "source_files_verified": {
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/W_pair_read_v2.json": "98902be605dfb700131d0239f6f45f509845e6d1dededee024810a5980665b71",
+    "/mnt/y/isaacsim_work_construction/configs/dataset/v0_2/directed_20260924/W_G01_equal.json": "aa3a8d55e4bf482522767dc64d977772aa5bc84ba9427f984dd06fc801943da8",
+    "/mnt/y/isaacsim_work_construction/configs/dataset/v0_2/directed_20260924/W_profile.json": "00ae8c0fdaabfffcbf9cce28f78cfd55d36727d3807601b175363d5ac2158c3b",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/W_G01_equal/generated/experiment.json": "ad15423c0e63347d2c287922657aeb64a52efdab00a4478b95c07029790068b1",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/W_G01_equal/generated/construction.json": "cb9b4766d3f0c343ed7b80853ddca150da3bdeaf0e1f77e0b953a70a39624261",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/W_G01_equal/execution/workflow.json": "b2fb9064bb73ab2998b9bfa767cd62e55f085683ce481410873de1f0ff55e51a",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/W_G01_equal/execution/reviews/W_G01_equal_baseline/review_000.json": "b2086ea68a608bb2ca2f7d0e5973df8c6d76265c6cf3f8574dea7e2eefc072a4",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/W_G01_equal/execution/jobs/W_G01_equal_baseline/attempt_001/source_pins.json": "3e7d415c9bec3a900a8fa864dc14217df6d61efec3fbd176a2851b0656034d57",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/W_G01_equal/execution/jobs/W_G01_equal_baseline/attempt_001/W_G01_equal_baseline/execution.json": "136d80f18d2072f200e329d222fa7ba8e4aa7c338c0e48d55346d29e0c31eb05",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/W_G01_equal/appearance/frame_0000.png": "75a1dc2b10f3d33a629000458b0dc30530231cdadf02295f4434d8b4f387fe8d",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/W_G01_equal/appearance/replay.json": "028e6deb9eaaef94484ed113919cd93f47041d1abd37a4cfe2b70698fd4c03ad",
+    "/mnt/y/isaacsim_work_construction/configs/dataset/v0_2/directed_20260924/W_G01_unequal.json": "675fc3b38ab13e04a7f4c6b774ed94ece3904834788e13451f6c2e03080deaeb",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/W_G01_unequal/generated/experiment.json": "183ca1db83d55db90a0f22397f4acc8b291787d19090cc7a2f1b91210d1743bd",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/W_G01_unequal/generated/construction.json": "9062025a59f6114112c338f0a445e7d0c904d5f678d3622fc479011695cc123e",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/W_G01_unequal/execution/workflow.json": "e3d59ae2f478a18963a32265971edb42fe5c4933f04805fa5d7f2b0ff60facdc",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/W_G01_unequal/execution/reviews/W_G01_unequal_baseline/review_000.json": "b0d46f2d33b85d3ac8d0fde88cb73e8655c40a3ef3cbc973eba46519f774fa94",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/W_G01_unequal/execution/jobs/W_G01_unequal_baseline/attempt_001/source_pins.json": "a5d80494bce105097ffbb0f809ae5c70e2f5f930e75d5ec69aab7929b1fdeaa1",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/W_G01_unequal/execution/jobs/W_G01_unequal_baseline/attempt_001/W_G01_unequal_baseline/execution.json": "fc97ec0a43c2eafadbdba73dc1790e04c83c9835f2c1ff0c5c30a2c9268a776a",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/W_G01_unequal/appearance/frame_0000.png": "5757b324e255a84e9a4f5cfa7360ac25fab1f14dd3dc4c7914a40c380eb066b8",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/W_G01_unequal/appearance/frame_0001.png": "878ac192104811c373e7dc3f29a5c4376c16a32cfb90e4cd4143097d3e0fd674",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/W_G01_unequal/appearance/replay.json": "5be8822808f90de64df9f741c7ced255fab3c60909be85e6ec21025ca16d4cc8",
+    "/mnt/y/isaacsim_work/output/adopt_directed_w_v14.py": "6d2bc37865b5fea00643faab7b7d89bef2638e8118bcbcd58ecec9d73eb11f75"
+  },
+  "fixed_backend_revision": "7011d1771058b19eef1a0d3cb93c74a1e6952c3f",
+  "runtime_source_content_sha256": "f5c9a4bab4abf9e345a4f40ea85840ee4f9ca83e468762e146ed11a2eb6bd049",
+  "runtime_git_revision_available": false,
+  "pair_nonintervention_sha256": "9eec676c0e576c4329a3dd6360eba6116e1183e9a25e213b0c99ea649600ee26",
+  "native_nonintervention_differences": {
+    "body_mass": 0.0,
+    "body_inertia": 0.0,
+    "segment_lengths": 4.440892098500626e-16,
+    "shape_scale": 6.379559636116028e-08,
+    "shape_material_mu": 0.0,
+    "joint_target_ke": 0.0,
+    "joint_target_kd": 0.0
+  },
+  "review": {
+    "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_directed_wrap_data_v14/review/W_recomputed.json",
+    "sha256": "98902be605dfb700131d0239f6f45f509845e6d1dededee024810a5980665b71"
+  },
+  "episode_ids": [
+    "W_G01_equal_baseline",
+    "W_G01_unequal_baseline"
+  ],
+  "episode_count": 55,
+  "counts": {
+    "states": 26755,
+    "observations": 1705
+  },
+  "group_counts": {
+    "2": 12,
+    "1": 22,
+    "4": 9,
+    "3": 12
+  },
+  "record_scope_counts": {
+    "complete": 53,
+    "physics_only": 2
+  },
+  "actual_outcomes": {
+    "W_G01_equal": "geometric U retained through 2 seconds",
+    "W_G01_unequal": "loss of U proxy followed by descent wholly below target rod at 1.65 seconds"
+  },
+  "observation_coverage": {
+    "W_G01_equal": {
+      "frames": 21,
+      "visible_frames": 21,
+      "no_rope_pixels_times_s": [],
+      "per_frame": [
+        {
+          "time_s": 0.0,
+          "rope_pixels": 66
+        },
+        {
+          "time_s": 0.1,
+          "rope_pixels": 55
+        },
+        {
+          "time_s": 0.2,
+          "rope_pixels": 63
+        },
+        {
+          "time_s": 0.3,
+          "rope_pixels": 57
+        },
+        {
+          "time_s": 0.4,
+          "rope_pixels": 70
+        },
+        {
+          "time_s": 0.5,
+          "rope_pixels": 66
+        },
+        {
+          "time_s": 0.6,
+          "rope_pixels": 72
+        },
+        {
+          "time_s": 0.7,
+          "rope_pixels": 66
+        },
+        {
+          "time_s": 0.8,
+          "rope_pixels": 61
+        },
+        {
+          "time_s": 0.9,
+          "rope_pixels": 67
+        },
+        {
+          "time_s": 1.0,
+          "rope_pixels": 52
+        },
+        {
+          "time_s": 1.1,
+          "rope_pixels": 65
+        },
+        {
+          "time_s": 1.2,
+          "rope_pixels": 62
+        },
+        {
+          "time_s": 1.3,
+          "rope_pixels": 68
+        },
+        {
+          "time_s": 1.4,
+          "rope_pixels": 50
+        },
+        {
+          "time_s": 1.5,
+          "rope_pixels": 68
+        },
+        {
+          "time_s": 1.6,
+          "rope_pixels": 59
+        },
+        {
+          "time_s": 1.7,
+          "rope_pixels": 64
+        },
+        {
+          "time_s": 1.8,
+          "rope_pixels": 52
+        },
+        {
+          "time_s": 1.9,
+          "rope_pixels": 63
+        },
+        {
+          "time_s": 2.0,
+          "rope_pixels": 66
+        }
+      ],
+      "semantics": "diagnostic segmentation at sampled frames; nonzero pixels do not prove complete rope visibility"
+    },
+    "W_G01_unequal": {
+      "frames": 21,
+      "visible_frames": 18,
+      "no_rope_pixels_times_s": [
+        1.8,
+        1.9,
+        2.0
+      ],
+      "per_frame": [
+        {
+          "time_s": 0.0,
+          "rope_pixels": 69
+        },
+        {
+          "time_s": 0.1,
+          "rope_pixels": 57
+        },
+        {
+          "time_s": 0.2,
+          "rope_pixels": 56
+        },
+        {
+          "time_s": 0.3,
+          "rope_pixels": 70
+        },
+        {
+          "time_s": 0.4,
+          "rope_pixels": 54
+        },
+        {
+          "time_s": 0.5,
+          "rope_pixels": 58
+        },
+        {
+          "time_s": 0.6,
+          "rope_pixels": 69
+        },
+        {
+          "time_s": 0.7,
+          "rope_pixels": 51
+        },
+        {
+          "time_s": 0.8,
+          "rope_pixels": 58
+        },
+        {
+          "time_s": 0.9,
+          "rope_pixels": 74
+        },
+        {
+          "time_s": 1.0,
+          "rope_pixels": 53
+        },
+        {
+          "time_s": 1.1,
+          "rope_pixels": 62
+        },
+        {
+          "time_s": 1.2,
+          "rope_pixels": 63
+        },
+        {
+          "time_s": 1.3,
+          "rope_pixels": 65
+        },
+        {
+          "time_s": 1.4,
+          "rope_pixels": 57
+        },
+        {
+          "time_s": 1.5,
+          "rope_pixels": 79
+        },
+        {
+          "time_s": 1.6,
+          "rope_pixels": 72
+        },
+        {
+          "time_s": 1.7,
+          "rope_pixels": 30
+        },
+        {
+          "time_s": 1.8,
+          "rope_pixels": 0
+        },
+        {
+          "time_s": 1.9,
+          "rope_pixels": 0
+        },
+        {
+          "time_s": 2.0,
+          "rope_pixels": 0
+        }
+      ],
+      "semantics": "diagnostic segmentation at sampled frames; nonzero pixels do not prove complete rope visibility"
+    }
+  },
+  "mainline_new_physics_run": false,
+  "mainline_new_rendering": false,
+  "training_admission": false,
+  "previous_entries_and_supersessions_unchanged": true,
+  "unrelated_tracked_changes_during_adoption_left_untouched": {},
+  "verification": {
+    "new_states_geometry_observations": true,
+    "copy_hashes": true,
+    "source_mapping_and_runtime_archives": true,
+    "key_times_recomputed_on_copy": true,
+    "prior_streams": "inherited from pinned v13; no old observation redecoding",
+    "runtime_code_regressions": "32 checks passed at v13; W handoff changes only reader and documentation"
+  },
+  "batch": {
+    "status": "complete_with_mixed_design_outcomes",
+    "physical_runs": 8,
+    "run_budget": 8,
+    "groups": {
+      "F": 2,
+      "R": 4,
+      "W": 2
+    },
+    "realized_comparisons": [
+      "F support overlap and drape",
+      "W free-leg distribution and retention/descent"
+    ],
+    "unmet_design_goal": "R reliable recovery/toppling outcome separation",
+    "followup": "retain limitation; no further runs or numerical investigations scheduled"
+  }
+}
