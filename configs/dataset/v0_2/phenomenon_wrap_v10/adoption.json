@@ -1,0 +1,106 @@
+{
+  "format": "wrap-mainline-adoption/1",
+  "source_commits": [
+    "3dfc5b1",
+    "7f84038"
+  ],
+  "adopted_commits": [
+    "2470f6d",
+    "f6e16d8"
+  ],
+  "backend_revision": "7011d1771058b19eef1a0d3cb93c74a1e6952c3f",
+  "base_catalog": {
+    "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_layout_data_v9/catalog.json",
+    "sha256": "35ba6773517b68a3b140ef5e0b904483746b5d9f19b003423aa79118c476b344"
+  },
+  "catalog": {
+    "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_wrap_data_v10/catalog.json",
+    "sha256": "2aeada0b812250c78d7b17af1f66be68925e6491cabd80d8623172c2a9452338"
+  },
+  "evidence_index": {
+    "path": "/mnt/y/isaacsim_work_construction/docs/AUTOMATIC_LAYOUT_CLOSURE_V2.json",
+    "sha256": "1f2cc2956cf5a39a1fd5984d44e90dbe3381b1e35435017b32bc821df50f0565"
+  },
+  "verified_sources": {
+    "/mnt/y/isaacsim_work_construction/configs/dataset/v0_2/construction/rope_wrap_7011d17.json": "a6fdb6fd4a24a14a91c4e7f85ebd76e24787e61c2a3199c9d8f41cf8b8cce3c9",
+    "/mnt/y/isaacsim_work_construction/configs/dataset/v0_2/construction/profiles/rope_wrap_7011d17.json": "ecfe8c336e3f32ed1dc690f20c9fb6499080932a23497b6b32318db1c0f3186d",
+    "/mnt/y/isaacsim_work_construction/output/wrap_entry_7011d17/generated/backend_input.json": "242380ad6064bc2cf3d2199aff1e330e968a05052f743ed7d710ff5f602bbaca",
+    "/mnt/y/isaacsim_work_construction/output/wrap_entry_7011d17/generated/construction.json": "d5a3bd6e884d7b4876ec6da2e274ab2c40d82dab56e6908a6ad0133700169745",
+    "/mnt/y/isaacsim_work_construction/output/wrap_entry_7011d17/generated/experiment.json": "4be64a55d4dff3f0a88b615438469f88e113211c7e7700975a341ff75ddea238",
+    "/mnt/y/isaacsim_work_construction/output/wrap_entry_7011d17/backend_delivery.json": "90d698e8d11d2fbb03d4a89826e671754933e3ab974212f3fc1da48c5926c491",
+    "/mnt/y/isaacsim_work_construction/output/wrap_entry_7011d17/execution/workflow.json": "0becc7299d5b17c0a9126101ea87d0abb9a9d4fb38769ab652787ff0d9163574",
+    "/mnt/y/isaacsim_work_construction/output/wrap_entry_7011d17/execution/jobs/layout_rope_wrap_7011d17_baseline/attempt_001/cache_binding.json": "827802609a7998cea3d3d0ed37411ae8295829cc6154dfbb366935e31be0974b",
+    "/mnt/y/isaacsim_work_construction/output/wrap_entry_7011d17/execution/jobs/layout_rope_wrap_7011d17_baseline/attempt_001/cache_package_000/layout_rope_wrap_7011d17_baseline/cache_origin.json": "ac499b234f047316a4aa0fca6060a2fe6c07dbe84d1f0ad232188db3d3340d2d",
+    "/mnt/y/isaacsim_work_construction/output/wrap_entry_7011d17/read_result.json": "299ad485bfddef449f1568ae20d2e5d37761a503a76c9854cde6ea1e1b29a772",
+    "/mnt/y/isaacsim_work_construction/output/wrap_entry_7011d17/execution/jobs/layout_rope_wrap_7011d17_baseline/attempt_001/cache_package_000/layout_rope_wrap_7011d17_baseline/episode/episode.json": "ad3664e93e1cc570a41d359a52ee95efc65a6bebef763b70c56fa3a97015e7dd",
+    "/mnt/y/isaacsim_work_construction/output/wrap_entry_7011d17/execution/jobs/layout_rope_wrap_7011d17_baseline/attempt_001/cache_package_000/layout_rope_wrap_7011d17_baseline/episode/inputs/room_collision_policy.json": "b323e82b805291e4b23282019351f88cac4d230793908db5d11bdc259dc3e5df",
+    "/mnt/y/isaacsim_work_construction/output/wrap_entry_7011d17/execution/jobs/layout_rope_wrap_7011d17_baseline/attempt_001/cache_package_000/layout_rope_wrap_7011d17_baseline/episode/inputs/support_collision_policy.json": "34a387176427f140ce17a5a265e5383cdbac907c40f435e339cab662cb2ea096",
+    "/mnt/y/isaacsim_work_construction/output/wrap_entry_7011d17/execution/jobs/layout_rope_wrap_7011d17_baseline/attempt_001/cache_package_000/layout_rope_wrap_7011d17_baseline/episode/inputs/surroundings_collision_policy.json": "2cebc490d5ba3b74ea1392ace867f2d2b8eaaa07e60a5f5d5de9f77091357ca1",
+    "/mnt/y/isaacsim_work_construction/output/wrap_entry_7011d17/execution/jobs/layout_rope_wrap_7011d17_baseline/attempt_001/cache_package_000/layout_rope_wrap_7011d17_baseline/episode/inputs/original_room.npz": "2cbabb428e7ea15fe2dfd3685c81b752b68377b08faa9f72f23e2a98def00273",
+    "/mnt/y/isaacsim_work_construction/output/wrap_entry_7011d17/execution/jobs/layout_rope_wrap_7011d17_baseline/attempt_001/cache_package_000/layout_rope_wrap_7011d17_baseline/episode/inputs/original_support.npz": "b987af77bbadaf8e0a6b61713f3605925a689fa1d7fa2c1bb0baecde0425a29b",
+    "/mnt/y/isaacsim_work_construction/output/wrap_entry_7011d17/execution/jobs/layout_rope_wrap_7011d17_baseline/attempt_001/cache_package_000/layout_rope_wrap_7011d17_baseline/episode/inputs/original_surroundings.npz": "b1ef4625785ce36c587cef8dc16c5e64991e408ccde34a8977480eb524020a07",
+    "/mnt/y/isaacsim_work_construction/output/wrap_entry_7011d17/execution/jobs/layout_rope_wrap_7011d17_baseline/attempt_001/cache_package_000/layout_rope_wrap_7011d17_baseline/episode/inputs/room_face_mapping.npz": "bf5d30b5036aa7068b7c8443c0ec3450f8630db89c27d9137d56912c1e195842",
+    "/mnt/y/isaacsim_work_construction/output/wrap_entry_7011d17/execution/jobs/layout_rope_wrap_7011d17_baseline/attempt_001/cache_package_000/layout_rope_wrap_7011d17_baseline/episode/inputs/support_face_mapping.npz": "94f5c1e805038531ea8c7dbac55962505b036a5a985bcd2cbb349ae068083e9f",
+    "/mnt/y/isaacsim_work_construction/output/wrap_entry_7011d17/execution/jobs/layout_rope_wrap_7011d17_baseline/attempt_001/cache_package_000/layout_rope_wrap_7011d17_baseline/episode/inputs/surroundings_face_mapping.npz": "9776e57fab217734378d27aa0f6b4f9a91ddaecb55ee019f6a4450fadb713468",
+    "/mnt/y/isaacsim_work_construction/output/wrap_entry_7011d17/execution/jobs/layout_rope_wrap_7011d17_baseline/attempt_001/source_pins.json": "cb1ce7ffecbce8e06071f8778055df706e4dc25ab9565b6190cbee15300fa7c3"
+  },
+  "source_episode": "/mnt/y/isaacsim_work_construction/output/wrap_entry_7011d17/execution/jobs/layout_rope_wrap_7011d17_baseline/attempt_001/cache_package_000/layout_rope_wrap_7011d17_baseline/episode",
+  "copied_episode": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_wrap_data_v10/delivery/layout_rope_wrap_7011d17_baseline/episode",
+  "episode_id": "layout_rope_wrap_7011d17_baseline",
+  "assessment": {
+    "status": "bounded_qualitative_evidence",
+    "scope": "single U-shaped original-rod wrap; source mesh identity retained",
+    "sampled_surface_overlap_m": 0.00016033450523201642,
+    "maximum_connection_gap_m": 0.0011515412479639053,
+    "continuous_nonpenetration": false,
+    "numerical_convergence": false,
+    "contact_force": "unavailable",
+    "native_tension": "unavailable",
+    "limits": [
+      "41 axial samples per segment per saved frame; not continuous collision certification",
+      "candidate existence does not prove nonzero reaction",
+      "open rod mesh has unsigned-distance-only clearance if not watertight",
+      "no layout, material or solver changes beyond exact-zero admission"
+    ],
+    "training_admission": false
+  },
+  "counts": {
+    "states": 22642,
+    "observations": 1437
+  },
+  "episode_count": 46,
+  "record_scope_counts": {
+    "complete": 45,
+    "physics_only": 1
+  },
+  "group_counts": {
+    "2": 11,
+    "1": 18,
+    "4": 7,
+    "3": 10
+  },
+  "physical_execution": "material branch original 960-step run; entry and mainline reuse only",
+  "source_manifest_unchanged": true,
+  "previous_entries_and_supersessions_unchanged": true,
+  "preexisting_documents_unchanged": true,
+  "training_admission": false,
+  "verification": {
+    "new_episode_streams": true,
+    "all_new_geometry_frames": 121,
+    "all_source_face_mappings": true,
+    "copy_hashes": true,
+    "windows": [
+      0,
+      1,
+      2
+    ],
+    "previous_catalog_manifest_hashes": true,
+    "previous_stream_checks": "inherited from unchanged v9 adoption; no repeat full observation decoding",
+    "targeted_tests_passed": 24,
+    "catalog_window_cli_passed": true
+  },
+  "remaining": [
+    "plastic step-140 internal failure localization",
+    "rope spin torque/momentum semantics and physical validity"
+  ]
+}

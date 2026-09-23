@@ -6,6 +6,34 @@ from .causal_loader import open_episode
 from .io import file_hash, read_json, write_json
 
 
+def open_catalog_episode(item):
+    """Explicit state-only admission; never weaken the default completed reader."""
+    scope=item.get('record_scope','complete')
+    if scope not in ('complete','physics_only'):
+        raise ValueError('Unknown catalog record_scope: '+str(scope))
+    if scope=='complete':
+        return open_episode(item['episode'])
+    ep=open_episode(item['episode'],require_complete=False)
+    m=ep.manifest
+    if m['lifecycle'] not in ('draft','completed'):
+        raise ValueError('Physics-only record is not admissible: lifecycle')
+    records=[m['initial_state']['state'],m['trajectory']['states'],
+             m['trajectory']['interaction_annotations'],m['trajectory']['outcomes']]
+    program=m['control_program']
+    if program['primitive']!='none':
+        records.append(program['command_trace'])
+        records.extend(c[k] for c in program['controllers'] for k in ('state_trace','effort_trace'))
+    if any(r['status']!='available' for r in records):
+        raise ValueError('Physics-only record lacks required physical records')
+    if m['trajectory']['observations']['status']!='unavailable' or item['observations']!=0:
+        raise ValueError('Physics-only record must explicitly declare absent observations')
+    for r in records:ep.record_path(r)
+    rows=list(ep.states())
+    if len(rows)!=item['states'] or len(rows)<2 or abs(rows[-1]['time_s']-rows[0]['time_s']-m['timing']['duration_s'])>1e-8:
+        raise ValueError('Physics-only record is incomplete in time; failed prefixes are not complete runs')
+    return ep
+
+
 def build(indices, supersede, output, verify_streams=False):
     episodes={};sources=[];history=[]
     for path in indices:
@@ -36,10 +64,10 @@ def build(indices, supersede, output, verify_streams=False):
         path=Path(item['episode'])
         if file_hash(path/'episode.json')!=item['manifest_sha256']:
             raise ValueError('Changed manifest: '+item['id'])
-        ep=open_episode(path)
+        ep=open_catalog_episode(item)
         if ep.manifest['trajectory']['states']['sha256']!=item['source_states_sha256']:
             raise ValueError('Changed physical states: '+item['id'])
-        actual=dict(states=sum(1 for _ in ep.states()),observations=sum(1 for _ in ep.observations())) if verify_streams else item
+        actual=dict(states=sum(1 for _ in ep.states()),observations=(0 if item.get('record_scope')=='physics_only' else sum(1 for _ in ep.observations()))) if verify_streams else item
         for key in counts:
             if actual[key]!=item[key]:raise ValueError('Count mismatch: '+item['id']+' '+key)
             counts[key]+=actual[key]

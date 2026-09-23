@@ -94,8 +94,9 @@ def main():
     p.add_argument('--start',type=float,required=True);p.add_argument('--end',type=float,required=True)
     p.add_argument('--output',type=Path,required=True);a=p.parse_args()
     entries={e['id']:e for e in read_json(a.catalog)['episodes']};report={}
+    from .phenomenon_catalog import open_catalog_episode
     for oid in a.ids:
-        ep=open_episode(entries[oid]['episode']);window=read_window(ep,a.start,a.end)
+        ep=open_catalog_episode(entries[oid]);window=read_window(ep,a.start,a.end)
         report[oid]=describe(window);print('WINDOW_CHECKED',oid,report[oid]['states'],flush=True)
     write_json(a.output,dict(episodes=report,training=False,splits=False))
 
