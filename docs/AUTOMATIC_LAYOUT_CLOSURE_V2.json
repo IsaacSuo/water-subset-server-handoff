@@ -1054,7 +1054,7 @@
       "preliminary_mesh_requests": "F_overhang_25/45: constructed only, never executed",
       "admission": "mainline decision pending"
     },
-    "current_mainline": "5d88dda / v12 / 49 episodes; F adopted",
+    "current_mainline": "1cf5fd4 / v13 / 53 episodes; F and R adopted, W pending mainline review",
     "started_physics": 8,
     "R": {
       "requests": [
