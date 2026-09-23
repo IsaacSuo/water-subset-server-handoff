@@ -272,3 +272,41 @@ backend_delivery 被纳入入口的来源固定与恢复检查。两个针对性
 构造 CLI 的 `--reuse-physics-cache` 现在显式接受带 `prepared/native/episode/episode.json` 的材料 run 根目录；
 此前只定位 run 根下 manifest，无法从构造 CLI 直接表达这一既有缓存布局。原根目录 manifest 用法兼容。
 prepare 已读过调用路径，只做 CPU 准备和检查；后续仅 package/audit，不调用物理或渲染。物理等值/完整统一读取结果在本节后续追加。
+
+### 11.1 外部缓存接入与统一读取结果
+
+首批本地提交 `3dfc5b1`。prepare 完成且物理等值通过：新构造与材料原请求的物理字段一致，
+实际 prepared 数组（包括初态、完整原输入和面映射）、求解依赖脚本及碰撞政策/对象身份一致。
+绑定物理签名 `8e83808ea5debfb2c206f8e8b3cd72ce229284a87a28d12a94b5fd1317af9312`；
+外部原生轨迹 SHA256 为 `783a23d21124f0d1c067a1843a2a3f8eeda7ebbcc5d6efa1b5da87137509bf24`。
+入口只完成 prepare → package → audit；**没有执行 simulate、observe 或 register**，没有补跑、渲染或新目录登记。
+package 采用既有 cache_package_context，保存当前准备结果，同时沿用产生缓存的原 prepared/native 配对，避免把新元数据伪装成旧运行输入。
+`cache_origin.json`、workflow 的 cache binding 都明确记录材料工作区 `output/wrap_original_v2` 及 `physics_rerun=false`。
+
+接入方法（在入口工作区、已有 CPU Python 环境下；所有新输出均须为空，不能覆盖旧尝试）：
+
+```text
+python -B scripts/pin_wrap_delivery.py --workspace /mnt/y/isaacsim_work_wrap_diagnostics --snapshot output/external_sources/wrap_7011d17 --report output/wrap_entry_7011d17/backend_delivery.json
+python -B -m world_model_dataset.experiment_construct --request configs/dataset/v0_2/construction/rope_wrap_7011d17.json --output output/wrap_entry_7011d17/generated --reuse-physics-cache /mnt/y/isaacsim_work_wrap_diagnostics/output/wrap_original_v2
+python -B -m world_model_dataset.phenomenon_experiment --experiment output/wrap_entry_7011d17/generated/experiment.json --output output/wrap_entry_7011d17/execution --stage prepare
+python -B -m world_model_dataset.phenomenon_experiment --experiment output/wrap_entry_7011d17/generated/experiment.json --output output/wrap_entry_7011d17/execution --stage package
+python -B -m world_model_dataset.phenomenon_experiment --experiment output/wrap_entry_7011d17/generated/experiment.json --output output/wrap_entry_7011d17/execution --stage audit
+python -B scripts/read_adopted_wrap.py --folder output/wrap_entry_7011d17 --output output/wrap_entry_7011d17/read_result.json
+```
+
+这些命令说明已执行的接入路径，不要求重做已有产物；前两步不隐式执行物理，后三个阶段也不触发求解。
+读取已有结果时只需最后一条并选择新检查输出，或由 `read_result.json` 的 entry_episode 调用 `open_episode(..., require_complete=False)`。
+统一 API `states()` 读取刚体段状态；`geometries('segment_0')` 读取全绳段/中心线载体，`soft_topology('segment_0')` 读取原生连接坐标系与连接关系；
+原环境静态网格不当作带时间的软体流。接触候选仍保留在 native/contact_candidates.jsonl，不填入接触反力真值。
+
+实际读取 121 帧、0–2 s、480 Hz/60 Hz，覆盖原材料运行的 960 步；121 帧原生几何与拓扑可统一读取，时间/步号对齐。
+原杆对象 265（Box295.002 / chair.001）原面 540232–540239 全部保留，后台面号逐个映射回该对象和原面。
+原生 states、960 步候选日志、runtime_sources 和 backend_sources.zip 与材料源逐字节哈希相同。
+入口独立核对末态中心线跨杆两侧、上方仍有绳段、两端低于杆，与绑定本轨迹的材料几何审核一致。
+
+**结论仅为本例保持单个 U 形绕接。** 继承并保留 41 个轴向采样点/段、121 保存帧的约 **0.160 mm** 最小采样表面重叠，
+全程最大连接间隙 **1.152 mm**（末态 0.968 mm）。原杆八面不闭合，只能做无符号距离的采样表面判断。
+44842 条杆上接触候选覆盖 960 步；候选面号是由静态接触点最近原面推导，非原生 triangle ID，更不是非零反力真值。
+未证明帧间无穿透、数值收敛或接触力准确；原生拉力、接触力、attachment 反力仍 unavailable。
+构造实现、几何/来源检查及已有实际轨迹接入完成；入口本轮新物理运行次数为零，用途仍待主线判断。
+固定来源、请求、生成配置、统一缓存及读取结果入口追加在现有 `AUTOMATIC_LAYOUT_CLOSURE_V2.json` 的 wrap_integration 字段。
