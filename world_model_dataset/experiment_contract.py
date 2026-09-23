@@ -19,6 +19,7 @@ LEGACY_VERSION = 'phenomenon-experiment/1'
 # An adapter is a solver boundary, not an outcome classifier. New material
 # capabilities require explicit contract and external source validation.
 SUPPORT = {
+    'rigid_pose_release': ('rigid', 1),
     'rigid_roll_slide': ('rigid', 1),
     'multibody_rearrangement': ('rigid', 1),
     'multibody_collision_propagation': ('rigid', 1),

@@ -77,7 +77,7 @@ class Geometry:
         result.original_bounds=self.bounds.copy(); result.to_original=frame.T
         return result,frame
 
-    def support(self, name):
+    def support(self, name, *, planarity_tolerance_m=5e-6):
         selection=None
         if isinstance(name,dict):
             require(set(name)=={'group','object_index'},'support_selection','expected original group and object_index')
@@ -110,7 +110,8 @@ class Geometry:
         lo, hi = self.bounds
         # Blender float32 world exports can differ by a few micrometres across
         # a nominally horizontal room floor; never flatten the backend mesh.
-        tolerance = 5e-6
+        tolerance = float(planarity_tolerance_m)
+        require(0 < tolerance <= 2e-5, "support_precision", "planarity tolerance limited to 20 micrometres")
         mask = (np.ptp(tri[:, :, 2], axis=1) < tolerance)
         mask &= (tri[:, :, 2].mean(1) >= lo[2]) & (tri[:, :, 2].mean(1) < hi[2])
         mask &= np.all(tri.max(1)[:, :2] > lo[:2], axis=1) & np.all(tri.min(1)[:, :2] < hi[:2], axis=1)

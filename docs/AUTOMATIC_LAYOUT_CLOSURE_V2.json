@@ -1043,7 +1043,7 @@
   "directed_20260924": {
     "authorization_commit": "38d7f4a",
     "physics_budget": 8,
-    "completed_physics": 2,
+    "completed_physics": 6,
     "F": {
       "requests": [
         "configs/dataset/v0_2/directed_20260924/F_rect_25.json",
@@ -1053,6 +1053,19 @@
       "read_result": "output/directed_batch_20260924/F_pair_read_v2.json",
       "preliminary_mesh_requests": "F_overhang_25/45: constructed only, never executed",
       "admission": "mainline decision pending"
+    },
+    "current_mainline": "5d88dda / v12 / 49 episodes; F adopted",
+    "started_physics": 8,
+    "R": {
+      "requests": [
+        "configs/dataset/v0_2/directed_20260924/R_vase_restoring.json",
+        "configs/dataset/v0_2/directed_20260924/R_vase_tipping.json",
+        "configs/dataset/v0_2/directed_20260924/R_rock_restoring.json",
+        "configs/dataset/v0_2/directed_20260924/R_rock_tipping.json"
+      ],
+      "read_result": "output/directed_batch_20260924/R_group_read_v2.json",
+      "actual_outcomes": "both vases tip; both rocks return toward reference support pose",
+      "qualification": "candidate construction, not validated binary restoring/tipping separation; mainline review pending"
     }
   }
 }

@@ -279,7 +279,10 @@ def construct(request, profile, calibration_episode=None):
     require(profile['phenomenon'] == phenomenon, 'profile', 'wrong phenomenon')
     geo = Geometry(request['scene'])
     args = (request['object'], request['conditions'], profile, geo, request['support_group'])
-    if phenomenon == 'multibody_rearrangement':
+    if phenomenon == 'rigid_pose_release':
+        from .experiment_pose_release import pose_release
+        inputs,calculations=pose_release(*args)
+    elif phenomenon == 'multibody_rearrangement':
         from .experiment_layouts import rearrange
         inputs,calculations=rearrange(*args)
     elif phenomenon == 'cloth_drag':
@@ -391,7 +394,7 @@ def main():
         report['source_pins'][doc['backend']['runtime']]=file_hash(doc['backend']['runtime'])
     report['source_pins'][str(profile_path)]=file_hash(profile_path)
     report['source_pins'][str(a.request.resolve())]=file_hash(a.request)
-    for name in ('experiment_construct.py','experiment_construct_material.py','experiment_geometry.py','experiment_contract.py','experiment_layouts.py','experiment_beam_calibration.py'):
+    for name in ('experiment_construct.py','experiment_construct_material.py','experiment_geometry.py','experiment_contract.py','experiment_layouts.py','experiment_beam_calibration.py','experiment_pose_release.py','experiment_regional_wrap.py'):
         path=Path(__file__).with_name(name)
         if path.exists(): report['source_pins'][str(path)]=file_hash(path)
     a.output.mkdir(parents=True, exist_ok=False)

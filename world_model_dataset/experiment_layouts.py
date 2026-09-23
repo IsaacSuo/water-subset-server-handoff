@@ -59,6 +59,9 @@ def rope_load(obj,cond,profile,geo,support):
 
 def rope_wrap(obj,cond,profile,geo,support):
     """Single upper U over a selected original slender horizontal bar."""
+    if profile.get("wrap_discretization")=="uniform":
+        from .experiment_regional_wrap import regional_wrap
+        return regional_wrap(obj,cond,profile,geo,support)
     from .experiment_construct import number,passage_camera
     from .io import read_json,file_hash
     keys(obj,{'length_m','radius_m','density_kg_m3'},{'length_m','radius_m','density_kg_m3'},'wrap rope')
