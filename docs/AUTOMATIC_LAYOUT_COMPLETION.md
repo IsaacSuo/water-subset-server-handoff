@@ -251,3 +251,24 @@ roll 已完成物理和观测，保留其原封存版本，未因相机规则修
 本轮分批提交：`f709f80` 梁校准规则与来源门禁（含碰撞稳定支承推导公共入口代码），`972b528` 碰撞代表运行及绳自旋分析，
 `b3b3f06` 拖布受阻/低力对照。新增完整交付入口与来源哈希见 `AUTOMATIC_LAYOUT_CLOSURE_V2.json`；
 该文件是本地证据索引，不是主线数据目录。运行版本以封存源码为准，全部用途资格仍交主线判断。
+
+## 11. 原杆绕接固定后端接回（7011d17）
+
+本轮仅接回既有 U 绕接，旧 `rope_wrap.json`、旧 profile、失败 prepare 和缓存保持原样。
+新增显式请求 `configs/dataset/v0_2/construction/rope_wrap_7011d17.json`，对象/原杆 selector/区域/条件不变；
+profile 只显式选择固定后端导出路径。构造器仍从原几何推导中心线、半径净空与端部布局，不接收材料线手调布局。
+
+`scripts/pin_wrap_delivery.py` 只读固定提交 `7011d1771058b19eef1a0d3cb93c74a1e6952c3f`，将已提交公开源码导出至
+`output/external_sources/wrap_7011d17`，核对交付 artifacts、实际 execution 中每个准备脚本与固定提交的字节哈希，
+并逐文件核对原生运行的 Newton/Warp Python 源码归档及归档哈希。运行环境未提供可解析的 Newton Git 提交，保留该缺项；
+不将源码归档夸大为完整二进制环境封存。`output/wrap_entry_7011d17/backend_delivery.json` 记录固定来源、原生运行出处及完整来源 pins。
+
+接收政策沿用材料版本：float64 叉积三个分量全为零的面不参与碰撞；非零且叉积范数 < 1e-12 或原生精度下退化的面继续拒绝。
+保留逐字节 original_* 输入与 SHA256、原顶点顺序、排除面清单、完整对象区间、backend_to_original_face/object/local_face 及排除面映射。
+support 132、room 2 面不变，surroundings 728974→728860（114 精确零面积面）。入口独立重算全部映射，核对非零面索引与顶点不变。
+缓存等值检查新增政策/对象来源 JSON 比较，不能仅凭删面后数组相同接受另一来源；prepared 数组与执行源码比较仍保留。
+backend_delivery 被纳入入口的来源固定与恢复检查。两个针对性入口回归、材料公开的精确零面积/非零近零拒绝回归均通过。
+
+构造 CLI 的 `--reuse-physics-cache` 现在显式接受带 `prepared/native/episode/episode.json` 的材料 run 根目录；
+此前只定位 run 根下 manifest，无法从构造 CLI 直接表达这一既有缓存布局。原根目录 manifest 用法兼容。
+prepare 已读过调用路径，只做 CPU 准备和检查；后续仅 package/audit，不调用物理或渲染。物理等值/完整统一读取结果在本节后续追加。

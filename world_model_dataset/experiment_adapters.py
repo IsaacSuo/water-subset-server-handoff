@@ -76,7 +76,7 @@ def source_files(doc):
         distribution = importlib.metadata.distribution(name)
         paths += [Path(distribution.locate_file(p)) for p in distribution.files if str(p).endswith('.dist-info/METADATA')]
     paths += [Path(p) for p in doc['scene']['source_records'].values()]
-    for name in ('construction','material_bridge'):
+    for name in ('construction','material_bridge','backend_delivery'):
         if name in doc['scene']['source_records']:
             record=read_json(doc['scene']['source_records'][name])
             for source,checksum in record['source_pins'].items():
@@ -362,6 +362,10 @@ def cache_binding(doc, prepared_run, cache):
         # Material fields with backend-generated summaries are part of this
         # comparison, not silently discarded. Prepared mesh/source bytes bind
         # object shape, sampling and backend implementation as well.
+        for p in (prepared_run / 'prepared').glob('*_collision_policy.json'):
+            other = source / 'prepared' / p.name
+            if not other.is_file() or read_json(p) != read_json(other):
+                raise ValueError('Cache collision policy/source identity mismatch: ' + p.name)
         for p in (prepared_run / 'prepared').glob('*'):
             if p.suffix not in ('.npz', '.py'):
                 continue

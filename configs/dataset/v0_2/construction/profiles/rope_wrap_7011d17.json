@@ -1,0 +1,40 @@
+{
+  "control": {
+    "mode": "none",
+    "enabled": false
+  },
+  "timing": {
+    "duration_s": 2.0,
+    "physics_hz": 480,
+    "state_hz": 60
+  },
+  "backend": {
+    "kind": "rope",
+    "entry": "/mnt/y/isaacsim_work_construction/output/external_sources/wrap_7011d17/experiments/material_response/scene_input/material_entry.py",
+    "runtime": "/mnt/y/isaacsim_work/configs/dataset/v0_2/phenomenon_pilot_v1/runtime.json"
+  },
+  "phenomenon": "rope_wrap",
+  "input": {
+    "gravity_m_s2": [
+      0,
+      0,
+      -9.81
+    ],
+    "iterations": 12
+  },
+  "prior_physics": "Material commit 7011d17 wrap_original_v2; only reusable after exact prepared input/source comparison, not an entry-line simulation",
+  "discretization_m": 0.01,
+  "rope_properties": {
+    "friction": 0.4,
+    "joint_material": {
+      "stretch_stiffness": 685.714,
+      "stretch_damping": 0.01,
+      "bend_stiffness": 0.00247,
+      "bend_damping": 0.001
+    }
+  },
+  "actuation": {
+    "kind": "none",
+    "instance_ids": []
+  }
+}

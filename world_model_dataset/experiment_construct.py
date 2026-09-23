@@ -368,9 +368,9 @@ def main():
     if a.reuse_physics_cache:
         require(a.reference is None,'cache_scope','cache reuse currently accepts one baseline only')
         cache=a.reuse_physics_cache.resolve()
-        manifest=next((cache/n for n in ('episode.json','episode.physics.json') if (cache/n).is_file()),None)
+        manifest=next((cache/n for n in ('episode.json','episode.physics.json','episode/episode.json') if (cache/n).is_file()),None)
         require(manifest is not None,'cache_manifest','existing packaged physics required')
-        doc['conditions'][0]['cache']=dict(run=str(cache),manifest=manifest.name,manifest_sha256=file_hash(manifest))
+        doc['conditions'][0]['cache']=dict(run=str(cache),manifest=str(manifest.relative_to(cache)),manifest_sha256=file_hash(manifest))
         report['cache_reuse_requested']=dict(run=str(cache),physical_equivalence='must be verified by execution prepare; not assumed')
     if a.reference:
         base=read_json(a.reference)
