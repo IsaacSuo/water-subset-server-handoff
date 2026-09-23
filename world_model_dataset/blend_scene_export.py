@@ -19,6 +19,8 @@ def main():
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--support', required=True)
     p.add_argument('--floor', required=True)
+    p.add_argument('--bounds', nargs=6, type=float,
+                   help='Select complete original objects whose world triangle bounds meet this neighbourhood; never clip faces')
     a = p.parse_args(sys.argv[sys.argv.index('--')+1:])
     a.output.mkdir(parents=True, exist_ok=False)
     before = sha(a.blend)
@@ -43,7 +45,7 @@ def main():
     unit = scene.unit_settings.scale_length
     groups = {key: {'vertices': [], 'triangles': [], 'objects': [], 'nv': 0, 'nt': 0}
               for key in ('support', 'room', 'surroundings')}
-    skipped = []
+    skipped = []; outside = []
     for inst in dg.object_instances:
         obj = inst.object
         if obj.type not in ('MESH', 'CURVE', 'SURFACE', 'FONT'):
@@ -62,6 +64,12 @@ def main():
             v = (v @ m[:3,:3].T + m[:3,3]) * unit
             f = np.empty((len(mesh.loop_triangles), 3), dtype=np.int32)
             mesh.loop_triangles.foreach_get('vertices', f.ravel())
+            if a.bounds:
+                low, high = np.asarray(a.bounds).reshape(2, 3)
+                tri = v[f]
+                if not np.any(np.all(tri.max(1) >= low, axis=1) & np.all(tri.min(1) <= high, axis=1)):
+                    outside.append(dict(name=obj.name, bounds_m=[v.min(0).tolist(),v.max(0).tolist()]))
+                    continue
             # Mirrored object transforms need winding adjustment, not a shape edit.
             if np.linalg.det(m[:3,:3]) < 0:
                 f = f[:, [0,2,1]]
@@ -79,6 +87,8 @@ def main():
     records = {}
     for key, group in groups.items():
         if not group['vertices']:
+            if a.bounds and key != 'support':
+                continue
             raise ValueError('Missing group: '+key)
         path = a.output/(key+'.npz')
         np.savez_compressed(path, vertices=np.concatenate(group['vertices']).astype(np.float32),
@@ -92,6 +102,10 @@ def main():
         mesh_operation='evaluated modifiers, instance transforms, triangulation; no decimation/filling/hull',
         environment_motion='all exported environment objects held fixed', render_modifier_alignment=adjustments,
         skipped_hidden=skipped, groups=records)
+    if a.bounds:
+        result.update(selection_bounds_m=np.asarray(a.bounds).reshape(2,3).tolist(),
+                      excluded_outside_neighbourhood=outside,
+                      selection_rule='complete original objects with any triangle AABB intersecting neighbourhood; no face deletion or replacement')
     (a.output/'scene.json').write_text(json.dumps(result, indent=2), encoding='utf-8')
     print('SCENE_EXPORTED', {k: (v['vertices'],v['triangles'],len(v['objects'])) for k,v in records.items()}, flush=True)
 

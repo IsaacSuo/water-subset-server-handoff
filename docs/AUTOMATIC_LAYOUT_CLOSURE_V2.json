@@ -1039,5 +1039,20 @@
     "catalog_modified": false,
     "merged": false,
     "pushed": false
+  },
+  "directed_20260924": {
+    "authorization_commit": "38d7f4a",
+    "physics_budget": 8,
+    "completed_physics": 2,
+    "F": {
+      "requests": [
+        "configs/dataset/v0_2/directed_20260924/F_rect_25.json",
+        "configs/dataset/v0_2/directed_20260924/F_rect_45.json"
+      ],
+      "root": "output/directed_batch_20260924",
+      "read_result": "output/directed_batch_20260924/F_pair_read_v2.json",
+      "preliminary_mesh_requests": "F_overhang_25/45: constructed only, never executed",
+      "admission": "mainline decision pending"
+    }
   }
 }

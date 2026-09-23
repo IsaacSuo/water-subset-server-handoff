@@ -1,0 +1,52 @@
+{
+  "format": "phenomenon-construction/1",
+  "id": "F_overhang_45",
+  "phenomenon": "cloth_drape",
+  "profile": "../construction/profiles/cloth.json",
+  "scene": {
+    "id": "L_apartment_R2",
+    "units": "m",
+    "up_axis": "Z",
+    "frame": "original_world",
+    "region_bounds_m": [
+      [
+        -13.8,
+        -6.86685486,
+        0.2
+      ],
+      [
+        -11.7,
+        -6.26685486,
+        0.85
+      ]
+    ],
+    "collision": {
+      "meshes": [
+        {
+          "id": "support",
+          "path": "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/apartment_geometry/support.npz"
+        },
+        {
+          "id": "room",
+          "path": "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/apartment_geometry/room.npz"
+        },
+        {
+          "id": "surroundings",
+          "path": "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/apartment_geometry/surroundings.npz"
+        }
+      ]
+    },
+    "source_records": {
+      "scene": "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/apartment_geometry/scene.json"
+    }
+  },
+  "support_group": "support",
+  "object": {
+    "kind": "mesh",
+    "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_cloth_stable_v1/cloth_edge_273_stable_v1/prepared/cloth.npz",
+    "scale": 1.0
+  },
+  "conditions": {
+    "overhang_fraction": 0.45
+  }
+}
