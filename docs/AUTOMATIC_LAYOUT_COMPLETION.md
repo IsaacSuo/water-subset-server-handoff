@@ -339,3 +339,40 @@ native_plastic 记录 last_finite/逐步诊断并在失败后保留部分状态�
 缓存封装上下文额外保留 source_binding/import_origin；统一读取器新增 `material_contact_diagnostics()`，按原生每步 offsets 返回
 作用于碰撞体的冲量、位置与碰撞体编号，明确是未准入的原生诊断，不解锁 contacts() 的反力/监督资格。
 5 项针对性 CPU 检查通过，覆盖区间/编号拒绝、冲量语义、外部源码绑定保留及原绕接缓存来源回归。完整接入结果下节追加。
+
+### 12.1 塑性接回完成：已有真实轨迹、无新物理运行
+
+第一批 `6d0add0` 固定来源与读取能力；独立 prepare 已逐项核对新构造物理字段、初态采样/碰撞数组和求解依赖等值，
+物理绑定摘要 `eeb96a6f6321cbbf68cb4150cd477200d0486e89f10daf6bba83ba118ba7f5ca`。
+沿用原盒体布局、材料、时步和预算，不手改生成结果。入口只执行 prepare、package、audit，无 simulate、observe、register。
+原生执行始终来自材料 `output/plastic_zero_support_box_v2`；本地 external_box 只是完整副本及首次封装，workflow/cache_origin/import_origin 明确区分。
+实际 execution/source_binding/诊断与原 prepared 输入分别封存；runtime/候选模块/失败包装均为所指定固定版本。
+
+统一入口由 `output/plastic_entry_cd37c9f/read_result.json` 的 entry_episode 给出；
+manifest SHA256 `83d078ed52222ba49cf55075c004529309a510ff5e8e150a942295dcba4c9313`；
+原生 states SHA256 `19677044274a96ed9e99cbe91878a4938cb1eb7c6704667a207f4f755d83acae`，与材料原缓存完全一致。
+`states()` / `geometries('mpm_block')` / `soft_topology('mpm_block')` 通过入口读取 **385 帧（t0 + 384 步，0.8 s，480 Hz）**、2112 粒子，
+包括位置/速度、Jp、弹性畸变、应力、速度梯度及诊断积分 F；粒子身份/质量/半径保留。诊断积分 F 不冒充原生塑性张量或表面拓扑。
+全部几何数组有限且逐帧时间/步号一致；读取初始/最终粒子跨度为 [0.11250,0.08250,0.07500]→[0.16353,0.13415,0.05177] m，
+支持本例铺展压扁，最终 Jp [0.27232,1.02452]。跨度是粒子包围范围，不是改变了请求尺寸。
+
+`material_contact_diagnostics()` 完整读取 384 个区间、102984 条原生冲量记录；314 步有记录，从第 71 步开始，
+作用于碰撞体的累计冲量约 [4.08e-5,3.48e-6,-6.29331] Ns。该记录有明确作用侧/区间，仍不是准入的接触力真值或训练监督。
+第 140 步仅对节点 485/491 使用已声明双节点延拓，事件/操作数/延拓关系与所有逐步诊断完整保留。
+原有限前缀至 139 步逐位一致结论由绑定本原生缓存的材料审核保留，不把缺少的无修复第 140 步参照补成证据。
+
+成功回归仅作兼容性证据：入口只读重新比较当前 288 步/0.6 s 缓存与原参考，15 个共有数组的形状、dtype 和字节完全一致，
+含内部量、接触量、粒子属性及时间。未触发零支撑，不作为新增现象/目录项，不重复运行。
+
+**保留限制：** 盒体 63 步、成功回归 102 步残差超 1e-6；盒体全程 L2/Linf 峰值约 1.18845e-4 / 0.00238788。
+原生 101 计数不表示配置预算由 100 增加。完成轨迹、末速度较小不证明全程收敛；无完整穿透/功率/能量闭合审核。
+固定 Q1/P1d/GS/静态子网格/合法双节点射线边界、非仿射边界及局部接触偏差限制不变。不授予材料标定或训练资格。
+**无观测，未渲染，draft manifest 未改作 complete。** 可作为供主线评估的 physics_only 记录，本支线不登记目录。
+
+可重复的接入顺序：先 `scripts/pin_plastic_delivery.py --workspace /mnt/y/isaacsim_work_plastic_diagnostics --snapshot output/external_sources/plastic_cd37c9f --output output/plastic_entry_cd37c9f`；
+再用该 snapshot 内 material_entry.py 对本地 external_box 显式 `--stage package --mainline /mnt/y/isaacsim_work_construction`；
+构造器使用新 plastic_cd37c9f 请求及 `--reuse-physics-cache /mnt/y/isaacsim_work_construction/output/plastic_entry_cd37c9f/external_box`；
+现有 phenomenon_experiment 分别执行 prepare/package/audit；最后 `scripts/read_adopted_plastic.py --folder output/plastic_entry_cd37c9f --output <新检查文件>`。
+上述顺序不含求解或渲染；已有物理缓存无需重新采集，已有封存输出不能覆盖。读取脚本也直接检验原作者输入等值及成功回归数组。
+精确请求/配置、缓存路径、原材料来源、source_binding、原执行日志/残差证据、固定保护源码和回归入口均追加至现有
+`AUTOMATIC_LAYOUT_CLOSURE_V2.json` 的 plastic_integration 字段。该索引仅供整合，不是目录登记，也不替代主线用途判断。
