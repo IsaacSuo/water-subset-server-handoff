@@ -310,3 +310,32 @@ python -B scripts/read_adopted_wrap.py --folder output/wrap_entry_7011d17 --outp
 未证明帧间无穿透、数值收敛或接触力准确；原生拉力、接触力、attachment 反力仍 unavailable。
 构造实现、几何/来源检查及已有实际轨迹接入完成；入口本轮新物理运行次数为零，用途仍待主线判断。
 固定来源、请求、生成配置、统一缓存及读取结果入口追加在现有 `AUTOMATIC_LAYOUT_CLOSURE_V2.json` 的 wrap_integration 字段。
+
+## 12. 塑性零支撑修复固定版本接回
+
+本轮基于入口 `7f84038`，只读核对主线 `4dbc303` 与 v10（46 条：45 完整 + 1 绕接 physics_only），不替主线登记或回退目录。
+修复代码固定 `cd37c9f1d3edbecc2aeadd256d4129344d9b5fd7`；结果/离散验证固定交付 `2e4853d4c60f7689513327b55799ee7ed3d47fa2`。
+新请求/profile `plastic_cd37c9f.json` 显式选择该版本，原 plastic 请求、profile、失败运行均保留，不自动升级任何既有来源。
+
+`scripts/pin_plastic_delivery.py` 导出完整固定公开代码（含 plastic_zero_support、native_plastic、scene_episode、runtime_evidence 和 material_entry），
+核对盒体 47 项、成功回归 27 项交付文件哈希，逐项区分 `unchanged_inputs` 与 `executed_overlays`，并核对实际 execution 源码记录。
+固定 Newton a980d1dc6916d9cb46716ebf330051b063c83315 的五个 MPM 保护源码与实际 backend_sources.zip 逐字节一致；
+归档中全部 Newton/Warp Python 文件也按清单核对，不移除 PINNED_SOURCES 保护，不修改安装环境。
+归档记录的工作区另有 SPH 改动，保留原 dirty 记录；不以 HEAD 或版本字符串代替被使用 MPM 代码的哈希。
+成功回归保留旧 prepared 的 cloth_scene/package_scene 辅助脚本版本，两者不是 cd37c9f 全新准备的产物；
+四个实际覆盖脚本与固定版本一致，历史辅助脚本按其实际执行哈希单独记录。盒体所有执行记录脚本均与固定版本一致。
+首轮来源检查因对成功回归历史辅助文件要求同新代码而拒绝的检查日志保留；更正来源区分，未改材料或原缓存文件。
+
+已审查 material_entry 的失败包装：外层保存真实子进程返回码和原生 progress，写 execution_failure 后仍抛错，未吞掉失败或改物理；
+native_plastic 记录 last_finite/逐步诊断并在失败后保留部分状态。scene_episode 准备时复制候选及诊断模块，native_plastic 安装修复，链路完整。
+旧内部边界探针未启用，未只拷贝候选而跳过安装/准备流程。
+
+适用范围严格保留固定 Q1/P1d/GS、静态子网格接触及存在合法双节点共线延拓射线。精确零质量/零动量才适用；
+负质量、非有限、零质量非零动量、无可用射线、未支持动态刚体/节点接触路径明确拒绝。不增加质量下限或改变迭代/时步/材料。
+动态延拓 u0=2u1-u2 与 BE/JE 及其转置一致回传，支持仿射精确；仍是边界闭合选择，不证明非仿射边界与局部接触响应无偏。
+
+材料盒体尚无 episode。入口仅在本地 `output/plastic_entry_cd37c9f/external_box` 保存经核对的完整副本并执行固定入口 package，
+`import_origin.json` 明确其物理来源仍为材料 `output/plastic_zero_support_box_v2`。实际 source_binding 与历史准备出处不改写。
+缓存封装上下文额外保留 source_binding/import_origin；统一读取器新增 `material_contact_diagnostics()`，按原生每步 offsets 返回
+作用于碰撞体的冲量、位置与碰撞体编号，明确是未准入的原生诊断，不解锁 contacts() 的反力/监督资格。
+5 项针对性 CPU 检查通过，覆盖区间/编号拒绝、冲量语义、外部源码绑定保留及原绕接缓存来源回归。完整接入结果下节追加。

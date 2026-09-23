@@ -289,7 +289,8 @@ def cache_package_context(run, binding, destination, source_pins=None):
             if source_pins.get(str(original)) != checksum:
                 raise ValueError('Prepared cache changed during adoption: ' + str(original))
     shutil.copytree(run/'native', destination/'native')
-    for name in ('requested_config.json', 'runtime_request.json', 'execution.json'):
+    for name in ('requested_config.json', 'runtime_request.json', 'execution.json',
+                 'source_binding.json', 'import_origin.json'):
         if (source/name).exists():
             shutil.copyfile(source/name, destination/name)
     write_json(destination/'cache_origin.json', dict(binding=binding,

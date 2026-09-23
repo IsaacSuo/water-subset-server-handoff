@@ -57,6 +57,45 @@ class CausalEpisode:
         self.capability("rigid_contact_impulse", ("native",))
         return self.jsonl(self.manifest["trajectory"]["contacts"])
 
+    def material_contact_diagnostics(self):
+        """Raw MPM impulses on colliders; never admitted contact-force labels.
+
+        Native offsets delimit one physics interval ending at the returned step.
+        Keep this stream separate from contacts(), whose capability gate remains.
+        """
+        import numpy as np
+        resolved = self.resolved_inputs()
+        cfg = resolved['config']
+        if cfg.get('kind') != 'plastic' or cfg['state_hz'] != cfg['physics_hz']:
+            raise RuntimeError('Native per-step plastic contact diagnostics required')
+        path = self.record_path(resolved['raw_native'])
+        with np.load(path, allow_pickle=False) as data:
+            required = {'time', 'contact_step_offsets', 'contact_impulse',
+                        'contact_position', 'contact_collider_id'}
+            if not required <= set(data.files):
+                raise RuntimeError('Native material contact diagnostics unavailable')
+            t, offsets = data['time'], data['contact_step_offsets']
+            impulse, position, ids = (data[k] for k in
+                ('contact_impulse', 'contact_position', 'contact_collider_id'))
+            count = len(ids)
+            if (offsets.shape != t.shape or len(t) < 2 or offsets.dtype.kind not in 'iu'
+                    or offsets[0] != 0 or offsets[-1] != count or np.any(offsets[1:] < offsets[:-1])
+                    or impulse.shape != (count, 3) or position.shape != (count, 3)
+                    or ids.shape != (count,) or ids.dtype.kind not in 'iu'
+                    or not np.isfinite(impulse).all() or not np.isfinite(position).all()
+                    or not np.allclose(t, np.arange(len(t))/cfg['physics_hz'], atol=1e-8, rtol=0)):
+                raise ValueError('Invalid native material contact interval arrays')
+            colliders = [item['id'] for item in cfg['environment']]
+            if np.any(ids < 0) or np.any(ids >= len(colliders)):
+                raise ValueError('Native material contact collider ID outside environment')
+            for step in range(1, len(t)):
+                start, end = int(offsets[step-1]), int(offsets[step])
+                yield dict(physics_step=step, start_time_s=float(t[step-1]), time_s=float(t[step]),
+                    impulse_on_colliders_Ns=impulse[start:end].copy(),
+                    position_world_m=position[start:end].copy(), collider_ids=ids[start:end].copy(),
+                    collider_instances=colliders, source='native MPM collider diagnostics',
+                    force_truth=False, supervision_admitted=False)
+
     def controls(self):
         if self.manifest["control_program"]["primitive"] == "none":
             return iter(())
