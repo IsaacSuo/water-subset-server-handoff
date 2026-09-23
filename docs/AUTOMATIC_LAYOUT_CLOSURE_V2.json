@@ -1043,7 +1043,7 @@
   "directed_20260924": {
     "authorization_commit": "38d7f4a",
     "physics_budget": 8,
-    "completed_physics": 6,
+    "completed_physics": 8,
     "F": {
       "requests": [
         "configs/dataset/v0_2/directed_20260924/F_rect_25.json",
@@ -1066,6 +1066,18 @@
       "read_result": "output/directed_batch_20260924/R_group_read_v2.json",
       "actual_outcomes": "both vases tip; both rocks return toward reference support pose",
       "qualification": "candidate construction, not validated binary restoring/tipping separation; mainline review pending"
+    },
+    "W": {
+      "requests": [
+        "configs/dataset/v0_2/directed_20260924/W_G01_equal.json",
+        "configs/dataset/v0_2/directed_20260924/W_G01_unequal.json"
+      ],
+      "read_result": "output/directed_batch_20260924/W_pair_read_v2.json",
+      "fixed_backend_revision": "7011d1771058b19eef1a0d3cb93c74a1e6952c3f",
+      "actual_outcomes": "equal retains geometric U at 2s; unequal wholly below target rod from 1.65s and falls",
+      "qualification": "bounded layout condition comparison; mainline review pending",
+      "new_entry_physics_runs": 2,
+      "no_legacy_cache_relabel": true
     }
   }
 }
