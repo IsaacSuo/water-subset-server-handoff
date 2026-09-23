@@ -1,0 +1,120 @@
+{
+  "format": "directed-release-mainline-adoption/1",
+  "source_commit": "60da124e15a085e710662f7002f2e380631784cf",
+  "adopted_commit": "22161d9",
+  "base_catalog": {
+    "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_directed_cloth_data_v12/catalog.json",
+    "sha256": "f2a95e6987793a93641eca251d8de5071df6acac3d04b73bf2c1f2d55125fd31"
+  },
+  "catalog": {
+    "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_directed_release_data_v13/catalog.json",
+    "sha256": "495a250ec730e47ec24c1583d7da1e749a6eca709859e4cdd08087284748bf90"
+  },
+  "source_files_verified": {
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/R_group_read_v2.json": "0c9fe7e0ba7212c6bfcad6937629d32e00a4bb6912770709896f6f9311cfc1ba",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/garage_geometry/scene.json": "ca10a334a7d33d7742681c139aed30b375f5ea5eeac6dea6674c3a022d4ce595",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/garage_geometry/support.npz": "8ab8ee858cd1be79b6a612588116b06006e5416ead2c7c3306b8d81a5c5316cb",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/R_vase_tipping/appearance/frame_0000.png": "ea0a1b4137ee4c6ed264b46ceeacf9c36c51e466464c61dd99f56ea017a405c7",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/R_vase_tipping/appearance/replay.json": "719353010fb7ba0f357f46dd39b06a6eaf4b3dcdd6cb27259cf2c7feedcc61a5",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/R_vase_tipping/execution/workflow.json": "0b03b7364b38151559821d579ef2da7bf9cd061b960f757d48e64b2aea09a8c4",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/R_vase_tipping/generated/construction.json": "20e3a4874d16bbc0fd1957142ed760b7288b0096ce6f832dc098ba292a2794f3",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/R_vase_tipping/generated/experiment.json": "d1d21d8b046707e693115c811e78fa977376e48f58c9c78bec8d74dae02a3491",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/R_vase_tipping/execution/reviews/R_vase_tipping_baseline/review_000.json": "908a5275f41859100031945dc615d403ca339ff34e3c0abcda1b4c4c7ea87fbb",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/R_vase_tipping/execution/jobs/R_vase_tipping_baseline/attempt_001/source_pins.json": "22e0f073a5341b121b0a72ec7b9eccb488c5c784e332ee7c5434edf91f55db2c",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/R_vase_restoring/appearance/frame_0000.png": "e23a8adc884aec495c49c081cfc07046b9a7e6a7dee6907a16f290d70d9f4a68",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/R_vase_restoring/appearance/replay.json": "bcf115b1f7ed7ddebab2f102f8380c1fb7fe3967b06422e7700c92b7874d9489",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/R_vase_restoring/execution/workflow.json": "d9a91020d554ce19aa7a4d28fa658afb67707c705af2c3f535fe0eca342de818",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/R_vase_restoring/generated/construction.json": "c3caa3af8db91ae23279e82e422347aeaee4af9af4061622ca55cf7781c6f4a1",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/R_vase_restoring/generated/experiment.json": "8f33470c57ab10d008c8795b957728e75a63d591cf8acf7df6b007b5d464759a",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/R_vase_restoring/execution/reviews/R_vase_restoring_baseline/review_000.json": "0d458eab3c24a16ebfe2573a936643cf78a860a7d291769926c2c90b586c7344",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/R_vase_restoring/execution/jobs/R_vase_restoring_baseline/attempt_001/source_pins.json": "b31cff49232ea1af64240255aa94e3e7f7da51647ac785004d93af359631040c",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/R_rock_tipping/appearance/frame_0000.png": "4a5a3711f36e9e0274ac605259f255c58ff9a950e8e9b44843eeb81e91328dd0",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/R_rock_tipping/appearance/replay.json": "6315733b3a481b6cf38c03dbce3078935215e0627f4f1d86fbe11ee825bb78de",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/R_rock_tipping/execution/workflow.json": "a4746e774b85592fc5d44fe4a9dba8a18bda3869b6ad2825432db44a708fa92c",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/R_rock_tipping/generated/construction.json": "09ab7e73bc318c9794a3fea76bd2cc6c111655ec7ac0c7bbd1dea8a90d51d894",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/R_rock_tipping/generated/experiment.json": "9783ab9265e0b6a4c8e599d2362da308e975a6b717a19829c740711652cd96b0",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/R_rock_tipping/execution/reviews/R_rock_tipping_baseline/review_000.json": "8851f76292cedfe3de43ca4984b96d378ef3195c7b6a78e7bf625bb4c729fd40",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/R_rock_tipping/execution/jobs/R_rock_tipping_baseline/attempt_001/source_pins.json": "22d2e5afd0312e3535ac04f084543a5185a29f1ab9a00a709c04aa0621dc0f3c",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/R_rock_restoring/execution/workflow.json": "df0563b3c66f93a80e7728962f7750caca727e4f5a2cd54e04f83f6b76d33f85",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/R_rock_restoring/generated/construction.json": "e29b0c738b5c8b204cd0b393958750371ca15785e13854b5b9e2df6fd8ea0b10",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/R_rock_restoring/generated/experiment.json": "970d61e865607940c895687259c4f74d3f05990b354d409cd870806b51b62725",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/R_rock_restoring/execution/reviews/R_rock_restoring_baseline/review_000.json": "83d68ca97e7e4d05919ccd86a8bb2ca1690616f46e92bbf5fddcf328d861e03a",
+    "/mnt/y/isaacsim_work_construction/output/directed_batch_20260924/R_rock_restoring/execution/jobs/R_rock_restoring_baseline/attempt_001/source_pins.json": "b6f037738bcddc96c894430f1ae96f294cd124d359889f67913e747a90163b99",
+    "/mnt/y/isaacsim_work_construction/configs/dataset/v0_2/directed_20260924/R_rock_restoring.json": "e968eadb2fc6b2febf3a52d7dec3aa68d69df703ea17d004e425b875f678ebdc",
+    "/mnt/y/isaacsim_work_construction/configs/dataset/v0_2/directed_20260924/R_rock_tipping.json": "fd6ac3bb679e1380185dcc2fd96a4fdc68ae1cd6304e9dde9cf72e73937f4b73",
+    "/mnt/y/isaacsim_work_construction/configs/dataset/v0_2/directed_20260924/R_vase_restoring.json": "d5d6a16304de47a867f893bc8c9ec6ca2627cc843f116ea41a12a01892bae79a",
+    "/mnt/y/isaacsim_work_construction/configs/dataset/v0_2/directed_20260924/R_vase_tipping.json": "4a6082a26a723bc2b118bbd063448dd44358686c0929ec258ff51eb8afccd8bf",
+    "/mnt/y/isaacsim_work/output/adopt_directed_r_v13.py": "621958e35846e039a8547276bb3cc62483fd68713748f7ba18bb20ce3446f9a0",
+    "/mnt/y/isaacsim_work/output/finalize_directed_r_v13.py": "af64081e102480ad1ac169f89f0f3e55ad8259ee02641778eb23cf7b61423b88"
+  },
+  "source_scene_sha256": "45333ae88463749ac1a73b781c48a6c9ed7440a0846ded4856bfefd777921f41",
+  "pair_nonintervention_verified": true,
+  "physical_input_differences": "initial rotation and XY placement; resulting COM height and potential energy change",
+  "actual_outcomes": {
+    "R_vase_restoring_baseline": "initial recovery followed by toppling",
+    "R_vase_tipping_baseline": "toppling",
+    "R_rock_restoring_baseline": "return near reference support pose",
+    "R_rock_tipping_baseline": "return near reference support pose; intended toppling absent"
+  },
+  "intended_pair_outcome_separation_achieved": false,
+  "pose_predictor_status": "bounded candidate construction only; neither asset produced the intended two different final outcomes",
+  "review": {
+    "path": "/mnt/y/isaacsim_work/output/world_model_dataset/v0_2/phenomenon_directed_release_data_v13/review/R_recomputed.json",
+    "sha256": "0c9fe7e0ba7212c6bfcad6937629d32e00a4bb6912770709896f6f9311cfc1ba"
+  },
+  "episode_count": 53,
+  "episode_ids": [
+    "R_vase_restoring_baseline",
+    "R_vase_tipping_baseline",
+    "R_rock_restoring_baseline",
+    "R_rock_tipping_baseline"
+  ],
+  "counts": {
+    "states": 26513,
+    "observations": 1663
+  },
+  "group_counts": {
+    "2": 12,
+    "1": 22,
+    "4": 7,
+    "3": 12
+  },
+  "record_scope_counts": {
+    "complete": 51,
+    "physics_only": 2
+  },
+  "previous_entries_and_supersessions_unchanged": true,
+  "unrelated_tracked_edits_unchanged": true,
+  "independent_untracked_document_changes_left_untouched": {
+    "docs/INDEPENDENT_WATER_NEWTON_MIGRATION.md": {
+      "before": "dcb456b1f14442caf8e138a39eab95d53b96b09755406117ef8bf7c03f4a65d0",
+      "after": "e431136469cfd8f541a24a9e10acdc2103c23ae6b315b74054a7d2d29ba814cb"
+    },
+    "docs/SPH_PROJECT_VALIDATION.md": {
+      "before": "5cd6131c363553027fe4e0aecb964e417caea3b50c48e9a84b4a308997f8f9aa",
+      "after": "2d43916f5877a03ce8ffd84ef651063bb37db2cd7f6ba704af19968aafc93084"
+    }
+  },
+  "mainline_new_physics_run": false,
+  "mainline_new_rendering": false,
+  "training_admission": false,
+  "verification": {
+    "new_states_and_observations": true,
+    "new_native_contacts": 4682,
+    "source_and_copy_hashes": true,
+    "copy_tilt_recomputed": true,
+    "prior_streams": "inherited from pinned v12; no repeat old observation decoding",
+    "construction_contract_api_checks": 32
+  },
+  "W": {
+    "code_adopted": true,
+    "physical_results_adopted": false,
+    "status": "two first runs dispatched; separate delivery pending"
+  },
+  "batch": {
+    "completed_adopted_physics": 6,
+    "started_physics": 8,
+    "budget": 8,
+    "no_more_physical_runs_authorized": true
+  }
+}
