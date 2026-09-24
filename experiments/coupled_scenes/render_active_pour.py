@@ -18,6 +18,7 @@ def main():
     parser.add_argument('--surfaces',type=Path,required=True)
     parser.add_argument('--output',type=Path,required=True)
     args=parser.parse_args(sys.argv[sys.argv.index('--')+1:])
+    args.blend=args.blend.resolve();args.surfaces=args.surfaces.resolve();args.output=args.output.resolve()
     sequence=json.loads((args.surfaces/'sequence.json').read_text(encoding='utf-8'));assert sequence['complete']
     if sequence.get('source_blend_sha256'):
         assert hashlib.sha256(args.blend.read_bytes()).hexdigest()==sequence['source_blend_sha256'],'Mismatched pitcher layout'

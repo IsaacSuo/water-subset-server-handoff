@@ -1,3 +1,9 @@
+# 独立水体子集：服务器交接
+
+接手 Agent 请先阅读 [SERVER_HANDOFF.md](SERVER_HANDOFF.md)。本仓库用于 GPU DFSPH + Newton 水体子集交接；八场景输入、原外观和环境图在 [water-handoff-20260925 Release](https://github.com/IsaacSuo/water-subset-server-handoff/releases/tag/water-handoff-20260925)。原本地任务保持暂停，尚未完成服务器适配或完整八场景输出。
+
+以下是继承自原代码基线的工作区说明，不代表本次任务范围。
+
 # Isaac Sim / PhysX 仿真工作区
 
 这是一个面向物理与视觉数据实验的 Isaac Sim 6.0 工作区，包含 PhysX 液体、布料、体积软体、多场景碰撞，以及 Blender Cycles 最终渲染。生成结果统一写入 `output/`，源码与实验配置由 Git 管理。

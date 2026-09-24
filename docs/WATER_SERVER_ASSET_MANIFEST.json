@@ -1,0 +1,494 @@
+{
+  "files": [
+    {
+      "path": "output/coupled_scenes/active_02_stirring_assets_v2/assets.json",
+      "bytes": 3160,
+      "sha256": "e33695f4458e111da3ed69d51f35db431ca89ea19603f548e980d50a18fc9881"
+    },
+    {
+      "path": "output/coupled_scenes/active_02_stirring_assets_v2/geometry_and_fill.npz",
+      "bytes": 16846280,
+      "sha256": "53027251b98f1f2865d33c1c4a5e4a987fc83ccf05554433b3c8dfff9511a0e8"
+    },
+    {
+      "path": "output/coupled_scenes/active_03_piston_push_assets_v2/assets.json",
+      "bytes": 3613,
+      "sha256": "f2a7f9d7e6b32b4e54f2f1988ada65afcbd1b325f8af7068015b2311be308bcf"
+    },
+    {
+      "path": "output/coupled_scenes/active_03_piston_push_assets_v2/geometry_and_fill.npz",
+      "bytes": 16769420,
+      "sha256": "ddf29d91054d2b3a77322f8f3a24f29877171c34dc95e957a7604428c52a6241"
+    },
+    {
+      "path": "output/coupled_scenes/active_drive_contact_v4/02_stirring/02_stirring.blend",
+      "bytes": 5878593,
+      "sha256": "49ef9c49d907005f9edd88dfff40cc55f2f4bd091299aa57d6e29fe89511339c"
+    },
+    {
+      "path": "output/coupled_scenes/active_drive_contact_v4/03_piston_push/03_piston_push.blend",
+      "bytes": 5708141,
+      "sha256": "47b0f6ead418dc308c81bc9db310d0fc4f903f0b0e861cb22644207e5489416c"
+    },
+    {
+      "path": "output/coupled_scenes/active_pour_lowered_design_v7/01_container_transfer.blend",
+      "bytes": 5785891,
+      "sha256": "89295204bd8bc24cc573c5507cf23957f3f747a27ffdb75bf753a916e667c7d2"
+    },
+    {
+      "path": "output/coupled_scenes/active_pour_water_minus10_assets_v10/assets.json",
+      "bytes": 2621,
+      "sha256": "f34cea60813c7ad6b34fbf82598151cfa2612bde1882d330e019e97d8c1bcab4"
+    },
+    {
+      "path": "output/coupled_scenes/active_pour_water_minus10_assets_v10/geometry_and_fill.npz",
+      "bytes": 2522636,
+      "sha256": "7d305bc15d7a82018440fbb2dd0f2c8ed61ff19819a6a22dba91cc55bf88d84d"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_sdf_full_20260924/pause_state.json",
+      "bytes": 464,
+      "sha256": "981f9bd21a0b5dde5672080c66a82afc52a0c6b32e84607f94b95db11c0cf6fb"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_sdf_full_20260924/run_status.json",
+      "bytes": 981,
+      "sha256": "8b0fba22bda583d38e881cba6cfcc99e4c54a277f1ba728106d13b7e01bf534d"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_sdf_full_20260924/surface_still/simulation/probe_report.json",
+      "bytes": 96682,
+      "sha256": "26fb7cb4da61e68087df9e74b9bde21072afc2738ae510d9af1c4cd0d7f3ee07"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/active_piston/inputs/donor.obj",
+      "bytes": 27458,
+      "sha256": "561ee5a68b3a48ec9b212ceb33585a552393c38caa95e12211ae6bc0733785e0"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/active_piston/inputs/input.json",
+      "bytes": 5083,
+      "sha256": "200700b458285f5beab08cec276e877d57423a033c7cd643d71a222e3e0d2d71"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/active_piston/inputs/input.npz",
+      "bytes": 32396510,
+      "sha256": "fa7bf94759d3679fcb239e337f2ef0e12765061faefe1b539804119d4a561d4a"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/active_piston/inputs/receiver.obj",
+      "bytes": 75898,
+      "sha256": "955e45a87a5b7441100ee235027d53acaf610248c2cc0236fb49f5e618f355b2"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/active_stirring/inputs/donor.obj",
+      "bytes": 232118,
+      "sha256": "eee13bb3a8f5b4691736874d7119aef2d3ece7a1b5d5a745b4f40f153f02507d"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/active_stirring/inputs/input.json",
+      "bytes": 4605,
+      "sha256": "e8986a5f400cc8f2508f180a142d03a82a8ede772386ce6f35344a988ce5d045"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/active_stirring/inputs/input.npz",
+      "bytes": 30026822,
+      "sha256": "3ece761709c427609a0e44bcf40694dd9acbf14ea379fa8b4a9d90512b5c5f43"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/active_stirring/inputs/receiver.obj",
+      "bytes": 91895,
+      "sha256": "2903b483a1ffa8658fef656cfd26eeccdf920e153233c0194df2f4d230ae3cb2"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/active_transfer/inputs/donor.obj",
+      "bytes": 111943,
+      "sha256": "1a56f9c06bffbd494fe66940091b118e1d729165879963cdf1d6f4fcd982e031"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/active_transfer/inputs/input.json",
+      "bytes": 3888,
+      "sha256": "8e1b46391055c64815c04f08c01382aa5149f1e117959f3ab43bde498b41d709"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/active_transfer/inputs/input.npz",
+      "bytes": 8153366,
+      "sha256": "849794f50617a5165086066ef1fee3d2ba3d87e205b33504d77a312c07b9c6cc"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/active_transfer/inputs/receiver.obj",
+      "bytes": 91895,
+      "sha256": "f12ddaf8189d6b1a6d4f64ce5fc8711da70582b3045f122bc0c180c6d6b74a05"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/eight_scene_workflow_review.png",
+      "bytes": 1483876,
+      "sha256": "c2d0a38b3ce9713deff6be4f7cef9a0e6605377cd1f506158884debe23edec15"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/initial_contacts_sdf.json",
+      "bytes": 13748,
+      "sha256": "2fa9577ef95cf2890cf5db2e4efd33a0101b921fbae7380b9b026f6b647dac23"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/prepare_status.json",
+      "bytes": 1684,
+      "sha256": "56856b312617e573f4bd2fe7cefaaa0af82c168ecb00826b5d95ed3c3e03b665"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/render_status.json",
+      "bytes": 5597,
+      "sha256": "fe92720976841785341894a8457b1bcd42800fd8e0007d4128ce127ea1041868"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/sdf_coupling_observations.json",
+      "bytes": 2256,
+      "sha256": "eb2003557a9dfd62703ef69a66253a8543ef668362248916e7fa83ed7a8a5067"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/sdf_coupling_recorded_states.png",
+      "bytes": 485756,
+      "sha256": "0c160f9672cb863f73a2e362b925b0303678c9dcaa253c81a7307997ba92a493"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/sdf_initial_sections.png",
+      "bytes": 92088,
+      "sha256": "b4e19d11f178ddc2d909f36e3467e4c885adee3e42adac5a578156405272cf1f"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/simulate_status.json",
+      "bytes": 4296,
+      "sha256": "4b1e4c00ca959301a8c3b84ac88b558967a7b649612ece47ce6fd40816f14fb7"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/surface_recovery/inputs/donor.obj",
+      "bytes": 15590,
+      "sha256": "e3bbe3a7e2e8ed807835429c211d0f68e27cca93b2087c4e8c98b48baa9c38dd"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/surface_recovery/inputs/input.json",
+      "bytes": 3513,
+      "sha256": "5ca257cc2f3bb0d5a4a2e57f14d50df961660a1501cdc6c033ec2f5a8cd10209"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/surface_recovery/inputs/input.npz",
+      "bytes": 124411922,
+      "sha256": "ea5c5fd19c43064df5363d0d404713de314442e96ec90316ea7c81450bfa730d"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/surface_recovery/inputs/receiver.obj",
+      "bytes": 877,
+      "sha256": "d73f5d102cf7de4b6f0b995a07481972db0e93d3e7488f3ac3de4538ccf3d798"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/surface_reflection/inputs/donor.obj",
+      "bytes": 425,
+      "sha256": "da51e0998c1613bb78b9f375a3131f8850fa2e539252fa78b793c8c764447a6f"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/surface_reflection/inputs/input.json",
+      "bytes": 3476,
+      "sha256": "474371c835ad0e4e62736f83fec01841f81215d85d08c5e6445c8b6fd157c67a"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/surface_reflection/inputs/input.npz",
+      "bytes": 122777906,
+      "sha256": "52c74e77a46815530973553763b1805093d492429712b02d84413de9198f666c"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/surface_reflection/inputs/receiver.obj",
+      "bytes": 877,
+      "sha256": "d73f5d102cf7de4b6f0b995a07481972db0e93d3e7488f3ac3de4538ccf3d798"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/surface_sloshing/inputs/donor.obj",
+      "bytes": 877,
+      "sha256": "d73f5d102cf7de4b6f0b995a07481972db0e93d3e7488f3ac3de4538ccf3d798"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/surface_sloshing/inputs/input.json",
+      "bytes": 3102,
+      "sha256": "22d43f54bab3d75930fd6454462e4902096c3607eb5b5afa77a80209a59157ec"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/surface_sloshing/inputs/input.npz",
+      "bytes": 124355222,
+      "sha256": "0690631577e5ae7f4a27c748d77c0490781929b5dded122c830bb9378a377e90"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/surface_still/inputs/donor.obj",
+      "bytes": 877,
+      "sha256": "d73f5d102cf7de4b6f0b995a07481972db0e93d3e7488f3ac3de4538ccf3d798"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/surface_still/inputs/input.json",
+      "bytes": 2907,
+      "sha256": "bc2a254ed176e0ce3cceac190ae0844ff1de607d4638228ff8b6b8645e1ce3ae"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/surface_still/inputs/input.npz",
+      "bytes": 124355222,
+      "sha256": "0690631577e5ae7f4a27c748d77c0490781929b5dded122c830bb9378a377e90"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/surface_wave/inputs/donor.obj",
+      "bytes": 15590,
+      "sha256": "e3bbe3a7e2e8ed807835429c211d0f68e27cca93b2087c4e8c98b48baa9c38dd"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/surface_wave/inputs/input.json",
+      "bytes": 3531,
+      "sha256": "fe0986d799c97ef5c6e0f1eb0d749c283b3eb22c53710a6cff68afd6d75a661e"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/surface_wave/inputs/input.npz",
+      "bytes": 124411922,
+      "sha256": "ea5c5fd19c43064df5363d0d404713de314442e96ec90316ea7c81450bfa730d"
+    },
+    {
+      "path": "output/coupled_scenes/gpu_newton_workflow_20260924/surface_wave/inputs/receiver.obj",
+      "bytes": 877,
+      "sha256": "d73f5d102cf7de4b6f0b995a07481972db0e93d3e7488f3ac3de4538ccf3d798"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/01_still_water/01_still_water.blend",
+      "bytes": 5686969,
+      "sha256": "ab055ee19457073faaa6eb75d261a98bd637a0cde0e418abe73f3f1e8cc89512"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/01_still_water/cameras.json",
+      "bytes": 11885,
+      "sha256": "673278de094a780c6acbabfc80bfc375835906bfb1c5e2f0cd0bcdfb53a83ddb"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/01_still_water/colliders.usda",
+      "bytes": 2165,
+      "sha256": "e82b88ef4282decd978e7ebfd0a559be51aa3352d930dbda4074f0d6af782995"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/01_still_water/motion_samples.json",
+      "bytes": 74216,
+      "sha256": "7b38b76f7256d696e8b772ca06fc0d1c4ac5fa02fcef39c2fb4786589f13fee0"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/01_still_water/scene_spec.json",
+      "bytes": 1258,
+      "sha256": "1a19985282759386e86c70a8b48cc84ac8ccfde5209b41f6c1d5d5e2b860a059"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/02_sloshing/02_sloshing.blend",
+      "bytes": 5701501,
+      "sha256": "8ce26b66e3eaab859e05e1f9bff812b60a5d09f9e4f62b7b35894123ed33e0fc"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/02_sloshing/cameras.json",
+      "bytes": 11885,
+      "sha256": "673278de094a780c6acbabfc80bfc375835906bfb1c5e2f0cd0bcdfb53a83ddb"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/02_sloshing/colliders.usda",
+      "bytes": 36474,
+      "sha256": "e361721ff8b369850f13ce09a525259f378aa6bef6c68053658f3628fc64fbf1"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/02_sloshing/motion_samples.json",
+      "bytes": 131663,
+      "sha256": "3f450de583f62c32329cae14972b9d8d255e180d8c71d534838acdd55e5f9919"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/02_sloshing/preview_pose.json",
+      "bytes": 214,
+      "sha256": "24b447d34700f92f1c719216161e6d4c25880f516422478100b613a6be971038"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/02_sloshing/scene_spec.json",
+      "bytes": 1447,
+      "sha256": "144fbf3db51cb3a4908d8de2919fa727eb91915dd016632ce98e5dabd2427073"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/03_wave_propagation/03_wave_propagation.blend",
+      "bytes": 5700589,
+      "sha256": "875fd777da54de9bb3355c4ee2aaa9ef21e57a52ecab30107962a05a60533849"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/03_wave_propagation/cameras.json",
+      "bytes": 11885,
+      "sha256": "673278de094a780c6acbabfc80bfc375835906bfb1c5e2f0cd0bcdfb53a83ddb"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/03_wave_propagation/colliders.usda",
+      "bytes": 22581,
+      "sha256": "4cb4a5f0b65c5c89bf54041691d07fe46db846c7f24bf0edd90fc2a107e98c2c"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/03_wave_propagation/motion_samples.json",
+      "bytes": 75376,
+      "sha256": "cb420063821dba67dd0d54d3d0a9f0b03ae65f2977365fccfaf17f9c44b8bbe0"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/03_wave_propagation/preview_pose.json",
+      "bytes": 202,
+      "sha256": "dfdd474a48f50cd6c4d29b2a02e3b45fb78adb7767e0ee94b69a33447a00f180"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/03_wave_propagation/scene_spec.json",
+      "bytes": 1489,
+      "sha256": "f6a8734b34791aa240bf737ef40ee5fee3744cc61acbe889f39fa68f9dbaaee6"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/04_wave_reflection/04_wave_reflection.blend",
+      "bytes": 5698602,
+      "sha256": "fb6be7dd175206983aee58ed1be637995f2126ac7809590ef625d4c978a181f9"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/04_wave_reflection/cameras.json",
+      "bytes": 11885,
+      "sha256": "673278de094a780c6acbabfc80bfc375835906bfb1c5e2f0cd0bcdfb53a83ddb"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/04_wave_reflection/colliders.usda",
+      "bytes": 36548,
+      "sha256": "17026fc8a0cc15e6efde8c5626c083deea9557765a58dbe5651623dfe7f1a122"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/04_wave_reflection/motion_samples.json",
+      "bytes": 125059,
+      "sha256": "589165c714e532af730a02ba7738e2131a5cc90d96ff809804f2329394af18a9"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/04_wave_reflection/preview_pose.json",
+      "bytes": 167,
+      "sha256": "c7c6222ed78a4a9b616d55c2e4c813fe1e49d30b5d972234b479886b60697ee3"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/04_wave_reflection/scene_spec.json",
+      "bytes": 1417,
+      "sha256": "58931cf7c682b05523fe54b79d848f056326af67e1f6d4dc1f6a624a38fa9113"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/05_surface_recovery/05_surface_recovery.blend",
+      "bytes": 5705731,
+      "sha256": "c801b9384cf851f9cd1e283d9cc2b35d507085fe78960d78e86450d756e5adfc"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/05_surface_recovery/cameras.json",
+      "bytes": 11885,
+      "sha256": "673278de094a780c6acbabfc80bfc375835906bfb1c5e2f0cd0bcdfb53a83ddb"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/05_surface_recovery/colliders.usda",
+      "bytes": 42381,
+      "sha256": "29da42e494326ed467189462e791bc72ba11c968229a7ae9e09cc69af1c6bfa6"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/05_surface_recovery/motion_samples.json",
+      "bytes": 149477,
+      "sha256": "8ac1fe647def51fe8858ed16dc7cb37a2c2766868da409ab9e4bdfc53aee7b54"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/05_surface_recovery/preview_pose.json",
+      "bytes": 202,
+      "sha256": "dfdd474a48f50cd6c4d29b2a02e3b45fb78adb7767e0ee94b69a33447a00f180"
+    },
+    {
+      "path": "output/coupled_scenes/surface_study_group01_v1/05_surface_recovery/scene_spec.json",
+      "bytes": 1466,
+      "sha256": "ccf3e9ae24b9f2b0602bea62e7751730c75c8c89f4f2b17bb9300e69f3c4084f"
+    },
+    {
+      "path": "external_assets/2b967ebd0bd7/bryanston_park_sunrise_8k.exr",
+      "bytes": 331344990,
+      "sha256": "dc3134512c0c2ab0718120dba41664be590581956cf44e8745599f9f0d5eb9bf"
+    }
+  ],
+  "external_dependencies": [
+    {
+      "case": "active_piston",
+      "blend": "Y:\\isaacsim_work\\output\\coupled_scenes\\active_drive_contact_v4\\03_piston_push\\03_piston_push.blend",
+      "dependencies": [
+        {
+          "kind": "image",
+          "path": "Y:\\scenes\\HDRI\\bryanston_park_sunrise_8k.exr",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "case": "active_stirring",
+      "blend": "Y:\\isaacsim_work\\output\\coupled_scenes\\active_drive_contact_v4\\02_stirring\\02_stirring.blend",
+      "dependencies": [
+        {
+          "kind": "image",
+          "path": "Y:\\scenes\\HDRI\\bryanston_park_sunrise_8k.exr",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "case": "active_transfer",
+      "blend": "Y:\\isaacsim_work\\output\\coupled_scenes\\active_pour_lowered_design_v7\\01_container_transfer.blend",
+      "dependencies": [
+        {
+          "kind": "image",
+          "path": "Y:\\scenes\\HDRI\\bryanston_park_sunrise_8k.exr",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "case": "surface_recovery",
+      "blend": "Y:/isaacsim_work/output/coupled_scenes/surface_study_group01_v1/05_surface_recovery/05_surface_recovery.blend",
+      "dependencies": [
+        {
+          "kind": "image",
+          "path": "Y:\\scenes\\HDRI\\bryanston_park_sunrise_8k.exr",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "case": "surface_reflection",
+      "blend": "Y:/isaacsim_work/output/coupled_scenes/surface_study_group01_v1/04_wave_reflection/04_wave_reflection.blend",
+      "dependencies": [
+        {
+          "kind": "image",
+          "path": "Y:\\scenes\\HDRI\\bryanston_park_sunrise_8k.exr",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "case": "surface_sloshing",
+      "blend": "Y:/isaacsim_work/output/coupled_scenes/surface_study_group01_v1/02_sloshing/02_sloshing.blend",
+      "dependencies": [
+        {
+          "kind": "image",
+          "path": "Y:\\scenes\\HDRI\\bryanston_park_sunrise_8k.exr",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "case": "surface_still",
+      "blend": "Y:/isaacsim_work/output/coupled_scenes/surface_study_group01_v1/01_still_water/01_still_water.blend",
+      "dependencies": [
+        {
+          "kind": "image",
+          "path": "Y:\\scenes\\HDRI\\bryanston_park_sunrise_8k.exr",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "case": "surface_wave",
+      "blend": "Y:/isaacsim_work/output/coupled_scenes/surface_study_group01_v1/03_wave_propagation/03_wave_propagation.blend",
+      "dependencies": [
+        {
+          "kind": "image",
+          "path": "Y:\\scenes\\HDRI\\bryanston_park_sunrise_8k.exr",
+          "exists": true
+        }
+      ]
+    }
+  ]
+}

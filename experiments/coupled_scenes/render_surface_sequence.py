@@ -1,5 +1,6 @@
 """Blender: matched-camera animation from reconstructed native snapshots."""
 import argparse
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -25,6 +26,9 @@ def main():
     args=parser.parse_args(sys.argv[sys.argv.index('--')+1:])
     manifest=json.loads((args.surfaces/'sequence.json').read_text())
     assert manifest['complete'] and len(manifest['frames'])>=2
+    if manifest.get('source_blend_sha256'):
+        if hashlib.sha256(args.blend.read_bytes()).hexdigest()!=manifest['source_blend_sha256']:
+            raise ValueError('Appearance asset differs from the simulated layout')
     if args.frame_limit is not None and args.frame_limit < 1:
         parser.error('--frame-limit must be positive')
     identity=dict(blend=str(args.blend.resolve()),surfaces=str(args.surfaces.resolve()),
@@ -75,7 +79,9 @@ def main():
         drive=bpy.data.objects[action['case']['motion']['target']]
         drive.animation_data_clear()
     label=bpy.data.objects.get('Reference label')
-    if label:label.data.body='PHYSX WATER / NORMAL DAMPING / 25x SURFACE SMOOTHING'
+    if label:
+        label.data.body=('WATER PREVIEW / UNDER REVIEW' if manifest.get('backend') in ('newton_dfsph','gpu_dfsph_newton')
+                         else 'PHYSX WATER / NORMAL DAMPING / 25x SURFACE SMOOTHING')
     for i,frame in enumerate(manifest['frames']):
         if args.frame_limit is not None and i>=args.frame_limit:break
         if i<len(rendered):continue

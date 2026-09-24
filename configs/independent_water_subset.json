@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "scope": "independent_water_subset",
+  "status": "existing_scenes_under_validation",
+  "interaction_objects": "rigid_only",
+  "cases": [
+    {"id": "surface_still", "title": "静水", "family": "surface_study", "source": "output/coupled_scenes/surface_study_group01_v1/01_still_water", "seconds": 6, "preview_stride": 5},
+    {"id": "surface_wave", "title": "自由波浪传播", "family": "surface_study", "source": "output/coupled_scenes/surface_study_group01_v1/03_wave_propagation", "seconds": 6, "preview_stride": 5},
+    {"id": "surface_reflection", "title": "液面传播与反弹", "family": "surface_study", "source": "output/coupled_scenes/surface_study_group01_v1/04_wave_reflection", "seconds": 10, "preview_stride": 5},
+    {"id": "surface_recovery", "title": "受扰后的恢复", "family": "surface_study", "source": "output/coupled_scenes/surface_study_group01_v1/05_surface_recovery", "seconds": 12, "preview_stride": 5},
+    {"id": "surface_sloshing", "title": "容器晃动", "family": "surface_study", "source": "output/coupled_scenes/surface_study_group01_v1/02_sloshing", "seconds": 10, "preview_stride": 5},
+    {"id": "active_transfer", "title": "两容器倾倒／转移", "family": "active_drive", "source": "output/coupled_scenes/active_pour_water_minus10_assets_v10", "seconds": 10, "preview_stride": 3},
+    {"id": "active_piston", "title": "活塞推水", "family": "active_drive", "source": "output/coupled_scenes/active_03_piston_push_assets_v2", "seconds": 10, "preview_stride": 3},
+    {"id": "active_stirring", "title": "搅拌", "family": "active_drive", "source": "output/coupled_scenes/active_02_stirring_assets_v2", "seconds": 10, "preview_stride": 3}
+  ],
+  "deferred": ["水槽注水", "山地岩壁落水"],
+  "note": "当前八个场景优先完成。低分辨率只用于接入诊断，正式运行使用原分辨率并单独验收；不并入主线现象控制。"
+}

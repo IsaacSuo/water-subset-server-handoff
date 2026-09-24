@@ -16,6 +16,23 @@ from run_active_pour_probe import atomic_json
 ROOT=Path(__file__).resolve().parents[2]
 
 
+def validate_backend_report(report, unaccepted_preview=False, static_diagnostic=False):
+    """Keep the legacy PhysX gate; admit the new backend only as a labeled preview."""
+    if report.get('status')!='completed':
+        raise ValueError('Cannot render an incomplete simulation as a completed clip')
+    if report.get('backend') in ('newton_dfsph','gpu_dfsph_newton'):
+        if not unaccepted_preview or static_diagnostic:
+            raise ValueError('Newton water migration requires explicit unaccepted preview mode')
+        if report.get('scope')!='independent_water_subset' or report.get('reference_rigid_step') is not False:
+            raise ValueError('Unexpected Newton water backend contract')
+        return dict(diagnostic_only=True,physics_gate_passed=False,backend=report['backend'])
+    if unaccepted_preview:
+        raise ValueError('Backend preview requires a Newton+DFSPH cache')
+    if not static_diagnostic and (report.get('authored_vorticity')!=10. or report.get('diagnostic_only')):
+        raise ValueError('Existing PhysX runtime-water gate failed')
+    return {}
+
+
 def stationary_diagnostic_frames(report,manifest):
     """Explicit inspection only: 6-10s native cache, never certify as action data."""
     assert report['status']=='completed' and report.get('official_water_probe')
@@ -46,9 +63,11 @@ def main():
     parser.add_argument('--desktop',type=Path,required=True)
     parser.add_argument('--simulation',type=Path,help='Render an existing completed native cache without rerunning physics')
     parser.add_argument('--diagnostic-static-last4',action='store_true',help='Inspect official-water stationary diagnostic 6-10s; not certified action footage')
+    parser.add_argument('--unaccepted-backend-preview',action='store_true',help='Render an existing Newton+DFSPH water cache for inspection; never certify it as accepted data')
     parser.add_argument('--video-name',default='陶瓷壶倾倒_v1_4秒半.mp4')
     args=parser.parse_args();out=args.output
     if args.diagnostic_static_last4 and args.simulation is None:parser.error('Diagnostic inspection requires existing simulation')
+    if args.unaccepted_backend_preview and (args.simulation is None or args.diagnostic_static_last4):parser.error('Backend preview requires an existing cache and cannot combine with the PhysX static diagnostic')
     assert Path(args.video_name).name==args.video_name and args.video_name.endswith('.mp4')
     assert shutil.disk_usage(out.parent).free>30*1024**3
     out.mkdir(parents=True,exist_ok=False);args.desktop.mkdir(parents=True,exist_ok=False)
@@ -93,9 +112,7 @@ def main():
             status.update(source_simulation=str(sim.resolve()),physics_rerun=False);save()
             simulation_log=sim.parent/(sim.name+'.log')
         report=json.loads((sim/'probe_report.json').read_text())
-        assert report['status']=='completed'
-        if not args.diagnostic_static_last4:
-            assert report['authored_vorticity']==10. and not report.get('diagnostic_only')
+        status.update(validate_backend_report(report,args.unaccepted_backend_preview,args.diagnostic_static_last4));save()
         source_assets=json.loads((args.assets/'assets.json').read_text(encoding='utf-8'))
         design_blend=args.design/(source_assets['case']['id']+'.blend')
         blend_hash=hashlib.sha256(design_blend.read_bytes()).hexdigest()
@@ -124,7 +141,8 @@ def main():
             for frame in pool.map(build,manifest['frames']):
                 frames.append(frame);status['rebuilt_frames']=len(frames);save()
         atomic_json(surfaces/'sequence.json',dict(complete=True,frames=frames,source_blend_sha256=blend_hash,
-            diagnostic_only=args.diagnostic_static_last4,
+            diagnostic_only=args.diagnostic_static_last4 or args.unaccepted_backend_preview,
+            backend=report.get('backend','physx'),
             moving_object=manifest.get('moving_object','PouringPitcher'),
             source_simulation=str(sim.resolve()),recycling=manifest.get('recycling')))
         idle();status['phase']='rendering';save();renders=out/'renders'
