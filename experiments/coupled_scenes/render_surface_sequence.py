@@ -11,6 +11,7 @@ from mathutils import Vector
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT))
 from experiments.coupled_scenes.blender_coupled_event_overlay import _read_obj,_water_material
+from experiments.coupled_scenes.blender_server_assets import reload_hdri
 
 
 def main():
@@ -18,6 +19,7 @@ def main():
     parser.add_argument('--blend',type=Path,required=True)
     parser.add_argument('--surfaces',type=Path,required=True)
     parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--hdri',type=Path,required=True)
     parser.add_argument('--samples',type=int,default=96)
     parser.add_argument('--width',type=int,default=1600)
     parser.add_argument('--height',type=int,default=1200)
@@ -32,6 +34,7 @@ def main():
     if args.frame_limit is not None and args.frame_limit < 1:
         parser.error('--frame-limit must be positive')
     identity=dict(blend=str(args.blend.resolve()),surfaces=str(args.surfaces.resolve()),
+                  hdri=str(args.hdri.resolve()),
                   samples=args.samples,width=args.width,height=args.height,
                   source_sequence=manifest)
     checkpoint=args.output/'render_manifest.json'
@@ -54,6 +57,7 @@ def main():
         temporary.replace(checkpoint)
     save_progress()
     bpy.ops.wm.open_mainfile(filepath=str(args.blend))
+    reload_hdri(args.hdri)
     scene=bpy.context.scene
     scene.camera=bpy.data.objects.get('WaterSurfaceLowAngle') or bpy.data.objects['View_00']
     scene.render.fps=30

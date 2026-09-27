@@ -3,10 +3,11 @@ import argparse
 import json
 import math
 import subprocess
+import sys
 from pathlib import Path
 
 import numpy as np
-from build_cabinet_liquid_surfaces import atomic_binary_ply, sha256_file, windows_path, count_obj
+from build_cabinet_liquid_surfaces import atomic_binary_ply, sha256_file, count_obj
 
 
 def main():
@@ -15,6 +16,7 @@ def main():
     parser.add_argument("output", type=Path)
     parser.add_argument("--spacing", type=float, default=.004)
     parser.add_argument("--mesh-smoothing-iters", type=int, default=25)
+    parser.add_argument("--splashsurf", type=Path, default=Path(sys.executable).parent/"pysplashsurf")
     args = parser.parse_args()
     if not math.isfinite(args.spacing) or args.spacing <= 0 or args.mesh_smoothing_iters < 0:
         raise ValueError("Spacing must be positive and smoothing iterations nonnegative")
@@ -26,12 +28,14 @@ def main():
     mesh = args.output/"water.obj"
     atomic_binary_ply(ply, positions)
     radius = (3/(4*math.pi))**(1/3)*args.spacing
-    command = ["/mnt/y/tools/pysplashsurf/.venv/Scripts/pysplashsurf.exe", "reconstruct",
-               windows_path(ply), "-r", str(radius), "-l", "2.0", "-c", "1.0", "-t", "0.60",
+    if not args.splashsurf.is_file():
+        raise FileNotFoundError(args.splashsurf)
+    command = [str(args.splashsurf.resolve()), "reconstruct",
+               str(ply.resolve()), "-r", str(radius), "-l", "2.0", "-c", "1.0", "-t", "0.60",
                "--mesh-smoothing-iters", str(args.mesh_smoothing_iters),
                "--mesh-smoothing-weights=on", "--mesh-cleanup=on", "--normals=on",
                "--normals-smoothing-iters", "10", "--check-mesh=off",
-               "--num-threads", "8", "-o", windows_path(mesh)]
+               "--num-threads", "8", "-o", str(mesh.resolve())]
     report = dict(source=str(args.snapshot.resolve()),source_sha256=sha256_file(args.snapshot),
                   particle_count=len(positions),simulated_seconds=seconds,physics_gate_passed=False,
                   purpose="visual inspection of final state, not certified still water",

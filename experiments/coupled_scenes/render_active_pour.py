@@ -9,6 +9,7 @@ from mathutils import Vector,Quaternion
 
 ROOT=Path(__file__).resolve().parents[2];sys.path.insert(0,str(ROOT))
 from experiments.coupled_scenes.blender_coupled_event_overlay import _read_obj,_water_material
+from experiments.coupled_scenes.blender_server_assets import reload_hdri
 from experiments.coupled_scenes.run_active_pour_probe import atomic_json
 
 
@@ -17,13 +18,14 @@ def main():
     parser.add_argument('--blend',type=Path,required=True)
     parser.add_argument('--surfaces',type=Path,required=True)
     parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--hdri',type=Path,required=True)
     args=parser.parse_args(sys.argv[sys.argv.index('--')+1:])
     args.blend=args.blend.resolve();args.surfaces=args.surfaces.resolve();args.output=args.output.resolve()
     sequence=json.loads((args.surfaces/'sequence.json').read_text(encoding='utf-8'));assert sequence['complete']
     if sequence.get('source_blend_sha256'):
         assert hashlib.sha256(args.blend.read_bytes()).hexdigest()==sequence['source_blend_sha256'],'Mismatched pitcher layout'
     args.output.mkdir(parents=True,exist_ok=False)
-    bpy.ops.wm.open_mainfile(filepath=str(args.blend));scene=bpy.context.scene
+    bpy.ops.wm.open_mainfile(filepath=str(args.blend));reload_hdri(args.hdri);scene=bpy.context.scene
     scene.camera=bpy.data.objects['DesignView_00'];scene.render.fps=30
     scene.render.resolution_x=1280;scene.render.resolution_y=960;scene.render.resolution_percentage=100
     scene.cycles.samples=64;scene.cycles.seed=0;scene.cycles.use_animated_seed=False;scene.render.use_motion_blur=False

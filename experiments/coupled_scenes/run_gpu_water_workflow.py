@@ -4,12 +4,14 @@ No physical acceptance rules, retries, automatic fixes, or parameter searches.
 """
 import argparse
 import json
+import shutil
 import subprocess
 import sys
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[2];sys.path.insert(0,str(ROOT))
 from coupled_scene.gpu_dfsph.assets import prepare
+from coupled_scene.gpu_dfsph.server_paths import resolve_hdri
 from run_newton_surface_video import local_path
 
 
@@ -20,6 +22,10 @@ def main():
     parser.add_argument('--cases',nargs='+')
     parser.add_argument('--input-root',type=Path,help='Reuse previously prepared scene inputs without overwriting them')
     parser.add_argument('--full-duration',action='store_true',help='Run each scene for its authored duration from the subset registry')
+    parser.add_argument('--upstream',type=Path,default=ROOT/'vendor/SPH_Project')
+    parser.add_argument('--splashsurf',type=Path,default=Path(sys.executable).parent/'pysplashsurf')
+    parser.add_argument('--blender',default=shutil.which('blender') or 'blender')
+    parser.add_argument('--hdri',type=Path,default=resolve_hdri(ROOT))
     args=parser.parse_args()
     cases=json.loads((ROOT/'configs/independent_water_subset.json').read_text(encoding='utf-8'))['cases']
     cases=[c for c in cases if not args.cases or c['id'] in args.cases]
@@ -48,16 +54,19 @@ def main():
                         seconds=case['seconds'] if args.full_duration else 1/30
                         row['requested_seconds']=seconds
                         command=[sys.executable,'-u',str(ROOT/'experiments/coupled_scenes/run_gpu_newton_water.py'),
-                            '--input',str(inputs),'--output',str(folder/'simulation'),'--seconds',str(seconds)]
+                            '--input',str(inputs),'--output',str(folder/'simulation'),'--seconds',str(seconds),
+                            '--upstream',str(args.upstream)]
                     elif case['family']=='surface_study':
                         command=[sys.executable,str(ROOT/'experiments/coupled_scenes/run_newton_surface_video.py'),
-                            '--simulation',str(folder/'simulation'),'--output',str(folder/'appearance')]
+                            '--simulation',str(folder/'simulation'),'--output',str(folder/'appearance'),
+                            '--splashsurf',str(args.splashsurf),'--blender',str(args.blender),'--hdri',str(args.hdri)]
                     else:
                         meta=json.loads((inputs/'input.json').read_text(encoding='utf-8'))['source_assets']
                         command=[sys.executable,str(ROOT/'experiments/coupled_scenes/run_active_pour_video.py'),
                             '--assets',str(ROOT/case['source']),'--design',str(local_path(meta['source_blend']).parent),
                             '--simulation',str(folder/'simulation'),'--output',str(folder/'appearance'),
                             '--desktop',str(folder/'delivery'),'--video-name','workflow_preview.mp4','--unaccepted-backend-preview']
+                        command.extend(['--splashsurf',str(args.splashsurf),'--blender',str(args.blender),'--hdri',str(args.hdri)])
                     stage=dict(phase=phase,status='running',command=command);row['stages'].append(stage);save()
                     log_name='simulation.log' if phase=='simulate' else phase+'.log'
                     with (folder/log_name).open('x') as log:

@@ -3,6 +3,7 @@ import argparse
 import concurrent.futures
 import hashlib
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -12,6 +13,7 @@ from datetime import datetime,timezone
 from run_pour_vorticity_compare import powershell
 from build_cabinet_liquid_surfaces import windows_path
 from run_active_pour_probe import atomic_json
+from coupled_scene.gpu_dfsph.server_paths import mapping_entry, resolve_hdri
 
 ROOT=Path(__file__).resolve().parents[2]
 
@@ -65,6 +67,9 @@ def main():
     parser.add_argument('--diagnostic-static-last4',action='store_true',help='Inspect official-water stationary diagnostic 6-10s; not certified action footage')
     parser.add_argument('--unaccepted-backend-preview',action='store_true',help='Render an existing Newton+DFSPH water cache for inspection; never certify it as accepted data')
     parser.add_argument('--video-name',default='陶瓷壶倾倒_v1_4秒半.mp4')
+    parser.add_argument('--splashsurf',type=Path,default=Path(sys.executable).parent/'pysplashsurf')
+    parser.add_argument('--blender',default=shutil.which('blender') or 'blender')
+    parser.add_argument('--hdri',type=Path,default=resolve_hdri(ROOT))
     args=parser.parse_args();out=args.output
     if args.diagnostic_static_last4 and args.simulation is None:parser.error('Diagnostic inspection requires existing simulation')
     if args.unaccepted_backend_preview and (args.simulation is None or args.diagnostic_static_last4):parser.error('Backend preview requires an existing cache and cannot combine with the PhysX static diagnostic')
@@ -86,8 +91,12 @@ def main():
             if p.returncode:raise subprocess.CalledProcessError(p.returncode,command)
     def idle():
         status['phase']='waiting_for_gpu';save();count=0
+        visible=os.environ.get('CUDA_VISIBLE_DEVICES','').strip()
+        selected=visible.split(',') if visible else []
         while count<3:
-            rows=subprocess.check_output(['nvidia-smi','--query-gpu=memory.used,utilization.gpu','--format=csv,noheader,nounits'],text=True).strip().splitlines()
+            command=['nvidia-smi']+(['--id='+','.join(selected)] if selected else [])+[
+                '--query-gpu=memory.used,utilization.gpu','--format=csv,noheader,nounits']
+            rows=subprocess.check_output(command,text=True).strip().splitlines()
             values=[list(map(int,row.split(','))) for row in rows]
             count=count+1 if all(m<1024 and u<20 for m,u in values) else 0
             status['gpu']=values;save()
@@ -95,14 +104,18 @@ def main():
     save()
     try:
         sim=args.simulation if args.simulation is not None else out/'simulation'
-        native=[r'Y:\isaacsim\python.bat',windows_path(ROOT/'experiments/coupled_scenes/run_active_pour_probe.py'),
-                '--assets',windows_path(args.assets),'--output',windows_path(sim)]
         def progress():
             path=sim/'probe_report.json'
             if path.exists():
                 report=json.loads(path.read_text());status['simulation']={k:v for k,v in report.items() if k in
                     ('status','last_action_seconds','last_simulated_seconds','recorded_frames','settled_at_seconds','error')};save()
         if args.simulation is None:
+            # Windows path conversion is only relevant when this legacy WSL
+            # entry point launches the native PhysX simulator.  Server-side
+            # rendering of an existing Newton cache must stay entirely on
+            # local POSIX paths and must not construct the unused command.
+            native=[r'Y:\isaacsim\python.bat',windows_path(ROOT/'experiments/coupled_scenes/run_active_pour_probe.py'),
+                    '--assets',windows_path(args.assets),'--output',windows_path(sim)]
             run(powershell(native+['--dry-run']),out/'dry_run.log')
             idle();status['phase']='simulating';save()
             run(powershell(native),out/'simulation.log',progress)
@@ -111,6 +124,9 @@ def main():
             progress()
             status.update(source_simulation=str(sim.resolve()),physics_rerun=False);save()
             simulation_log=sim.parent/(sim.name+'.log')
+            if not simulation_log.exists():
+                console_log=sim.parent/(sim.name+'.console.log')
+                simulation_log=console_log if console_log.exists() else sim/'solver.log'
         report=json.loads((sim/'probe_report.json').read_text())
         status.update(validate_backend_report(report,args.unaccepted_backend_preview,args.diagnostic_static_last4));save()
         source_assets=json.loads((args.assets/'assets.json').read_text(encoding='utf-8'))
@@ -118,10 +134,16 @@ def main():
         blend_hash=hashlib.sha256(design_blend.read_bytes()).hexdigest()
         assert blend_hash==report['source_blend_sha256']==source_assets['source_blend_sha256'],'Render design differs from simulated geometry'
         assert report['geometry_sha256']==source_assets['geometry_sha256']
+        status['path_mappings']=[mapping_entry('source_blend',source_assets['source_blend'],design_blend),
+            mapping_entry('hdri','Y:/scenes/HDRI/'+args.hdri.name,args.hdri)];save()
         log=simulation_log.read_text(errors='replace').lower()
         for phrase in ('cuda error','gpu collision stack overflow','failed to cook','falling back to convex','particle buffer overflow'):
             assert phrase not in log,phrase
         manifest=json.loads((sim/'capture/manifest.json').read_text())
+        if report.get('warm_start_diagnostic'):
+            initial=float(report['initial_seconds'])
+            manifest=dict(manifest,frames=[dict(frame,recording_seconds=frame['action_seconds']-initial)
+                for frame in manifest['frames']])
         if args.diagnostic_static_last4:
             manifest=dict(manifest,frames=stationary_diagnostic_frames(report,manifest),fps=30,
                 moving_object=manifest['source_assets']['moving_object'])
@@ -134,7 +156,7 @@ def main():
             with (surfaces/(dest.name+'.log')).open('x') as stream:
                 subprocess.run([sys.executable,str(ROOT/'experiments/coupled_scenes/reconstruct_surface_snapshot.py'),
                     str(sim/'capture'/frame['file']),str(dest),'--mesh-smoothing-iters','25',
-                    '--spacing',str(report.get('spacing_m',.004))],cwd=ROOT,stdout=stream,stderr=subprocess.STDOUT,check=True)
+                    '--spacing',str(report.get('spacing_m',.004)),'--splashsurf',str(args.splashsurf)],cwd=ROOT,stdout=stream,stderr=subprocess.STDOUT,check=True)
             return dict(frame,surface=str(Path(dest.name)/'water.obj'))
         frames=[]
         with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
@@ -146,11 +168,11 @@ def main():
             moving_object=manifest.get('moving_object','PouringPitcher'),
             source_simulation=str(sim.resolve()),recycling=manifest.get('recycling')))
         idle();status['phase']='rendering';save();renders=out/'renders'
-        command=[r'D:\Program Files (x86)\Blender\blender.exe','--background','--python-exit-code','1','--python',
-            windows_path(ROOT/'experiments/coupled_scenes/render_active_pour.py'),'--','--blend',windows_path(design_blend),
-            '--surfaces',windows_path(surfaces),'--output',windows_path(renders)]
+        command=[str(args.blender),'--background','--python-exit-code','1','--python',
+            str(ROOT/'experiments/coupled_scenes/render_active_pour.py'),'--','--blend',str(design_blend),
+            '--surfaces',str(surfaces),'--output',str(renders),'--hdri',str(args.hdri)]
         def render_progress():status['rendered_frames']=len(list(renders.glob('frame_*.png')));save()
-        run(powershell(command),out/'render.log',render_progress)
+        run(command,out/'render.log',render_progress)
         assert json.loads((renders/'render_manifest.json').read_text())['complete']
         status['phase']='encoding';save();video=out/args.video_name
         run(['ffmpeg','-hide_banner','-loglevel','warning','-n','-framerate','30','-i',str(renders/'frame_%04d.png'),
