@@ -4,6 +4,7 @@ No physical acceptance rules, retries, automatic fixes, or parameter searches.
 """
 import argparse
 import json
+import math
 import shutil
 import subprocess
 import sys
@@ -23,15 +24,24 @@ def main():
     parser.add_argument('--input-root',type=Path,help='Reuse previously prepared scene inputs without overwriting them')
     parser.add_argument('--full-duration',action='store_true',help='Run each scene for its authored duration from the subset registry')
     parser.add_argument('--upstream',type=Path,default=ROOT/'vendor/SPH_Project')
+    parser.add_argument('--surface-tension',type=float,default=0.,
+        help='SPH_Project numerical surface-tension coefficient passed unchanged to every simulation')
+    parser.add_argument('--stirring-speed-rad-s',type=float,default=10.,
+        help='Explicit stirring target speed; ignored by non-stirring cases')
     parser.add_argument('--splashsurf',type=Path,default=Path(sys.executable).parent/'pysplashsurf')
     parser.add_argument('--blender',default=shutil.which('blender') or 'blender')
     parser.add_argument('--hdri',type=Path,default=resolve_hdri(ROOT))
     args=parser.parse_args()
+    if not math.isfinite(args.surface_tension) or args.surface_tension<0:
+        parser.error('Surface tension must be finite and nonnegative')
+    if not math.isfinite(args.stirring_speed_rad_s) or args.stirring_speed_rad_s<=0:
+        parser.error('Stirring speed must be finite and positive')
     cases=json.loads((ROOT/'configs/independent_water_subset.json').read_text(encoding='utf-8'))['cases']
     cases=[c for c in cases if not args.cases or c['id'] in args.cases]
     args.output.mkdir(parents=True,exist_ok=True)
     status=dict(phase=args.phase,scope='independent_water_subset',backend='gpu_dfsph_newton',
-        full_duration=args.full_duration,input_root=str(args.input_root or args.output),cases=[])
+        full_duration=args.full_duration,input_root=str(args.input_root or args.output),
+        surface_tension=args.surface_tension,stirring_speed_rad_s=args.stirring_speed_rad_s,cases=[])
     def save():
         target=args.output/(args.phase+'_status.json');temp=target.with_suffix('.tmp')
         temp.write_text(json.dumps(status,indent=2,ensure_ascii=False),encoding='utf-8');temp.replace(target)
@@ -55,7 +65,8 @@ def main():
                         row['requested_seconds']=seconds
                         command=[sys.executable,'-u',str(ROOT/'experiments/coupled_scenes/run_gpu_newton_water.py'),
                             '--input',str(inputs),'--output',str(folder/'simulation'),'--seconds',str(seconds),
-                            '--upstream',str(args.upstream)]
+                            '--upstream',str(args.upstream),'--surface-tension',str(args.surface_tension),
+                            '--stirring-speed-rad-s',str(args.stirring_speed_rad_s)]
                     elif case['family']=='surface_study':
                         command=[sys.executable,str(ROOT/'experiments/coupled_scenes/run_newton_surface_video.py'),
                             '--simulation',str(folder/'simulation'),'--output',str(folder/'appearance'),
