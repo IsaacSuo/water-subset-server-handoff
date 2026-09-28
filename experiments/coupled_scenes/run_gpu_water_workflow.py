@@ -26,8 +26,6 @@ def main():
     parser.add_argument('--upstream',type=Path,default=ROOT/'vendor/SPH_Project')
     parser.add_argument('--surface-tension',type=float,default=0.,
         help='SPH_Project numerical surface-tension coefficient passed unchanged to every simulation')
-    parser.add_argument('--thin-feature-stabilization',action=argparse.BooleanOptionalAction,default=True,
-        help='Use geometry-aware anisotropic pressure filtering in deficient sheets and jets')
     parser.add_argument('--stirring-speed-rad-s',type=float,default=10.,
         help='Explicit stirring target speed; ignored by non-stirring cases')
     parser.add_argument('--splashsurf',type=Path,default=Path(sys.executable).parent/'pysplashsurf')
@@ -43,8 +41,7 @@ def main():
     args.output.mkdir(parents=True,exist_ok=True)
     status=dict(phase=args.phase,scope='independent_water_subset',backend='gpu_dfsph_newton',
         full_duration=args.full_duration,input_root=str(args.input_root or args.output),
-        surface_tension=args.surface_tension,thin_feature_stabilization=args.thin_feature_stabilization,
-        stirring_speed_rad_s=args.stirring_speed_rad_s,cases=[])
+        surface_tension=args.surface_tension,stirring_speed_rad_s=args.stirring_speed_rad_s,cases=[])
     def save():
         target=args.output/(args.phase+'_status.json');temp=target.with_suffix('.tmp')
         temp.write_text(json.dumps(status,indent=2,ensure_ascii=False),encoding='utf-8');temp.replace(target)
@@ -70,7 +67,6 @@ def main():
                             '--input',str(inputs),'--output',str(folder/'simulation'),'--seconds',str(seconds),
                             '--upstream',str(args.upstream),'--surface-tension',str(args.surface_tension),
                             '--stirring-speed-rad-s',str(args.stirring_speed_rad_s)]
-                        command.append('--thin-feature-stabilization' if args.thin_feature_stabilization else '--no-thin-feature-stabilization')
                     elif case['family']=='surface_study':
                         command=[sys.executable,str(ROOT/'experiments/coupled_scenes/run_newton_surface_video.py'),
                             '--simulation',str(folder/'simulation'),'--output',str(folder/'appearance'),
