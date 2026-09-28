@@ -31,6 +31,8 @@ def main():
         help='Explicit target speed for the stirring case; does not alter its authored ramp timing')
     parser.add_argument('--surface-tension',type=float,default=0.,
         help='SPH_Project numerical surface-tension coefficient; recorded explicitly in the report')
+    parser.add_argument('--thin-feature-stabilization',action=argparse.BooleanOptionalAction,default=True,
+        help='Geometry-aware anisotropic fluid pressure filtering for deficient thin sheets and jets')
     parser.add_argument('--initial-frame',type=Path,
         help='Diagnostic warm start from one of this workflow\'s captured frames; full runs must omit it')
     args=parser.parse_args()
@@ -84,6 +86,10 @@ def main():
         scene_family=meta.get('scene_family','active_drive'),case_id=meta['case']['id'],fluid_device='cuda',rigid_engine='newton',
         particle_count=len(source_ids),spacing_m=info['spacing_m'],origin_m=origin.tolist(),source_assets=str(args.input),
         requested_seconds=args.seconds,simulation_hz=args.hz,surface_tension=args.surface_tension,
+        thin_feature_stabilization=dict(enabled=args.thin_feature_stabilization,
+            method='fluid_covariance_anisotropic_dfsph_pressure_filter',fluid_neighbor_limit=20,
+            alpha_operator='upstream_isotropic_reference',ordinary_free_surface_protection='first_moment_asymmetry',
+            rigid_contact_pressure_filtered=False,particle_count_changes=False),
         initial_seconds=start_time,initial_frame=str(args.initial_frame.resolve()) if args.initial_frame else None,
         warm_start_diagnostic=bool(args.initial_frame),warm_start_roundoff=warm_start_roundoff,
         time_integration=dict(method='moving_boundary_cfl_with_rollback',base_hz=args.hz,
@@ -101,7 +107,7 @@ def main():
         import taichi as ti
         with (args.output/'solver.log').open('w',buffering=1024*1024) as log,contextlib.redirect_stdout(log):
             c,solver=create_backend(args.output/'scene.json',arrays['positions'],arrays['velocities'],bodies,info['spacing_m'],dt,args.upstream,
-                surface_tension=args.surface_tension)
+                surface_tension=args.surface_tension,thin_feature_stabilization=args.thin_feature_stabilization)
             rigid=solver.rigid_solver;motion=meta['case']['motion']
             report['rigid_collision_geometry']=rigid.collision_geometry
             if motion and meta['case']['id']=='02_stirring':

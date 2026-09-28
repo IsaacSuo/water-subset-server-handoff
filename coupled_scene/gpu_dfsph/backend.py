@@ -178,7 +178,7 @@ class NewtonRigidSolver:
 
 
 def create_backend(scene, fluid_positions, fluid_velocities, bodies, spacing, dt, upstream,
-                   surface_tension=0.):
+                   surface_tension=0., thin_feature_stabilization=True):
     """bodies: local mesh/samples, world pose, density, static/free/prescribed mode."""
     sys.path.insert(0,str(Path(upstream).resolve()))
     from SPH.utils import SimConfig
@@ -268,6 +268,12 @@ def create_backend(scene, fluid_positions, fluid_velocities, bodies, spacing, dt
             self.metric_near_density=ti.field(ti.f32,shape=())
             self.metric_near_divergence=ti.field(ti.f32,shape=())
             self.near_moving_boundary_mask=ti.field(ti.i32,shape=self.container.particle_max_num)
+            self.thin_feature_stabilization=bool(thin_feature_stabilization)
+            self.thin_feature_neighbor_limit=20
+            self.thin_feature_fluid_neighbors=ti.field(ti.i32,shape=self.container.particle_max_num)
+            self.thin_feature_pressure_tensor=ti.Matrix.field(3,3,dtype=ti.f32,shape=self.container.particle_max_num)
+            self.metric_thin_feature_particles=ti.field(ti.i32,shape=())
+            self.metric_maximum_pressure_attenuation=ti.field(ti.f32,shape=())
             self.last_density_iterations=0
             self.last_divergence_iterations=0
             self.accepted_substeps=0
@@ -315,6 +321,125 @@ def create_backend(scene, fluid_positions, fluid_velocities, bodies, spacing, dt
                     moving_neighbors=0
                     self.container.for_all_neighbors(i,self.count_moving_boundary_neighbor,moving_neighbors)
                     if moving_neighbors>0:self.near_moving_boundary_mask[i]=1
+
+        @ti.func
+        def accumulate_fluid_covariance(self,p_i,p_j,ret:ti.template()):
+            if self.container.particle_materials[p_j]==self.container.material_fluid:
+                offset=self.container.particle_positions[p_j]-self.container.particle_positions[p_i]
+                weight=self.container.particle_rest_volumes[p_j]*self.kernel_W(offset.norm())
+                ret[0]+=weight*offset[0]*offset[0]
+                ret[1]+=weight*offset[0]*offset[1]
+                ret[2]+=weight*offset[0]*offset[2]
+                ret[3]+=weight*offset[1]*offset[1]
+                ret[4]+=weight*offset[1]*offset[2]
+                ret[5]+=weight*offset[2]*offset[2]
+                ret[6]+=1.
+                ret[7]+=weight*offset[0]
+                ret[8]+=weight*offset[1]
+                ret[9]+=weight*offset[2]
+                ret[10]+=weight*offset.norm()
+
+        @ti.kernel
+        def update_thin_feature_pressure_tensors(self):
+            """Paper-inspired DFSPH covariance filter; rigid contact stays isotropic."""
+            identity=ti.Matrix.identity(ti.f32,3)
+            for i in range(self.container.particle_num[None]):
+                self.thin_feature_pressure_tensor[i]=identity
+                self.thin_feature_fluid_neighbors[i]=0
+                if self.container.particle_materials[i]==self.container.material_fluid:
+                    values=ti.Vector.zero(ti.f32,11)
+                    self.container.for_all_neighbors(i,self.accumulate_fluid_covariance,values)
+                    count=ti.cast(values[6],ti.i32)
+                    self.thin_feature_fluid_neighbors[i]=count
+                    if ti.static(self.thin_feature_stabilization):
+                        if 2<=count and count<self.thin_feature_neighbor_limit:
+                            covariance=ti.Matrix([[values[0],values[1],values[2]],
+                                                  [values[1],values[3],values[4]],
+                                                  [values[2],values[4],values[5]]])
+                            eigenvalues,_=ti.sym_eig(covariance,ti.f32)
+                            maximum=ti.max(eigenvalues[0],ti.max(eigenvalues[1],eigenvalues[2]))
+                            if maximum>1e-14:
+                                minimum=ti.max(0.,ti.min(eigenvalues[0],ti.min(eigenvalues[1],eigenvalues[2])))
+                                anisotropy=ti.math.clamp(1.-minimum/maximum,0.,1.)
+                                first_moment=ti.Vector([values[7],values[8],values[9]])
+                                asymmetry=0.
+                                if values[10]>1e-14:
+                                    asymmetry=ti.math.clamp(first_moment.norm()/values[10],0.,1.)
+                                activation=anisotropy*(1.-asymmetry)
+                                normalized=covariance/maximum
+                                self.thin_feature_pressure_tensor[i]=(1.-activation)*identity+activation*normalized
+
+        @ti.kernel
+        def reduce_thin_feature_diagnostics(self):
+            self.metric_thin_feature_particles[None]=0
+            self.metric_maximum_pressure_attenuation[None]=0.
+            for i in range(self.container.particle_num[None]):
+                if (self.container.particle_materials[i]==self.container.material_fluid and
+                        self.thin_feature_fluid_neighbors[i]<self.thin_feature_neighbor_limit):
+                    ti.atomic_add(self.metric_thin_feature_particles[None],1)
+                    eigenvalues,_=ti.sym_eig(self.thin_feature_pressure_tensor[i],ti.f32)
+                    minimum=ti.min(eigenvalues[0],ti.min(eigenvalues[1],eigenvalues[2]))
+                    ti.atomic_max(self.metric_maximum_pressure_attenuation[None],ti.max(0.,1.-minimum))
+
+        @ti.func
+        def filtered_fluid_gradient(self,p_i,p_j,gradient):
+            pair_filter=.5*(self.thin_feature_pressure_tensor[p_i]+self.thin_feature_pressure_tensor[p_j])
+            return pair_filter@gradient
+
+        @ti.func
+        def correct_density_error_task(self,p_i,p_j,k_i:ti.template()):
+            if self.container.particle_materials[p_j]==self.container.material_fluid:
+                k_j=self.container.particle_dfsph_kappa[p_j]
+                if ti.abs(k_i+k_j)>self.m_eps*self.dt[None]:
+                    gradient=self.container.particle_rest_volumes[p_j]*self.kernel_gradient(
+                        self.container.particle_positions[p_i]-self.container.particle_positions[p_j])
+                    gradient=self.filtered_fluid_gradient(p_i,p_j,gradient)
+                    self.container.particle_velocities[p_i]-=gradient*(
+                        k_i/self.container.particle_densities[p_i]+k_j/self.container.particle_densities[p_j])*self.density_0
+            elif self.container.particle_materials[p_j]==self.container.material_rigid:
+                den_i=self.container.particle_densities[p_i]
+                if ti.abs(k_i)>self.m_eps*self.dt[None]:
+                    # Solid contact remains isotropic so the filter cannot weaken containment.
+                    gradient=self.container.particle_rest_volumes[p_j]*self.kernel_gradient(
+                        self.container.particle_positions[p_i]-self.container.particle_positions[p_j])
+                    self.container.particle_velocities[p_i]-=gradient*(k_i/den_i)*self.density_0
+                    if self.container.particle_is_dynamic[p_j]:
+                        object_j=self.container.particle_object_ids[p_j]
+                        center=self.container.rigid_body_centers_of_mass[object_j]
+                        force=gradient*(k_i/den_i)*self.density_0/self.dt[None]*(
+                            self.container.particle_rest_volumes[p_i]*self.density_0)
+                        self.container.rigid_body_forces[object_j]+=force
+                        self.container.rigid_body_torques[object_j]+=ti.math.cross(
+                            self.container.particle_positions[p_j]-center,force)
+
+        @ti.func
+        def correct_divergence_task(self,p_i,p_j,ret:ti.template()):
+            if self.container.particle_materials[p_j]==self.container.material_fluid:
+                k_i=ret.k_i;k_j=self.container.particle_dfsph_kappa_v[p_j]
+                if ti.abs(k_i+k_j)>self.m_eps*self.dt[None]:
+                    gradient=self.container.particle_rest_volumes[p_j]*self.kernel_gradient(
+                        self.container.particle_positions[p_i]-self.container.particle_positions[p_j])
+                    gradient=self.filtered_fluid_gradient(p_i,p_j,gradient)
+                    ret.dv-=gradient*(k_i/self.container.particle_densities[p_i]+
+                        k_j/self.container.particle_densities[p_j])*self.density_0
+            elif self.container.particle_materials[p_j]==self.container.material_rigid:
+                k_i=ret.k_i;den_i=self.container.particle_densities[p_i]
+                if ti.abs(k_i)>self.m_eps*self.dt[None]:
+                    gradient=self.container.particle_rest_volumes[p_j]*self.kernel_gradient(
+                        self.container.particle_positions[p_i]-self.container.particle_positions[p_j])
+                    ret.dv-=gradient*(k_i/den_i)*self.density_0
+                    if self.container.particle_is_dynamic[p_j]:
+                        object_j=self.container.particle_object_ids[p_j]
+                        center=self.container.rigid_body_centers_of_mass[object_j]
+                        force=gradient*(k_i/den_i)*self.density_0/self.dt[None]*(
+                            self.container.particle_rest_volumes[p_i]*self.density_0)
+                        self.container.rigid_body_forces[object_j]+=force
+                        self.container.rigid_body_torques[object_j]+=ti.math.cross(
+                            self.container.particle_positions[p_j]-center,force)
+
+        def prepare(self):
+            super().prepare()
+            self.update_thin_feature_pressure_tensors()
 
         @ti.kernel
         def reduce_near_density_star(self)->float:
@@ -369,7 +494,7 @@ def create_backend(scene, fluid_positions, fluid_velocities, bodies, spacing, dt
             self.rigid_solver.prepare_fluid_step(midpoint)
             self.renew_rigid_particle_state()
             self.container.prepare_neighborhood_search()
-            self.mark_near_moving_boundary();self.compute_density();self.compute_alpha()
+            self.mark_near_moving_boundary();self.compute_density();self.compute_alpha();self.update_thin_feature_pressure_tensors()
             self.compute_non_pressure_acceleration();self.update_fluid_velocity();self.correct_density_error()
             self.update_fluid_position()
             self.rigid_solver.step()
@@ -377,7 +502,7 @@ def create_backend(scene, fluid_positions, fluid_velocities, bodies, spacing, dt
             if self.container.dim==3:self.enforce_domain_boundary_3D(self.container.material_fluid)
             else:self.enforce_domain_boundary_2D(self.container.material_fluid)
             self.container.prepare_neighborhood_search();self.mark_near_moving_boundary()
-            self.compute_density();self.compute_alpha();self.correct_divergence_error()
+            self.compute_density();self.compute_alpha();self.update_thin_feature_pressure_tensors();self.correct_divergence_error()
 
         def max_characteristic_speed(self,future_time=None,allow_invalid=False):
             self.reduce_fluid_speed();ti.sync()
@@ -397,7 +522,8 @@ def create_backend(scene, fluid_positions, fluid_velocities, bodies, spacing, dt
             self.rigid_solver.restore(rigid_snapshot);self.renew_rigid_particle_state()
             self.container.rigid_body_forces.from_numpy(reaction_snapshot[0])
             self.container.rigid_body_torques.from_numpy(reaction_snapshot[1])
-            self.container.prepare_neighborhood_search();self.mark_near_moving_boundary();self.compute_density();self.compute_alpha()
+            self.container.prepare_neighborhood_search();self.mark_near_moving_boundary();self.compute_density()
+            self.compute_alpha();self.update_thin_feature_pressure_tensors()
 
         def adaptive_step(self,maximum_dt):
             candidate,speed=self.suggest_time_step(min(float(maximum_dt),self.base_dt,self.adaptive_dt_cap))
@@ -443,10 +569,12 @@ def create_backend(scene, fluid_positions, fluid_velocities, bodies, spacing, dt
             return dict(self.last_step_metrics)
 
         def collect_frame_diagnostics(self):
-            self.reduce_near_boundary_residuals();ti.sync()
+            self.reduce_near_boundary_residuals();self.reduce_thin_feature_diagnostics();ti.sync()
             self.last_step_metrics.update(
                 near_boundary_max_density_error=float(self.metric_near_density[None]),
-                near_boundary_max_divergence_per_s=float(self.metric_near_divergence[None]))
+                near_boundary_max_divergence_per_s=float(self.metric_near_divergence[None]),
+                thin_feature_particle_count=int(self.metric_thin_feature_particles[None]),
+                maximum_thin_pressure_attenuation=float(self.metric_maximum_pressure_attenuation[None]))
             return dict(self.last_step_metrics)
 
     original_factory=base_module.PyBulletSolver
