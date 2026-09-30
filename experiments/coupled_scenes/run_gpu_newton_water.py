@@ -51,8 +51,14 @@ def main():
         default='sampled_particles',help='Rigid boundary representation used by DFSPH density and pressure')
     parser.add_argument('--pressure-convergence-retries',type=int,choices=range(5),default=0,
         help='Maximum pressure-driven halvings per substep; exhausted finite CFL-safe trials are accepted and flagged')
+    parser.add_argument('--local-residual-tolerance',type=float,
+        help='Absolute maximum per-particle compression residual for the local convergence test '
+             '(divergence: this value divided by dt). Default keeps the historical ratio-scaled global tolerance')
     parser.add_argument('--solver-verification-window',type=float,nargs=2,metavar=('START','END'),
         help='Record accepted receiver contact/rebound statistics and first-layer wall densities')
+    parser.add_argument('--start-seconds',type=float,default=0.,
+        help='Start the prepared input at this time instead of 0; only allowed before the authored motion starts, '
+             'so nothing moves in the skipped interval (a 30 fps boundary, at least 0.2 s before motion start)')
     parser.add_argument('--initial-frame',type=Path,
         help='Diagnostic warm start from one of this workflow\'s captured frames; full runs must omit it')
     args=parser.parse_args()
@@ -110,6 +116,14 @@ def main():
             maximum_adjustment_m=float(adjustment.max()))
         arrays['positions']=corrected
         arrays['velocities']=velocities.astype(np.float32)
+    elif args.start_seconds:
+        motion=meta['case'].get('motion') or {}
+        if 'start_s' not in motion:
+            parser.error('--start-seconds needs an authored motion with a start time')
+        start_time=float(args.start_seconds)
+        if (not math.isfinite(start_time) or start_time<0 or start_time>float(motion['start_s'])-.2
+                or abs(start_time*30-round(start_time*30))>1e-6 or start_time>=args.seconds):
+            parser.error('--start-seconds must be a 30 fps boundary at least 0.2 s before the motion starts')
     dt=1/args.hz;config=scene_configuration(info,dt)
     (args.output/'scene.json').write_text(json.dumps(config,indent=2))
     for name in ('receiver','donor'):
@@ -126,6 +140,7 @@ def main():
             minimum_density_iterations=args.minimum_density_iterations,
             minimum_divergence_iterations=args.minimum_divergence_iterations,
             local_residual_boundary_scope=args.local_residual_boundary_scope,
+            local_residual_tolerance=args.local_residual_tolerance,
             divergence_deficiency=dict(neighbor_threshold_3d=20,neighbor_count='fluid_only_for_volume_maps',
                 mask_frozen_per_projection=True,own_pressure_locked_zero=True,neighbor_pressure_acceleration_retained=True),
             warm_start=False,pressure_convergence_retries=args.pressure_convergence_retries,
@@ -140,6 +155,7 @@ def main():
                 if args.boundary_model=='volume_maps_bender2019' else None)),
         boundary_model=args.boundary_model,
         initial_seconds=start_time,initial_frame=str(args.initial_frame.resolve()) if args.initial_frame else None,
+        skipped_static_prefix_seconds=(start_time if not args.initial_frame else 0.),
         warm_start_diagnostic=bool(args.initial_frame),warm_start_roundoff=warm_start_roundoff,
         time_integration=dict(method='moving_boundary_cfl_with_rollback',base_hz=args.hz,
             cfl_displacement_fraction=.25,minimum_dt_divisor=args.minimum_dt_divisor,
@@ -175,7 +191,8 @@ def main():
                 boundary_model=args.boundary_model,
                 pressure_convergence_retries=args.pressure_convergence_retries,
                 solver_verification_window=(tuple(args.solver_verification_window)
-                    if args.solver_verification_window is not None else None))
+                    if args.solver_verification_window is not None else None),
+                local_residual_tolerance=args.local_residual_tolerance)
             rigid=solver.rigid_solver;motion=meta['case']['motion']
             n=c.particle_num[None]
             materials=c.particle_materials.to_numpy()[:n]
@@ -257,7 +274,8 @@ def main():
                 filename=f'frame_{len(frames):04d}.npz'
                 np.savez(capture/filename,positions=world_positions.astype(np.float32),velocities=v,ids=source_ids[ids],
                     simulated_seconds=t,body_q=q,body_qd=qd)
-                frames.append(dict(file=filename,recording_seconds=t,action_seconds=t,particle_count=len(ids),recycled_count=0,
+                frames.append(dict(file=filename,recording_seconds=t-report['skipped_static_prefix_seconds'],
+                    action_seconds=t,particle_count=len(ids),recycled_count=0,
                     native_position_m=pose[:3].tolist(),native_rotation_xyzw=pose[3:].tolist()))
                 report['rows'].append(dict(action_seconds=t,rms_speed_m_s=float(np.sqrt(np.mean(np.sum(v*v,axis=1)))),
                     body_q=q.tolist(),body_qd=qd.tolist(),liquid_wrenches={str(k):v.tolist() for k,v in rigid.last_wrenches.items()},

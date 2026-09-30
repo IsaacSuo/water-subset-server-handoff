@@ -7,6 +7,7 @@ fluid step which violates the moving-boundary CFL can be retried safely.
 """
 import importlib
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -215,7 +216,7 @@ def create_backend(scene, fluid_positions, fluid_velocities, bodies, spacing, dt
                    density_boundary_projection_enabled=True,
                    divergence_boundary_projection_enabled=True,
                    boundary_model='sampled_particles', pressure_convergence_retries=0,
-                   solver_verification_window=None):
+                   solver_verification_window=None, local_residual_tolerance=None):
     """bodies: local mesh/samples, world pose, density, static/free/prescribed mode."""
     if local_residual_boundary_scope not in ('moving','all'):
         raise ValueError('Local residual boundary scope must be moving or all')
@@ -1291,12 +1292,12 @@ def create_backend(scene, fluid_positions, fluid_velocities, bodies, spacing, dt
                 self.update_volume_density_pressure(boundary_enabled)
                 global_error=float(self.volume_projection_global_error[None])
                 local_error=float(self.volume_projection_local_error[None])
-                if (global_error<=self.max_error and local_error<=self.max_error
+                if (global_error<=self.max_error and local_error<=self.local_max_error
                         and iteration+1>=self.minimum_density_iterations):break
             self.compute_volume_pressure_acceleration(boundary_enabled)
             self.evaluate_volume_pressure_residual(boundary_enabled,0)
             self.capture_volume_projection_statistics(0)
-            self.record_volume_projection_status('density',iteration+1,self.max_error)
+            self.record_volume_projection_status('density',iteration+1,self.max_error,self.local_max_error)
             if self.solver_verification_enabled:
                 self.capture_volume_pressure_components(0)
             self.apply_volume_pressure_solution(boundary_enabled)
@@ -1308,19 +1309,20 @@ def create_backend(scene, fluid_positions, fluid_velocities, bodies, spacing, dt
             self.compute_volume_raw_constraints()
             self.initialize_volume_divergence_pressure()
             boundary_enabled=int(self.divergence_boundary_projection_enabled[None])
-            local_eta=self.max_error_V/self.dt[None]
+            eta=self.max_error_V/self.dt[None]
+            local_eta=self.local_max_error_V/self.dt[None]
             global_error=float('inf');local_error=float('inf')
             for iteration in range(self.m_max_iterations_v):
                 self.compute_volume_pressure_acceleration(boundary_enabled)
                 self.update_volume_divergence_pressure(boundary_enabled)
                 global_error=float(self.volume_projection_global_error[None])
                 local_error=float(self.volume_projection_local_error[None])
-                if (global_error<=local_eta and local_error<=local_eta
+                if (global_error<=eta and local_error<=local_eta
                         and iteration+1>=self.minimum_divergence_iterations):break
             self.compute_volume_pressure_acceleration(boundary_enabled)
             self.evaluate_volume_pressure_residual(boundary_enabled,1)
             self.capture_volume_projection_statistics(1)
-            self.record_volume_projection_status('divergence',iteration+1,local_eta)
+            self.record_volume_projection_status('divergence',iteration+1,eta,local_eta)
             if self.solver_verification_enabled:
                 self.capture_volume_pressure_components(1)
             self.apply_volume_pressure_solution(boundary_enabled)
@@ -1328,7 +1330,7 @@ def create_backend(scene, fluid_positions, fluid_velocities, bodies, spacing, dt
             self.last_divergence_iterations=iteration+1
             self.last_local_divergence_projection_error=float(self.reduce_near_divergence())
 
-        def record_volume_projection_status(self,name,iterations,tolerance):
+        def record_volume_projection_status(self,name,iterations,tolerance,local_tolerance):
             global_error=float(self.volume_projection_global_error[None])
             local_error=float(self.volume_projection_local_error[None])
             all_boundary_error=float(self.volume_projection_all_boundary_error[None])
@@ -1338,10 +1340,11 @@ def create_backend(scene, fluid_positions, fluid_velocities, bodies, spacing, dt
                 float(self.volume_projection_max_acceleration[index]),
                 float(self.volume_projection_max_residual[index])]).all())
             self.projection_status[name]=dict(iterations=iterations,tolerance=tolerance,
+                local_tolerance=local_tolerance,
                 final_global_compression_residual=global_error,
                 final_local_compression_residual=local_error,
                 final_all_boundary_compression_residual=all_boundary_error,finite=finite,
-                converged=bool(finite and global_error<=tolerance and local_error<=tolerance),
+                converged=bool(finite and global_error<=tolerance and local_error<=local_tolerance),
                 reached_iteration_limit=iterations>=(self.m_max_iterations if name=='density'
                     else self.m_max_iterations_v))
             if name=='density':
@@ -2120,6 +2123,16 @@ def create_backend(scene, fluid_positions, fluid_velocities, bodies, spacing, dt
     finally:base_module.PyBulletSolver=original_factory
     ratio=len(fluid_positions)/c.particle_max_num
     solver.max_error=solver.max_error_V=5e-5*ratio
+    # The global error is a mean over particle_num, which includes boundary
+    # samples, hence the ratio.  The local error is a maximum over fluid
+    # particles only; by default it keeps the historical (ratio-scaled) value,
+    # an explicit tolerance is used as given.
+    if local_residual_tolerance is None:
+        solver.local_max_error=solver.local_max_error_V=solver.max_error
+    else:
+        if not math.isfinite(local_residual_tolerance) or local_residual_tolerance<=0:
+            raise ValueError('Local residual tolerance must be finite and positive')
+        solver.local_max_error=solver.local_max_error_V=float(local_residual_tolerance)
     solver.m_max_iterations=solver.m_max_iterations_v=300
     solver.akinci_coefficient[None]=float(akinci_coefficient)
     solver.akinci_enabled=bool(akinci_coefficient)

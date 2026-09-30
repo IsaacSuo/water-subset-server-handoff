@@ -69,6 +69,8 @@ def main():
     parser.add_argument('--allow-shared-gpu',action='store_true',help='Explicitly permit rendering alongside other jobs on the selected GPU')
     parser.add_argument('--video-name',default='陶瓷壶倾倒_v1_4秒半.mp4')
     parser.add_argument('--splashsurf',type=Path,default=Path(sys.executable).parent/'pysplashsurf')
+    parser.add_argument('--surface-method',choices=('splashsurf','anisotropic'),default='splashsurf',
+        help='anisotropic: Yu & Turk kernels for thin sheets, isolated particles rendered as spray droplets')
     parser.add_argument('--blender',default=shutil.which('blender') or 'blender')
     parser.add_argument('--hdri',type=Path,default=resolve_hdri(ROOT))
     args=parser.parse_args();out=args.output
@@ -155,20 +157,28 @@ def main():
         video_frames=len(manifest['frames'])-1;video_seconds=video_frames/30
         assert all(abs(f['recording_seconds']-i/30)<1e-7 for i,f in enumerate(manifest['frames']))
         status['phase']='reconstructing';save();surfaces=out/'surfaces';surfaces.mkdir()
+        status['surface_method']=args.surface_method
         def build(frame):
             dest=surfaces/Path(frame['file']).stem
-            with (surfaces/(dest.name+'.log')).open('x') as stream:
-                subprocess.run([sys.executable,str(ROOT/'experiments/coupled_scenes/reconstruct_surface_snapshot.py'),
+            if args.surface_method=='anisotropic':
+                command=[sys.executable,str(ROOT/'experiments/coupled_scenes/reconstruct_anisotropic_surface.py'),
+                    str(sim/'capture'/frame['file']),str(dest),'--spacing',str(report.get('spacing_m',.004))]
+            else:
+                command=[sys.executable,str(ROOT/'experiments/coupled_scenes/reconstruct_surface_snapshot.py'),
                     str(sim/'capture'/frame['file']),str(dest),'--mesh-smoothing-iters','25',
-                    '--spacing',str(report.get('spacing_m',.004)),'--splashsurf',str(args.splashsurf)],cwd=ROOT,stdout=stream,stderr=subprocess.STDOUT,check=True)
-            return dict(frame,surface=str(Path(dest.name)/'water.obj'))
+                    '--spacing',str(report.get('spacing_m',.004)),'--splashsurf',str(args.splashsurf)]
+            with (surfaces/(dest.name+'.log')).open('x') as stream:
+                subprocess.run(command,cwd=ROOT,stdout=stream,stderr=subprocess.STDOUT,check=True)
+            result=dict(frame,surface=str(Path(dest.name)/'water.obj'))
+            if args.surface_method=='anisotropic':result['spray']=str(Path(dest.name)/'spray.npz')
+            return result
         frames=[]
         with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
             for frame in pool.map(build,manifest['frames']):
                 frames.append(frame);status['rebuilt_frames']=len(frames);save()
         atomic_json(surfaces/'sequence.json',dict(complete=True,frames=frames,source_blend_sha256=blend_hash,
             diagnostic_only=args.diagnostic_static_last4 or args.unaccepted_backend_preview,
-            backend=report.get('backend','physx'),
+            backend=report.get('backend','physx'),surface_method=args.surface_method,
             moving_object=manifest.get('moving_object','PouringPitcher'),
             source_simulation=str(sim.resolve()),recycling=manifest.get('recycling')))
         idle();status['phase']='rendering';save();renders=out/'renders'
