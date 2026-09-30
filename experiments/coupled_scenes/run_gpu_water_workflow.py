@@ -24,16 +24,23 @@ def main():
     parser.add_argument('--input-root',type=Path,help='Reuse previously prepared scene inputs without overwriting them')
     parser.add_argument('--full-duration',action='store_true',help='Run each scene for its authored duration from the subset registry')
     parser.add_argument('--upstream',type=Path,default=ROOT/'vendor/SPH_Project')
-    parser.add_argument('--surface-tension',type=float,default=0.,
-        help='SPH_Project numerical surface-tension coefficient passed unchanged to every simulation')
+    parser.add_argument('--akinci-coefficient',type=float,default=0.,
+        help='Akinci 2013 numerical fluid-fluid surface-force coefficient passed unchanged to every simulation')
+    parser.add_argument('--minimum-density-iterations',type=int,default=2)
+    parser.add_argument('--minimum-divergence-iterations',type=int,default=1)
+    parser.add_argument('--minimum-dt-divisor',type=int,default=64)
     parser.add_argument('--stirring-speed-rad-s',type=float,default=10.,
         help='Explicit stirring target speed; ignored by non-stirring cases')
     parser.add_argument('--splashsurf',type=Path,default=Path(sys.executable).parent/'pysplashsurf')
     parser.add_argument('--blender',default=shutil.which('blender') or 'blender')
     parser.add_argument('--hdri',type=Path,default=resolve_hdri(ROOT))
     args=parser.parse_args()
-    if not math.isfinite(args.surface_tension) or args.surface_tension<0:
-        parser.error('Surface tension must be finite and nonnegative')
+    if not math.isfinite(args.akinci_coefficient) or args.akinci_coefficient<0:
+        parser.error('Akinci coefficient must be finite and nonnegative')
+    if not 1<=args.minimum_density_iterations<=300 or not 1<=args.minimum_divergence_iterations<=300:
+        parser.error('Minimum DFSPH iteration counts must be between 1 and 300')
+    if args.minimum_dt_divisor<1:
+        parser.error('Minimum time-step divisor must be a positive integer')
     if not math.isfinite(args.stirring_speed_rad_s) or args.stirring_speed_rad_s<=0:
         parser.error('Stirring speed must be finite and positive')
     cases=json.loads((ROOT/'configs/independent_water_subset.json').read_text(encoding='utf-8'))['cases']
@@ -41,7 +48,12 @@ def main():
     args.output.mkdir(parents=True,exist_ok=True)
     status=dict(phase=args.phase,scope='independent_water_subset',backend='gpu_dfsph_newton',
         full_duration=args.full_duration,input_root=str(args.input_root or args.output),
-        surface_tension=args.surface_tension,stirring_speed_rad_s=args.stirring_speed_rad_s,cases=[])
+        surface_tension_model=('akinci2013_paper_corrected' if args.akinci_coefficient else 'disabled'),
+        akinci_coefficient=args.akinci_coefficient,stirring_speed_rad_s=args.stirring_speed_rad_s,cases=[])
+    status['pressure_solver']=dict(minimum_density_iterations=args.minimum_density_iterations,
+        minimum_divergence_iterations=args.minimum_divergence_iterations,
+        maximum_density_iterations=300,maximum_divergence_iterations=300,
+        minimum_dt_divisor=args.minimum_dt_divisor)
     def save():
         target=args.output/(args.phase+'_status.json');temp=target.with_suffix('.tmp')
         temp.write_text(json.dumps(status,indent=2,ensure_ascii=False),encoding='utf-8');temp.replace(target)
@@ -65,7 +77,10 @@ def main():
                         row['requested_seconds']=seconds
                         command=[sys.executable,'-u',str(ROOT/'experiments/coupled_scenes/run_gpu_newton_water.py'),
                             '--input',str(inputs),'--output',str(folder/'simulation'),'--seconds',str(seconds),
-                            '--upstream',str(args.upstream),'--surface-tension',str(args.surface_tension),
+                            '--upstream',str(args.upstream),'--akinci-coefficient',str(args.akinci_coefficient),
+                            '--minimum-density-iterations',str(args.minimum_density_iterations),
+                            '--minimum-divergence-iterations',str(args.minimum_divergence_iterations),
+                            '--minimum-dt-divisor',str(args.minimum_dt_divisor),
                             '--stirring-speed-rad-s',str(args.stirring_speed_rad_s)]
                     elif case['family']=='surface_study':
                         command=[sys.executable,str(ROOT/'experiments/coupled_scenes/run_newton_surface_video.py'),

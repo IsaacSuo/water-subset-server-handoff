@@ -66,6 +66,7 @@ def main():
     parser.add_argument('--simulation',type=Path,help='Render an existing completed native cache without rerunning physics')
     parser.add_argument('--diagnostic-static-last4',action='store_true',help='Inspect official-water stationary diagnostic 6-10s; not certified action footage')
     parser.add_argument('--unaccepted-backend-preview',action='store_true',help='Render an existing Newton+DFSPH water cache for inspection; never certify it as accepted data')
+    parser.add_argument('--allow-shared-gpu',action='store_true',help='Explicitly permit rendering alongside other jobs on the selected GPU')
     parser.add_argument('--video-name',default='陶瓷壶倾倒_v1_4秒半.mp4')
     parser.add_argument('--splashsurf',type=Path,default=Path(sys.executable).parent/'pysplashsurf')
     parser.add_argument('--blender',default=shutil.which('blender') or 'blender')
@@ -90,6 +91,9 @@ def main():
             if progress:progress()
             if p.returncode:raise subprocess.CalledProcessError(p.returncode,command)
     def idle():
+        if args.allow_shared_gpu:
+            status['gpu_idle_wait_skipped']=True;save()
+            return
         status['phase']='waiting_for_gpu';save();count=0
         visible=os.environ.get('CUDA_VISIBLE_DEVICES','').strip()
         selected=visible.split(',') if visible else []
