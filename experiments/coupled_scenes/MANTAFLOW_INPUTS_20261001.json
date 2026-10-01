@@ -1,0 +1,29 @@
+{
+  "product": "mantaflow_pour_repair_inputs",
+  "date": "2026-10-01",
+  "blender_version": "5.0.1",
+  "files": [
+    {
+      "path": "output/coupled_scenes/mantaflow_inputs_20261001/design/01_container_transfer.blend",
+      "bytes": 5785891,
+      "sha256": "89295204bd8bc24cc573c5507cf23957f3f747a27ffdb75bf753a916e667c7d2"
+    },
+    {
+      "path": "output/coupled_scenes/mantaflow_inputs_20261001/assets_4mm/assets.json",
+      "bytes": 3326,
+      "sha256": "9e3f20f8b2ed9ddb802d0f89f8d8c0923e3284bc1fb41da32427807a26e7dba1"
+    },
+    {
+      "path": "output/coupled_scenes/mantaflow_inputs_20261001/assets_4mm/geometry_and_fill.npz",
+      "bytes": 2522636,
+      "sha256": "a538dea86c3678540b8419e67849b8e184f368276a475c2424f0c94cce609fc9"
+    }
+  ],
+  "note": "Original design and exact tested 4 mm fill assets, copied byte-for-byte; no baked cache or renders.",
+  "archive": {
+    "name": "mantaflow-pour-inputs-20261001.tar.gz",
+    "bytes": 6027445,
+    "sha256": "d0d2d0a6973fb10e2335e2762a478c7dd8b52095c0f7f95a26fe55bda173d89d",
+    "release_tag": "water-handoff-20260925"
+  }
+}

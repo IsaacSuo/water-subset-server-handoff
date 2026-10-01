@@ -2,6 +2,8 @@
 
 接手 Agent 请先阅读 [SERVER_HANDOFF.md](SERVER_HANDOFF.md)。本仓库用于 GPU DFSPH + Newton 水体子集交接；八场景输入、原外观和环境图在 [water-handoff-20260925 Release](https://github.com/IsaacSuo/water-subset-server-handoff/releases/tag/water-handoff-20260925)。原本地任务保持暂停，尚未完成服务器适配或完整八场景输出。
 
+2026-10-01 的独立 Mantaflow 壶底漏水修复、384 分辨率 CPU 烘焙和原镜头五帧渲染，见 [Mantaflow 服务器交接](experiments/coupled_scenes/MANTAFLOW_SERVER_HANDOFF.md)。
+
 以下是继承自原代码基线的工作区说明，不代表本次任务范围。
 
 # Isaac Sim / PhysX 仿真工作区
